@@ -1,8 +1,8 @@
 # Aetas Security Website Handoff
 
-Last updated: October 23, 2026
+Last updated: October 23, 2026 (own visual identity, aetas.ai cybersecurity partners)
 
-This is the primary implementation and positioning reference for developers and coding assistants working on the Aetas Security website (www.aetassecurity.com). It is a sibling of the aetas.ai website (github.com/Aetas-ai/Aetas): same stack, design system, security build, and writing rules, with its own accent colour.
+This is the primary implementation and positioning reference for developers and coding assistants working on the Aetas Security website (www.aetassecurity.com). It is a sibling of the aetas.ai website (github.com/Aetas-ai/Aetas): same stack, security build, and writing rules, with its own visual identity.
 
 ## Company Positioning
 
@@ -37,22 +37,23 @@ Same as aetas.ai:
 
 ## Technical Stack
 
-Matches aetas.ai exactly: Astro 7 (prerendered pages, Node adapter), React 19 islands via `@astrojs/react`, Tailwind CSS 4 via `@tailwindcss/vite`, `@fontsource-variable/inter`, `lucide-react`, `@astrojs/sitemap`, `zod` (reserved for the Phase 2 form pipeline), Node >= 22.12. Not Next.js. No animation library; CSS keyframes only. Tests use Node's built-in test runner.
+Matches aetas.ai: Astro 7 (prerendered pages, Node adapter), React 19 islands via `@astrojs/react`, Tailwind CSS 4 via `@tailwindcss/vite`, `@fontsource-variable/inter` plus `@fontsource-variable/saira` for headings, `lucide-react`, `@astrojs/sitemap`, `zod` (reserved for the Phase 2 form pipeline), Node >= 22.12. Not Next.js. No animation library; CSS keyframes only. Tests use Node's built-in test runner.
 
 ## What Was Copied From aetas.ai, and What Was Left Out
 
-Copied and adapted: `global.css`, `product-ui.css`, `Layout.astro` (SEO, structured data, ClientRouter, reveals, `data-motion` pausing), `Button`, `SectionHeading`, `PageHero` (plus a `primaryExternal` prop for the booking link), `Breadcrumbs`, `Faq`, `ServiceFaqSection`, `ServiceIcon`, `PartnerLogo`, `SiteHeader`, `MobileNav`, `SiteFooter`, `site-nav.ts`, `demo-runtime.tsx`, `MxdrConsole.tsx`, the MXDR part of `demos.ts`, the security-header build scripts, the secure Node entry, and the OG image generator.
+Copied and adapted (then restyled; see Design System): `global.css`, `product-ui.css`, `Layout.astro` (SEO, structured data, ClientRouter, `data-motion` pausing), `Button`, `SectionHeading`, `PageHero` (plus a `primaryExternal` prop for the booking link), `Breadcrumbs`, `Faq`, `ServiceFaqSection`, `ServiceIcon`, `PartnerLogo`, `SiteHeader`, `MobileNav`, `SiteFooter`, `site-nav.ts`, `demo-runtime.tsx`, `MxdrConsole.tsx`, the MXDR part of `demos.ts`, the security-header build scripts, the secure Node entry, and the OG image generator.
 
-Left out (not used by this site): Bob and the loading overlay, the AGI network graph, the advisor quiz and responsibility selector, the Work/Resources/Brief/About/Careers pages, the AI and service-desk demos, `middleware.ts`, and the form pipeline (Phase 2). Their CSS was removed too.
+Left out (not used by this site): the scroll-reveal system, Bob and the loading overlay, the AGI network graph, the advisor quiz and responsibility selector, the Work/Resources/Brief/About/Careers pages, the AI and service-desk demos, `middleware.ts`, and the form pipeline (Phase 2). Their CSS was removed too.
 
 ## Important Files
 
 - `src/data/navigation.ts`: header, mobile, footer links, contact details (phone, email, booking URL), social links.
 - `src/data/services.ts`: the five extra capabilities from the old site, each behind `confirmed`.
-- `src/data/partner-logos.ts`: the 13 partners from the old site, each behind `approved`, plus `partnerPortalUrl`.
+- `src/data/partner-logos.ts`: the 7 approved cybersecurity partners (same as aetas.ai), plus `partnerPortalUrl`.
+- `src/components/HomeHero.astro`, `ThreatRadar.astro`, `PartnerMarquee.astro`: the homepage hero, its radar, and the partner strip.
 - `src/data/service-faqs.ts`: homepage FAQ answers (approved copy only).
 - `src/data/demos.ts`: simulated MXDR data.
-- `src/pages/index.astro`: homepage (hero, services `#mxdr` / `#offensive-security` / `#network-testing` / `#application-testing`, demo, `#expert-in-the-loop`, capabilities, FAQ, AGI band, CTA).
+- `src/pages/index.astro`: homepage (hero with radar, partner strip, services `#mxdr` / `#offensive-security` / `#network-testing` / `#application-testing`, demo, `#expert-in-the-loop`, capabilities, FAQ, AGI band, CTA).
 - `src/pages/partners.astro`, `contact.astro`, `legal/privacy.astro`, `legal/terms.astro`, `404.astro`.
 - `scripts/security-policy.mjs`: CSP, security headers, `CANONICAL_ORIGIN`, and the `REDIRECTS` map.
 - `scripts/security-headers-integration.mjs`: build-time CSP hashing, `.htaccess` (redirects, canonical host, headers), `_headers.json`, and installing the secure Node entry.
@@ -60,19 +61,33 @@ Left out (not used by this site): Bob and the loading overlay, the AGI network g
 
 ## Design System
 
-Identical to aetas.ai (see README "Visual System") except the single accent:
+Aetas Security has its own visual identity ("command center"); only the stack, the build, and the writing rules are shared with aetas.ai. Do not copy aetas.ai's neutral-black surfaces, rounded cards, white-to-grey heading fade, uppercase dotted eyebrows, per-section scroll reveals, or arrow-on-every-button styling back into this site.
 
-| Token | Value | Contrast |
+| Token | Value | Use and contrast |
 |---|---|---|
-| `--color-accent` | `#3aaee0` | 7.0–7.9:1 on the dark surfaces; **2.5:1 on white, so never use it for text on light bands** |
-| `--color-accent-ink` (on light) | `#0b6f9c` | 5.1:1 on `#f5f5f6`, ≈4.7:1 on `#ececee` |
-| `--color-accent-text` (on dark) | `#8fd3f2` | 10.8–12.1:1 on the dark surfaces |
+| `--surface-0` … `--surface-3` | `#050b16`, `#08111f`, `#0d1a2e`, `#13243d` | navy page, band, panel, raised |
+| `--line-subtle` / `--line-strong` | `rgba(143,211,242,.08)` / `.16` | cyan-tinted hairlines |
+| text / muted text | `#e6f1f9` / `#8a9bb0` | ≥13.5:1 / ≥5.4:1 on every surface |
+| `--color-accent` | `#3aaee0` | UI accent, links, focus; ≥6.1:1 on navy. Primary buttons are cyan with navy text (7.8:1). **2.5:1 on white: never text on light bands** |
+| `--color-accent-text` | `#8fd3f2` | accent text on navy, ≥9.4:1 |
+| `--color-accent-ink` | `#0b6f9c` | accent text on light surfaces |
+| `--color-logo-blue` | `#2f6bff` | decorative only, never text |
+| `--brand-gradient` | `#22d3ee → #2f6bff` (the logo gradient) | **only** the hero radar sweep, the step pipeline line, and the header CTA edge |
+| `--color-detected` / `--color-review` | `#f0523d` / `#f5a524` | status only (radar, demo chips), always beside a text label |
 
-ONE accent, no gradients or extra hues. The old brand red-orange `#F0523D` is not used. `accent-ai|security|global|governance` remain aliases of the single accent.
+- **Type:** Saira (`@fontsource-variable/saira`, weight axis) for headings and labels at weight 600, solid colour; Inter for body; system monospace only for demo data.
+- **Shape:** chamfered (cut-corner) panels and buttons from the shield logo. `--cut` / `--cut-sm` set the cut; the shape and its 1px edge are drawn on `::before` (`.agi-card--dark`, `.agi-btn--dark-*`, or `.as-chamfer` with `--panel-fill` / `--panel-line`), so focus outlines are never clipped. Reticle corner brackets frame the radar and the demo window. Radii are 2px.
+- **Labels:** sentence case, only where they name the content (MXDR, Offensive Security, Expert in the Loop). Numbers only for real sequences (MXDR stages, Expert in the Loop steps, MSP onboarding).
+- **Motion:** one orchestrated moment, the hero `ThreatRadar`: the sweep passes a blip, which shows as Detected, then Analyst review, then Contained after approval (Expert in the Loop). The partner marquee and the demo are the only other motion. All three pause off-screen (`data-motion`); under reduced motion the radar is static, the marquee is a wrapped row, and the demo uses Previous/Next. There are no scroll reveals.
+- `accent-ai|security|global|governance` remain aliases of the accent so copied markup keeps working.
+
+## Partners
+
+The Partners page and the homepage strip show the 7 cybersecurity partners approved on aetas.ai: SentinelOne, CrowdStrike, Zscaler, Qualys, Proofpoint, Abnormal, and Sublime Security (`src/data/partner-logos.ts`, artwork in `public/partners/`). Keep the list in sync with aetas.ai. Partners from the previous aetassecurity.com are not shown (CONTENT-TODO.md).
 
 ## Code-rendered Demo
 
-One `MxdrConsole` window on the homepage ("How MXDR works"), never in the hero. Same rules as aetas.ai: "Simulated" label and caption, reserved example domains and documentation IP ranges only, analyst approval before containment, advances only on screen, pause control, Previous/Next under reduced motion, no runtime `<style>` injection.
+One `MxdrConsole` window on the homepage ("Focused coverage" section), never in the hero. Same rules as aetas.ai: "Simulated" label and caption, reserved example domains and documentation IP ranges only, analyst approval before containment, advances only on screen, pause control, Previous/Next under reduced motion, no runtime `<style>` injection.
 
 ## Routes and Redirects
 
@@ -113,7 +128,7 @@ Reuse the aetas.ai secure form pipeline: `src/lib/server/*`, `src/pages/api/form
 
 ## Known Gaps
 
-1. All `[CONFIRM]` items in `CONTENT-TODO.md`, especially the official white logo files: `public/logo.png` and `public/icon.png` are temporary, generated from the colour master.
+1. All `[CONFIRM]` items in `CONTENT-TODO.md`. The logo (`public/logo.png`, `public/icon.png`) is final.
 2. Legal review of the Privacy Policy and Terms & Conditions.
 3. Phase 2 forms.
 4. A browser check for CSP violations against the production build over HTTPS (local checks used the dev server).

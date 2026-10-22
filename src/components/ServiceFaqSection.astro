@@ -16,8 +16,8 @@ const headingId = `faq-${service}`;
 
 <section class="agi-band agi-section" aria-labelledby={headingId}>
   <div class="mx-auto grid max-w-7xl grid-cols-1 gap-12 lg:grid-cols-12">
-    <SectionHeading id={headingId} class="lg:col-span-4" accent={accent} eyebrow="FAQ" title={`Questions about ${label}.`} />
-    <div class="lg:col-span-8" data-reveal>
+    <SectionHeading id={headingId} class="lg:col-span-4" accent={accent} title={`Questions about ${label}.`} />
+    <div class="lg:col-span-8">
       <Faq items={serviceFaqs[service]} />
     </div>
   </div>

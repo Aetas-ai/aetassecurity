@@ -1,0 +1,99 @@
+---
+/**
+ * Continuous strip of the approved cybersecurity partner logos (adapted from
+ * the aetas.ai /partners marquee). The second group only completes the loop,
+ * so it is hidden from assistive tech and keyboard focus. Pauses on hover,
+ * off-screen (data-motion), and becomes a static wrapped row under reduced motion.
+ */
+import PartnerLogo from './PartnerLogo.astro';
+import { securityPartners } from '../data/partner-logos';
+---
+
+<section class="partner-marquee border-b border-[var(--line-subtle)] bg-[var(--surface-1)] py-8" aria-labelledby="partner-marquee-title">
+  <div class="mx-auto mb-6 flex max-w-7xl flex-col items-center gap-2 px-6 text-center sm:flex-row sm:justify-center sm:gap-4">
+    <h2 id="partner-marquee-title" class="agi-label">Cybersecurity technology partners</h2>
+    <a href="/partners" class="agi-card-link agi-card-link--on-dark text-xs">View partners</a>
+  </div>
+
+  <div class="partner-marquee-viewport" data-motion>
+    <div class="partner-marquee-track">
+      {[0, 1].map((group) => (
+        <ul class="partner-marquee-group" aria-hidden={group === 1 ? 'true' : undefined}>
+          {securityPartners.map((partner) => (
+            <li>
+              <a href={partner.website} target="_blank" rel="noopener noreferrer" tabindex={group === 1 ? -1 : undefined}>
+                <PartnerLogo logo={partner} height="1.375rem" labelled={group === 0} />
+                {group === 0 && <span class="sr-only"> (opens in a new tab)</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .partner-marquee-viewport {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  .partner-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: partner-marquee 40s linear infinite;
+  }
+
+  .partner-marquee-group {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 4rem;
+    padding-right: 4rem;
+  }
+
+  .partner-marquee-group a {
+    display: inline-flex;
+    opacity: 0.72;
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  .partner-marquee-group a:hover,
+  .partner-marquee-group a:focus-visible {
+    opacity: 1;
+  }
+
+  .partner-marquee-viewport:hover .partner-marquee-track,
+  .partner-marquee-viewport:focus-within .partner-marquee-track,
+  .partner-marquee-viewport[data-motion-paused] .partner-marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes partner-marquee {
+    to { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .partner-marquee-viewport {
+      mask-image: none;
+    }
+
+    .partner-marquee-track {
+      width: auto;
+      justify-content: center;
+      animation: none;
+    }
+
+    .partner-marquee-group {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem 2.5rem;
+      padding: 0 1.5rem;
+    }
+
+    .partner-marquee-group[aria-hidden] {
+      display: none;
+    }
+  }
+</style>

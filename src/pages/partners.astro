@@ -4,7 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import Button from '../components/Button.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import PartnerLogo from '../components/PartnerLogo.astro';
-import { approvedPartners, partnerPortalUrl } from '../data/partner-logos';
+import { partnerPortalUrl, securityPartners } from '../data/partner-logos';
 
 const mspSupport = [
   ['Resources', 'Materials that help you present cybersecurity services to your clients.'],
@@ -16,65 +16,50 @@ const mspSupport = [
 <Layout socialImage="partners" title="Partners" description="Aetas Security technology partners and the MSP partner programme for managed service providers who want to offer cybersecurity services to their clients.">
   <PageHero
     breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Partners', href: '/partners' }]}
-    eyebrow="Partners"
     title="Technology partners and MSP partnerships."
     description="Aetas Security works with a curated portfolio of technology partners and supports managed service providers who want to offer cybersecurity services to their clients."
     accent="security"
     compact
   />
 
-  {approvedPartners.length > 0 && (
-    <section class="agi-band agi-section" aria-labelledby="technology-partners">
-      <div class="mx-auto max-w-7xl">
-        <SectionHeading
-          id="technology-partners"
-          accent="security"
-          eyebrow="Technology partners"
-          title="Technology aligned to your requirements."
-          lede="Select a partner to visit their website."
-        />
-        <ul class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4" data-reveal-group>
-          {approvedPartners.map((partner) => {
-            const content = partner.logo
-              ? <PartnerLogo logo={partner.logo} height="2rem" labelled />
-              : <span class="font-display text-base font-semibold text-white">{partner.name}</span>;
-            return (
-              <li>
-                {partner.website ? (
-                  <a href={partner.website} target="_blank" rel="noopener noreferrer" class="agi-card agi-card--dark agi-card--interactive flex h-28 items-center justify-center">
-                    {content}
-                    <span class="sr-only"> (opens in a new tab)</span>
-                  </a>
-                ) : (
-                  <div class="agi-card agi-card--dark flex h-28 items-center justify-center">{content}</div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </section>
-  )}
+  <section class="agi-band agi-section" aria-labelledby="technology-partners">
+    <div class="mx-auto max-w-7xl">
+      <SectionHeading
+        id="technology-partners"
+        title="Cybersecurity technology partners."
+        lede="Security providers supporting email, endpoint, access, exposure, detection, and response requirements. Select a partner to visit their website."
+      />
+      <ul class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {securityPartners.map((partner) => (
+          <li>
+            <a href={partner.website} target="_blank" rel="noopener noreferrer" class="agi-card agi-card--dark agi-card--interactive flex h-28 items-center justify-center">
+              <PartnerLogo logo={partner} height="1.75rem" labelled />
+              <span class="sr-only"> (opens in a new tab)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
 
   <section id="msp" class="agi-section" aria-labelledby="msp-heading">
     <div class="mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 lg:grid-cols-12">
       <SectionHeading
         id="msp-heading"
         class="lg:col-span-5"
-        accent="security"
         eyebrow="MSP partner programme"
         title="Are you an MSP?"
         lede="Partner with Aetas Security to offer cybersecurity services to your clients, backed by our specialists."
       >
         <div class="mt-2 flex w-full flex-col gap-3 sm:flex-row sm:items-center">
-          <Button href="/contact" arrow stretch>Become a partner</Button>
+          <Button href="/contact" stretch>Become a partner</Button>
           {partnerPortalUrl && <Button href={partnerPortalUrl} variant="secondary" stretch external>Partner portal</Button>}
         </div>
       </SectionHeading>
-      <ol class="agi-steps lg:col-span-7" style="--steps: 3" data-reveal>
+      <ol class="agi-steps lg:col-span-7" style="--steps: 3">
         {mspSupport.map(([title, body]) => (
           <li class="agi-step">
-            <p class="text-sm font-semibold text-white">{title}</p>
+            <p class="font-display text-[0.9375rem] font-semibold text-white">{title}</p>
             <p class="mt-1 text-[0.8125rem] leading-relaxed text-muted">{body}</p>
           </li>
         ))}
