@@ -4,7 +4,7 @@
  * keep them in sync when approved positioning changes.
  */
 
-export type ServiceKey = 'mxdr' | 'offensive';
+export type ServiceKey = 'mxdr' | 'offensive' | 'advisory';
 
 export interface NavLink {
   label: string;
@@ -20,7 +20,8 @@ export interface ServiceNavItem extends NavLink {
   capabilities: NavLink[];
 }
 
-// Two columns in the Services menu: detection and response, and Offensive Security.
+// Services menu columns. Every item opens its own service page, or its card on
+// the services hub (/services#<id>, ids from `capabilities` in src/data/services.ts).
 export const serviceNav: ServiceNavItem[] = [
   {
     key: 'mxdr',
@@ -29,8 +30,9 @@ export const serviceNav: ServiceNavItem[] = [
     tag: 'Detection and response',
     blurb: 'Monitor, investigate, respond, and document, with analyst approval before containment.',
     capabilities: [
-      { label: 'Managed Extended Detection and Response', href: '/services/mxdr', hint: 'Monitor, Investigate, Respond, Document' },
-      { label: 'Expert in the Loop', href: '/about#expert-in-the-loop', hint: 'Expert Human Oversight of AI' },
+      { label: 'Threat monitoring and response', href: '/services#threat-monitoring', hint: 'Around the clock' },
+      { label: 'Proactive incident response', href: '/services#incident-response' },
+      { label: 'Security Operations Center (SOC)', href: '/services#soc' },
     ],
   },
   {
@@ -42,6 +44,17 @@ export const serviceNav: ServiceNavItem[] = [
     capabilities: [
       { label: 'Network Security Testing', href: '/services/network-security-testing', hint: 'Exposure, configuration, attack paths' },
       { label: 'Application Security Testing', href: '/services/application-security-testing', hint: 'Pen Testing' },
+    ],
+  },
+  {
+    key: 'advisory',
+    label: 'Compliance and co-management',
+    href: '/services#more-services',
+    tag: 'Advisory',
+    blurb: 'Support with regulatory standards and the day-to-day running of your security controls.',
+    capabilities: [
+      { label: 'Regulatory compliance assistance', href: '/services#compliance' },
+      { label: 'Co-management of security controls', href: '/services#co-management' },
     ],
   },
 ];

@@ -12,7 +12,7 @@ Before modifying website code or content, read:
 - `README.md` for the project structure and visual system
 - `CONTENT-TODO.md` for items still awaiting business confirmation
 
-Do not invent services, partners, client results, certifications, metrics, testimonials, or internal delivery details. Unconfirmed content stays unpublished behind its flag (`confirmed` in `src/data/services.ts`) and is tracked in `CONTENT-TODO.md`. Partners are the 7 cybersecurity partners approved on aetas.ai (`src/data/partner-logos.ts`). When positioning or architecture changes, update the relevant documentation in the same change.
+Do not invent services, partners, client results, certifications, metrics, testimonials, or internal delivery details. Unconfirmed content stays unpublished and is tracked in `CONTENT-TODO.md`. The five additional services from the old site are in `capabilities` in `src/data/services.ts`. Partners are the 7 cybersecurity partners approved on aetas.ai (`src/data/partner-logos.ts`). When positioning or architecture changes, update the relevant documentation in the same change.
 
 ## Development
 

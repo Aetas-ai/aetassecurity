@@ -47,8 +47,8 @@ Left out (not used by this site): the scroll-reveal system, Bob and the loading 
 
 ## Important Files
 
-- `src/data/navigation.ts`: header, mobile, and footer links (Services menu, About, Partners, Contact), contact details (phone, email, booking URL), social links.
-- `src/data/services.ts`: `services`, the content of each service page (hero, CTA, coverage, steps, oversight, deliverables, FAQs, related), and `capabilities`, the five extra services from the old site behind `confirmed`.
+- `src/data/navigation.ts`: header, mobile, and footer links (Services menu, About, Partners, Contact), contact details (phone, email, booking URL), social links. The Services menu has three columns (Detection and response, Offensive Security, Compliance and co-management); every item opens its own service page or its card on the hub (`/services#<id>`, ids from `capabilities`), and the card is highlighted on arrival. Keep menu items pointing only at pages or hub cards.
+- `src/data/services.ts`: `services`, the content of each service page (hero, CTA, coverage, steps, oversight, deliverables, FAQs, related), and `capabilities`, the five additional services from the old site (shown by `CapabilitiesSection.astro` on the homepage and the services hub).
 - `src/data/approach.ts`: homepage pillars, Expert in the Loop steps, principles, engagement steps, and the contact page's "what happens next".
 - `src/data/service-faqs.ts`: homepage FAQs.
 - `src/data/partner-logos.ts`: the 7 approved cybersecurity partners (same as aetas.ai), plus `partnerPortalUrl`.
@@ -101,8 +101,8 @@ One `MxdrConsole` window on `/services/mxdr` ("Follow a detection to containment
 
 | Route | Purpose |
 |---|---|
-| `/` | Overview and conversion: shield hero with the service strip, partner strip, "Why Aetas Security", how engagements start, FAQ, CTA |
-| `/services` | Hub: Detection and response, Offensive Security (`#offensive-security`), "Which service fits?" |
+| `/` | Overview and conversion: shield hero with the service strip, partner strip, the additional services, "Why Aetas Security", how engagements start, FAQ, CTA |
+| `/services` | Hub: Detection and response, Offensive Security (`#offensive-security`), the additional services (`#more-services`), "Which service fits?" |
 | `/services/mxdr` | Managed Extended Detection and Response (MXDR), with the simulated demo |
 | `/services/network-security-testing` | Network Security Testing |
 | `/services/application-security-testing` | Application Security Testing (Pen Testing) |
@@ -112,7 +112,7 @@ One `MxdrConsole` window on `/services/mxdr` ("Follow a detection to containment
 | `/contact/thanks` | `noindex` confirmation, excluded from the sitemap |
 | `/legal/privacy`, `/legal/terms`, 404 | Legal pages and the branded `noindex` 404 |
 
-Each service page follows one template (`ServicePage.astro`): hero with breadcrumbs and a service-specific CTA (MXDR: Request a demo; testing: Scope a test, linking to `/contact?service=…`), what it covers, how it works, expert oversight and what you receive, the demo (MXDR only), FAQ, related services, and a closing CTA. Add a service by adding an entry to `services` in `src/data/services.ts` (and its form value to the contact schema), never by copying a page. The five unconfirmed services get pages only after Sir Rob confirms them.
+Each service page follows one template (`ServicePage.astro`): hero with breadcrumbs and a service-specific CTA (MXDR: Request a demo; testing: Scope a test, linking to `/contact?service=…`), what it covers, how it works, expert oversight and what you receive, the demo (MXDR only), FAQ, related services, and a closing CTA. Add a service by adding an entry to `services` in `src/data/services.ts` (and its form value to the contact schema), never by copying a page. The five additional services from the old site (around-the-clock threat monitoring and response, proactive incident response, SOC, regulatory compliance assistance, co-management of security controls) are listed, as the old site did, in a card section on the homepage and the hub; they do not have their own pages.
 
 ## Routes and Redirects
 
@@ -167,7 +167,7 @@ To activate (after Sir Rob's approval):
 3. Activate form delivery (see "Contact form").
 4. A browser check for CSP violations against the production build over HTTPS (local checks used the dev server).
 5. Analytics and consent, once the business chooses a platform.
-6. Trust content that needs approval before it can be shown: case studies (client approval), certifications or compliance frameworks, an insights hub, and the five extra services.
+6. Trust content that needs approval before it can be shown: case studies (client approval), certifications or compliance frameworks, and an insights hub.
 
 ## Required Change Workflow
 
