@@ -16,7 +16,14 @@ Items to confirm with Sir Rob before launch. Unconfirmed items stay unpublished:
 | 10 | Social links: LinkedIn, Facebook | `src/data/navigation.ts` | in use (from the old site) |
 | 11 | Legal sign-off: Privacy Policy and Terms & Conditions (the old site's links returned 404) | `src/pages/legal/*` | new draft text |
 | 12 | "Decades of industry expertise" claim from the old site | — | not used |
-| 13 | New copy review: Expert in the Loop section, radar legend, MSP programme section, contact card text, FAQ "Does AI act on its own?" | `src/pages/index.astro`, `partners.astro`, `contact.astro`, `src/data/service-faqs.ts` | drafted from approved positioning |
+| 13 | New copy review: Expert in the Loop section, radar legend, MSP programme section, FAQ "Does AI act on its own?" | `src/data/approach.ts`, `src/components/ThreatRadar.astro`, `src/pages/partners.astro`, `src/data/service-faqs.ts` | drafted from approved positioning |
+| 14 | **Service page copy**: hero titles, "what it covers", "how it works" for the two testing services, "expert oversight", "what you receive", and FAQs beyond the approved focus answers. Check especially: MXDR coverage (endpoints, identity, email, network, cloud environments), the testing process (scope, discovery, testing, reporting, findings review), and deliverables (executive summary, findings with evidence, remediation guidance, findings review session). | `src/data/services.ts` | drafted; live on the branch |
+| 15 | Services hub "Which service fits?" rows and closing copy | `src/pages/services/index.astro` | drafted |
+| 16 | Homepage "Why Aetas Security" pillars and the engagement steps wording | `src/data/approach.ts` | drafted / adapted from aetas.ai |
+| 17 | About page: hero title, principles, engagement model | `src/pages/about.astro`, `src/data/approach.ts` | drafted / adapted from aetas.ai |
+| 18 | Contact: "What happens next" steps and the thank-you page text (no response-time promise is made) | `src/data/approach.ts`, `src/pages/contact/thanks.astro` | drafted |
+| 19 | **Form delivery activation**: approve sending, the recipient `info@aetassecurity.com`, the sender `forms@notify.aetassecurity.com`, and the Resend account | Hostinger environment, DNS | sending off; form shows the email/booking fallback |
+| 20 | Trust content to add once approved: case studies (client approval), certifications or compliance frameworks, an insights hub | — | not shown |
 
 Dropped from the old site: the "Enter" gateway page, cart, broken newsletter form, "Travel Policy" and "Attributions" footer links, and the copy "Automated, Human-led AI-powered systems identify and neutralize threats in real time" (implied autonomous AI).
 

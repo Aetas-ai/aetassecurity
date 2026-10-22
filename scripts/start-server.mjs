@@ -1,7 +1,20 @@
 import { readFileSync } from 'node:fs';
 import { createServer as createHttpServer } from 'node:http';
 import { createServer as createHttpsServer } from 'node:https';
-import { createSecureRequestListener, loadGeneratedSecurityHeaders } from './server-runtime.mjs';
+import {
+  createSecureRequestListener,
+  invalidEnvironmentVariables,
+  loadGeneratedSecurityHeaders,
+} from './server-runtime.mjs';
+
+const invalidVariables = invalidEnvironmentVariables(process.env);
+
+if (invalidVariables.length > 0) {
+  console.error(
+    `[startup] Incomplete or invalid form environment variables: ${invalidVariables.join(', ')}`,
+  );
+  process.exit(1);
+}
 
 let securityHeaders;
 try {

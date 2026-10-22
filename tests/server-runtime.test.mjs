@@ -3,9 +3,56 @@ import test from 'node:test';
 import {
   canonicalLocation,
   createSecureRequestListener,
+  invalidEnvironmentVariables,
   legacyRedirectLocation,
   shouldRedirectToCanonical,
 } from '../scripts/server-runtime.mjs';
+
+const validWebhookEnvironment = {
+  FORM_CSRF_SECRET: 'c'.repeat(32),
+  FORM_DELIVERY_URL: 'https://forms.example.com/aetas-security',
+  FORM_DELIVERY_BEARER_TOKEN: 't'.repeat(20),
+};
+
+const validResendEnvironment = {
+  FORM_DELIVERY_ENABLED: 'true',
+  FORM_CSRF_SECRET: 'c'.repeat(32),
+  RESEND_API_KEY: 're_test_not_a_real_key',
+  FORM_SENDER_EMAIL: 'forms@notify.aetassecurity.com',
+  CONTACT_RECIPIENT_EMAIL: 'info@aetassecurity.com',
+};
+
+test('delivery is disabled by default even when credentials are saved', () => {
+  assert.deepEqual(invalidEnvironmentVariables({}), []);
+  assert.deepEqual(invalidEnvironmentVariables({ ...validResendEnvironment, FORM_DELIVERY_ENABLED: 'false' }), []);
+  assert.deepEqual(invalidEnvironmentVariables({ FORM_DELIVERY_ENABLED: false, RESEND_API_KEY: 'incomplete' }), []);
+  assert.deepEqual(invalidEnvironmentVariables({ ...validResendEnvironment, FORM_DELIVERY_ENABLED: 'yes' }), ['FORM_DELIVERY_ENABLED']);
+});
+
+test('requires a complete valid webhook configuration when enabled', () => {
+  assert.deepEqual(invalidEnvironmentVariables({ ...validWebhookEnvironment, FORM_DELIVERY_ENABLED: 'true' }), []);
+  assert.deepEqual(invalidEnvironmentVariables({
+    FORM_DELIVERY_ENABLED: 'true', FORM_CSRF_SECRET: 'short',
+    FORM_DELIVERY_URL: 'http://forms.example.com', FORM_DELIVERY_BEARER_TOKEN: '',
+  }), ['FORM_CSRF_SECRET', 'FORM_DELIVERY_URL', 'FORM_DELIVERY_BEARER_TOKEN']);
+});
+
+test('requires an explicit sender, recipient, key and CSRF secret for Resend', () => {
+  assert.deepEqual(invalidEnvironmentVariables(validResendEnvironment), []);
+  assert.deepEqual(invalidEnvironmentVariables({ ...validResendEnvironment, FORM_DELIVERY_ENABLED: true }), []);
+  for (const name of ['RESEND_API_KEY', 'FORM_SENDER_EMAIL', 'CONTACT_RECIPIENT_EMAIL', 'FORM_CSRF_SECRET']) {
+    assert.deepEqual(invalidEnvironmentVariables({ ...validResendEnvironment, [name]: '' }), [name]);
+  }
+  assert.deepEqual(invalidEnvironmentVariables({ ...validResendEnvironment, RESEND_API_KEY: 'wrong-provider-key' }), ['RESEND_API_KEY']);
+  assert.deepEqual(invalidEnvironmentVariables({ ...validResendEnvironment, CONTACT_RECIPIENT_EMAIL: 'info@aetassecurity.com\r\nBcc: attacker@example.com' }), ['CONTACT_RECIPIENT_EMAIL']);
+  assert.deepEqual(invalidEnvironmentVariables({ FORM_DELIVERY_ENABLED: 'true' }), ['FORM_CSRF_SECRET', 'RESEND_API_KEY', 'FORM_SENDER_EMAIL', 'CONTACT_RECIPIENT_EMAIL']);
+});
+
+test('rejects mixed Resend and webhook channels when enabled', () => {
+  assert.deepEqual(invalidEnvironmentVariables({ ...validWebhookEnvironment, ...validResendEnvironment }), [
+    'RESEND_API_KEY', 'FORM_DELIVERY_URL', 'FORM_DELIVERY_BEARER_TOKEN',
+  ]);
+});
 
 function createResponse() {
   return {

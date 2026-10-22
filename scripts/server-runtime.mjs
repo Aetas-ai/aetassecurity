@@ -6,6 +6,55 @@ const REQUIRED_SECURITY_HEADERS = [
   'Referrer-Policy', 'Permissions-Policy', 'X-Frame-Options',
 ];
 
+export function formDeliveryEnabled(value) {
+  return value === true || value === 'true';
+}
+
+export function invalidEnvironmentVariables(environment) {
+  const flag = environment.FORM_DELIVERY_ENABLED;
+  if (flag !== undefined && flag !== '' && flag !== true && flag !== false && flag !== 'true' && flag !== 'false') {
+    return ['FORM_DELIVERY_ENABLED'];
+  }
+  // Preparation is intentionally allowed without credentials. Never infer
+  // activation from saved credentials or the presence of a recipient.
+  if (!formDeliveryEnabled(flag)) return [];
+
+  const present = (name) => typeof environment[name] === 'string' && environment[name].trim().length > 0;
+  const invalid = new Set();
+  if (typeof environment.FORM_CSRF_SECRET !== 'string' || environment.FORM_CSRF_SECRET.trim().length < 32) {
+    invalid.add('FORM_CSRF_SECRET');
+  }
+  const resend = ['RESEND_API_KEY', 'FORM_SENDER_EMAIL'].some(present);
+  const webhook = ['FORM_DELIVERY_URL', 'FORM_DELIVERY_BEARER_TOKEN'].some(present);
+
+  if (resend || !webhook) {
+    if (typeof environment.RESEND_API_KEY !== 'string' || !/^re_[^\s]+$/.test(environment.RESEND_API_KEY)) {
+      invalid.add('RESEND_API_KEY');
+    }
+    for (const name of ['FORM_SENDER_EMAIL', 'CONTACT_RECIPIENT_EMAIL']) {
+      const value = environment[name];
+      if (typeof value !== 'string' || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value)) invalid.add(name);
+    }
+  }
+  if (webhook) {
+    try {
+      const url = new URL(environment.FORM_DELIVERY_URL);
+      if (url.protocol !== 'https:' || url.username || url.password) invalid.add('FORM_DELIVERY_URL');
+    } catch {
+      invalid.add('FORM_DELIVERY_URL');
+    }
+    if (typeof environment.FORM_DELIVERY_BEARER_TOKEN !== 'string' || environment.FORM_DELIVERY_BEARER_TOKEN.trim().length < 20) {
+      invalid.add('FORM_DELIVERY_BEARER_TOKEN');
+    }
+  }
+  if (resend && webhook) {
+    invalid.add('RESEND_API_KEY');
+    invalid.add('FORM_DELIVERY_URL');
+    invalid.add('FORM_DELIVERY_BEARER_TOKEN');
+  }
+  return [...invalid];
+}
+
 function firstHeaderValue(value) {
   if (Array.isArray(value)) return value[0]?.split(',', 1)[0].trim();
   return value?.split(',', 1)[0].trim();

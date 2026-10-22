@@ -1,0 +1,18 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Button from '../../components/Button.astro';
+---
+
+<Layout title="Request received" description="Thank you for contacting Aetas Security." noIndex>
+  <section class="mx-auto max-w-3xl px-5 py-20 text-center sm:px-6 sm:py-24">
+    <p class="agi-eyebrow justify-center">Request received</p>
+    <h1 class="mt-4 font-display text-h2 font-semibold text-white">Thank you for contacting Aetas Security.</h1>
+    <p class="mt-5 text-lede text-muted">
+      A security specialist will review your request and reply by email to discuss scope and next steps.
+    </p>
+    <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+      <Button href="/services">Explore services</Button>
+      <Button href="/" variant="secondary">Return home</Button>
+    </div>
+  </section>
+</Layout>

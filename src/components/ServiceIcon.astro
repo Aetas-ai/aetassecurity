@@ -1,15 +1,16 @@
 ---
-/** Static (non-hydrated) service glyph shared by the navigation and footer. */
-import { Crosshair, Radar } from 'lucide-react';
+/** Static (non-hydrated) service glyph shared by the navigation, footer, and service pages. */
+import { AppWindow, Crosshair, Network, Radar } from 'lucide-react';
 import type { ServiceKey } from '../data/navigation';
+import type { ServiceIconKey } from '../data/services';
 
 interface Props {
-  service: ServiceKey;
+  service: ServiceKey | ServiceIconKey;
   class?: string;
 }
 
 const { service, class: className } = Astro.props;
-const icons = { mxdr: Radar, offensive: Crosshair };
+const icons = { mxdr: Radar, offensive: Crosshair, network: Network, application: AppWindow };
 const Icon = icons[service];
 ---
 

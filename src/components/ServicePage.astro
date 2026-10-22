@@ -1,0 +1,148 @@
+---
+/**
+ * Shared layout for each /services/<slug> page, driven by src/data/services.ts:
+ * hero, coverage, process, expert oversight and deliverables, the MXDR demo
+ * (MXDR only), FAQ, related services, and a closing call to action.
+ */
+import Layout from '../layouts/Layout.astro';
+import PageHero from './PageHero.astro';
+import SectionHeading from './SectionHeading.astro';
+import ServiceFaqSection from './ServiceFaqSection.astro';
+import ServiceIcon from './ServiceIcon.astro';
+import Button from './Button.astro';
+import MxdrConsole from './demos/MxdrConsole';
+import { serviceBySlug, type ServiceDetail } from '../data/services';
+
+interface Props {
+  service: ServiceDetail;
+}
+
+const { service } = Astro.props;
+const siteUrl = Astro.site ?? Astro.url.origin;
+const pageUrl = new URL(`/services/${service.slug}`, siteUrl).toString();
+const contactHref = `/contact?service=${service.formValue}`;
+const related = service.related.map(serviceBySlug);
+
+const serviceNode = {
+  '@type': 'Service',
+  '@id': `${pageUrl}#service`,
+  name: service.name,
+  serviceType: service.group === 'Offensive Security' ? `Offensive Security: ${service.shortName}` : service.name,
+  description: service.summary,
+  url: pageUrl,
+  provider: { '@id': `${new URL('/', siteUrl)}#organization` },
+};
+---
+
+<Layout socialImage={service.ogKey} title={service.seoTitle} description={service.metaDescription} structuredData={[serviceNode]}>
+  <PageHero
+    breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services' }, { label: service.shortName, href: `/services/${service.slug}` }]}
+    eyebrow={service.group}
+    title={service.heroTitle}
+    description={service.heroLede}
+    accent="security"
+    primaryLabel={service.cta.label}
+    primaryHref={service.cta.href}
+    primaryExternal={service.cta.external}
+    secondaryLabel={service.cta.external ? 'Contact us' : undefined}
+    secondaryHref={service.cta.external ? contactHref : undefined}
+    focusLabel="Service focus"
+    focusItems={service.focus}
+  />
+
+  <section class="agi-section" aria-labelledby="coverage-heading">
+    <div class="mx-auto max-w-7xl">
+      <SectionHeading id="coverage-heading" title={service.coverageTitle} />
+      <ul class="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {service.coverage.map((item) => (
+          <li class="agi-card agi-card--dark">
+            <h3 class="font-display text-lg font-semibold text-white">{item.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="how-it-works" class="agi-band agi-section" aria-labelledby="process-heading">
+    <div class="mx-auto max-w-7xl">
+      <SectionHeading id="process-heading" title="How it works." />
+      <ol class="agi-steps mt-12" style={`--steps: ${service.steps.length}`}>
+        {service.steps.map(([title, body]) => (
+          <li class="agi-step">
+            <p class="font-display text-[0.9375rem] font-semibold text-white">{title}</p>
+            <p class="mt-1 text-[0.8125rem] leading-relaxed text-muted">{body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="agi-section" aria-labelledby="oversight-heading">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-16">
+      <SectionHeading
+        id="oversight-heading"
+        class="lg:col-span-6"
+        eyebrow="Expert oversight"
+        title={service.oversight.title}
+        lede={service.oversight.body}
+      />
+      <div class="agi-card agi-card--dark lg:col-span-6">
+        <h3 class="font-display text-lg font-semibold text-white">What you receive</h3>
+        <ul class="agi-check-list mt-5">
+          {service.deliverables.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {service.slug === 'mxdr' && (
+    <section class="agi-band agi-section" aria-labelledby="demo-heading">
+      <div class="mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 lg:grid-cols-12">
+        <SectionHeading
+          id="demo-heading"
+          class="lg:sticky lg:top-28 lg:col-span-4"
+          title="Follow a detection to containment."
+          lede="An illustrative walk-through with simulated data: each detection moves through triage and investigation, and containment waits for analyst approval."
+        />
+        <div class="lg:col-span-8">
+          <MxdrConsole client:visible />
+        </div>
+      </div>
+    </section>
+  )}
+
+  <ServiceFaqSection id={service.slug} label={service.shortName} items={service.faqs} />
+
+  <section class="agi-section" aria-labelledby="related-heading">
+    <div class="mx-auto max-w-7xl">
+      <SectionHeading id="related-heading" title="Related services." />
+      <ul class="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+        {related.map((item) => (
+          <li class="agi-card agi-card--dark agi-card--interactive flex flex-col">
+            <span class="nav-service-icon h-10 w-10">
+              <ServiceIcon service={item.icon} class="h-[1.125rem] w-[1.125rem]" />
+            </span>
+            <h3 class="mt-5 font-display text-lg font-semibold text-white">{item.name}</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-muted">{item.summary}</p>
+            <a href={`/services/${item.slug}`} class="agi-card-link agi-card-link--on-dark mt-5">Explore {item.shortName}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="agi-band agi-section" aria-labelledby="service-cta-heading">
+    <SectionHeading
+      id="service-cta-heading"
+      align="center"
+      title={`Talk to us about ${service.shortName}.`}
+      lede="Tell us about your environment and what you need. A security specialist will follow up to agree scope."
+    >
+      <div class="mt-2 flex w-full flex-col justify-center gap-3 sm:flex-row sm:items-center">
+        <Button href={service.cta.href} external={service.cta.external} stretch>{service.cta.label}</Button>
+        {service.cta.external && <Button href={contactHref} variant="secondary" stretch>Contact us</Button>}
+      </div>
+    </SectionHeading>
+  </section>
+</Layout>

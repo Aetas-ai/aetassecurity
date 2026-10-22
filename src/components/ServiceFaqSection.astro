@@ -1,24 +1,24 @@
 ---
-/** FAQ band for a service page, backed by src/data/service-faqs.ts. */
+/** FAQ band (with FAQPage structured data) for the homepage and each service page. */
 import Faq from './Faq.astro';
 import SectionHeading from './SectionHeading.astro';
-import { serviceFaqs } from '../data/service-faqs';
+import type { FaqItem } from '../data/service-faqs';
 
 interface Props {
-  service: keyof typeof serviceFaqs;
+  id: string;
   label: string;
-  accent: 'ai' | 'security' | 'global';
+  items: FaqItem[];
 }
 
-const { service, label, accent } = Astro.props;
-const headingId = `faq-${service}`;
+const { id, label, items } = Astro.props;
+const headingId = `faq-${id}`;
 ---
 
 <section class="agi-band agi-section" aria-labelledby={headingId}>
   <div class="mx-auto grid max-w-7xl grid-cols-1 gap-12 lg:grid-cols-12">
-    <SectionHeading id={headingId} class="lg:col-span-4" accent={accent} title={`Questions about ${label}.`} />
+    <SectionHeading id={headingId} class="lg:col-span-4" title={`Questions about ${label}.`} />
     <div class="lg:col-span-8">
-      <Faq items={serviceFaqs[service]} />
+      <Faq items={items} />
     </div>
   </div>
 </section>

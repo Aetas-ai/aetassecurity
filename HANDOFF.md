@@ -1,12 +1,12 @@
 # Aetas Security Website Handoff
 
-Last updated: October 23, 2026 (own visual identity, aetas.ai cybersecurity partners)
+Last updated: October 23, 2026 (dedicated service pages, About, secure contact form)
 
 This is the primary implementation and positioning reference for developers and coding assistants working on the Aetas Security website (www.aetassecurity.com). It is a sibling of the aetas.ai website (github.com/Aetas-ai/Aetas): same stack, security build, and writing rules, with its own visual identity.
 
 ## Company Positioning
 
-**Aetas Security** is the cybersecurity practice of **Aetas Global Innovation (AGI)**. The site says this once, in the homepage hero ("Aetas Security, the cybersecurity practice of Aetas Global Innovation"), and in the shared footer line "Part of Aetas Global Innovation · aetas.ai" (linking https://aetas.ai).
+**Aetas Security** is the cybersecurity practice of **Aetas Global Innovation (AGI)**. The site says this once, in the About hero ("Aetas Security, the cybersecurity practice of Aetas Global Innovation"), and in the shared footer line "Part of Aetas Global Innovation · aetas.ai" (linking https://aetas.ai).
 
 - Do not describe AGI as a holding company or invent any group structure (no parent-organization structured data either).
 - Cross-link to https://aetas.ai/security and https://www.aetasglobal.com where relevant ("Explore Aetas Global" is the approved name).
@@ -21,8 +21,8 @@ Services:
 ## Approved Messaging Baseline
 
 - **Homepage hero:** "Detect threats. Test defenses. Strengthen resilience." (the aetas.ai Cybersecurity hero), with the existing tagline "Advanced Cybersecurity Solutions for your business" as the eyebrow.
-- MXDR, Offensive Security, FAQ, and closing CTA copy reuse the approved aetas.ai `/security` wording.
-- The Expert in the Loop section, MSP programme copy, contact card copy, and legal pages are new or rewritten and are listed for review in `CONTENT-TODO.md`.
+- Service summaries, the MXDR steps, the testing focus lines, and the closing CTA reuse the approved aetas.ai `/security` wording.
+- Everything else on the service pages, About, and Contact (coverage, process, deliverables, FAQs, pillars, "what happens next"), plus the MSP programme copy and legal pages, is drafted and listed for review in `CONTENT-TODO.md`.
 
 ## Critical Copy Rules
 
@@ -47,17 +47,20 @@ Left out (not used by this site): the scroll-reveal system, Bob and the loading 
 
 ## Important Files
 
-- `src/data/navigation.ts`: header, mobile, footer links, contact details (phone, email, booking URL), social links.
-- `src/data/services.ts`: the five extra capabilities from the old site, each behind `confirmed`.
+- `src/data/navigation.ts`: header, mobile, and footer links (Services menu, About, Partners, Contact), contact details (phone, email, booking URL), social links.
+- `src/data/services.ts`: `services`, the content of each service page (hero, CTA, coverage, steps, oversight, deliverables, FAQs, related), and `capabilities`, the five extra services from the old site behind `confirmed`.
+- `src/data/approach.ts`: homepage pillars, Expert in the Loop steps, principles, engagement steps, and the contact page's "what happens next".
+- `src/data/service-faqs.ts`: homepage FAQs.
 - `src/data/partner-logos.ts`: the 7 approved cybersecurity partners (same as aetas.ai), plus `partnerPortalUrl`.
-- `src/components/HomeHero.astro`, `ThreatRadar.astro`, `PartnerMarquee.astro`: the homepage hero, its radar, and the partner strip.
-- `src/data/service-faqs.ts`: homepage FAQ answers (approved copy only).
 - `src/data/demos.ts`: simulated MXDR data.
-- `src/pages/index.astro`: homepage (hero with radar, partner strip, services `#mxdr` / `#offensive-security` / `#network-testing` / `#application-testing`, demo, `#expert-in-the-loop`, capabilities, FAQ, AGI band, CTA).
-- `src/pages/partners.astro`, `contact.astro`, `legal/privacy.astro`, `legal/terms.astro`, `404.astro`.
+- `src/components/ServicePage.astro`: the shared service page template, rendered by `src/pages/services/[slug].astro` with `Service` structured data.
+- `src/components/HomeHero.astro`, `ThreatRadar.astro`, `PartnerMarquee.astro`: the homepage hero, its radar, and the partner strip.
+- `src/pages/index.astro` (overview and conversion), `services/index.astro` (hub), `about.astro`, `partners.astro`, `contact.astro`, `contact/thanks.astro`, `legal/*`, `404.astro`.
+- `src/lib/server/*`, `src/pages/api/forms/{csrf,contact}.ts`, `src/scripts/secure-forms.ts`, `src/components/FormSubmitButton.astro`, `src/middleware.ts`: the secure contact form (see "Contact form").
 - `scripts/security-policy.mjs`: CSP, security headers, `CANONICAL_ORIGIN`, and the `REDIRECTS` map.
 - `scripts/security-headers-integration.mjs`: build-time CSP hashing, `.htaccess` (redirects, canonical host, headers), `_headers.json`, and installing the secure Node entry.
-- `scripts/server-runtime.mjs` / `scripts/start-server.mjs`: the secure Node entry (`dist/server/entry.mjs`): security headers, legacy 301s, canonical redirect.
+- `scripts/server-runtime.mjs` / `scripts/start-server.mjs`: the secure Node entry (`dist/server/entry.mjs`): form environment validation, security headers, legacy 301s, canonical redirect.
+- `scripts/check-form-security.mjs`: mocked end-to-end form checks against the built backend (no email sent).
 
 ## Design System
 
@@ -87,11 +90,26 @@ The Partners page and the homepage strip show the 7 cybersecurity partners appro
 
 ## Code-rendered Demo
 
-One `MxdrConsole` window on the homepage ("Focused coverage" section), never in the hero. Same rules as aetas.ai: "Simulated" label and caption, reserved example domains and documentation IP ranges only, analyst approval before containment, advances only on screen, pause control, Previous/Next under reduced motion, no runtime `<style>` injection.
+One `MxdrConsole` window on `/services/mxdr` ("Follow a detection to containment"), never in a hero and not on the homepage. Same rules as aetas.ai: "Simulated" label and caption, reserved example domains and documentation IP ranges only, analyst approval before containment, advances only on screen, pause control, Previous/Next under reduced motion, no runtime `<style>` injection.
+
+## Site Structure
+
+| Route | Purpose |
+|---|---|
+| `/` | Overview and conversion: hero with radar, partner strip, the three services, "Why Aetas Security", how engagements start, FAQ, CTA |
+| `/services` | Hub: Detection and response, Offensive Security (`#offensive-security`), "Which service fits?" |
+| `/services/mxdr` | Managed Extended Detection and Response (MXDR), with the simulated demo |
+| `/services/network-security-testing` | Network Security Testing |
+| `/services/application-security-testing` | Application Security Testing (Pen Testing) |
+| `/about` | Practice-of-AGI statement, Expert in the Loop (`#expert-in-the-loop`), principles, engagement model, partners, AGI links |
+| `/partners` | The 7 approved partners and the MSP programme |
+| `/contact` | Secure form, booking link, email, phone, what happens next; `?service=mxdr|network-testing|application-testing|msp-partnership|general` preselects the picker |
+| `/contact/thanks` | `noindex` confirmation, excluded from the sitemap |
+| `/legal/privacy`, `/legal/terms`, 404 | Legal pages and the branded `noindex` 404 |
+
+Each service page follows one template (`ServicePage.astro`): hero with breadcrumbs and a service-specific CTA (MXDR: Request a demo; testing: Scope a test, linking to `/contact?service=…`), what it covers, how it works, expert oversight and what you receive, the demo (MXDR only), FAQ, related services, and a closing CTA. Add a service by adding an entry to `services` in `src/data/services.ts` (and its form value to the contact schema), never by copying a page. The five unconfirmed services get pages only after Sir Rob confirms them.
 
 ## Routes and Redirects
-
-Routes: `/`, `/partners`, `/contact`, `/legal/privacy`, `/legal/terms`, and the branded `noindex` 404.
 
 Canonical origin: `https://www.aetassecurity.com`. The bare domain and plain HTTP redirect (308) to it.
 
@@ -122,17 +140,29 @@ Target: a Hostinger Node.js web app, the same as aetas.ai.
 6. In Google Search Console, verify the domain property and submit `https://www.aetassecurity.com/sitemap-index.xml`.
 7. Cancel the Squarespace site only after the new site and email have been verified.
 
-## Phase 2: Forms
+## Contact form
 
-Reuse the aetas.ai secure form pipeline: `src/lib/server/*`, `src/pages/api/forms/*`, `src/scripts/secure-forms.ts`, `FormSubmitButton.astro`, `middleware.ts`, the `env.schema` in `astro.config.mjs`, the form CSS, `invalidEnvironmentVariables` in `server-runtime.mjs`/`start-server.mjs`, and their tests. Sending uses Resend from a verified notify subdomain (for example `notify.aetassecurity.com`). Follow the aetas.ai `EMAIL-SETUP.md`.
+The contact form uses the aetas.ai secure pipeline: zod schema (`src/lib/server/forms.ts`, fields first name, last name, work email, company, service, message), same-origin checks, signed CSRF sessions, a honeypot and timing check, an eight-per-ten-minute rate limit per IP, HTML-escaped notifications, and Resend delivery (or the mutually exclusive HTTPS webhook). The middleware keeps `/api` responses `no-store`, same-origin, and `noindex`.
+
+**Sending is off** (`FORM_DELIVERY_ENABLED` defaults to false). Until it is enabled, `/api/forms/csrf` answers 503 and the form shows: "The online form is not available yet. Email info@aetassecurity.com or use Request a demo to book a time…". Visitors are never left with a silent failure.
+
+To activate (after Sir Rob's approval):
+
+1. Create the company Resend account and verify the `notify.aetassecurity.com` sending domain (its DNS records are added alongside the DNS move; keep the existing email records untouched).
+2. Create a sending-only API key restricted to that domain.
+3. In the Hostinger Node app environment, set `FORM_DELIVERY_ENABLED=true`, `FORM_CSRF_SECRET` (32+ random bytes), `RESEND_API_KEY`, `FORM_SENDER_EMAIL=forms@notify.aetassecurity.com`, and `CONTACT_RECIPIENT_EMAIL=info@aetassecurity.com`. Leave the webhook settings unset. `npm start` refuses to start with an incomplete configuration.
+4. Redeploy, submit a test request, and confirm it arrives with the visitor as Reply-To.
+
+`.env.example` lists the variables. The aetas.ai `EMAIL-SETUP.md` has the detailed Resend walkthrough. `node scripts/check-form-security.mjs` (after `npm run build`) exercises the built backend with a mocked Resend and sends no email.
 
 ## Known Gaps
 
 1. All `[CONFIRM]` items in `CONTENT-TODO.md`. The logo (`public/logo.png`, `public/icon.png`) is final.
 2. Legal review of the Privacy Policy and Terms & Conditions.
-3. Phase 2 forms.
+3. Activate form delivery (see "Contact form").
 4. A browser check for CSP violations against the production build over HTTPS (local checks used the dev server).
 5. Analytics and consent, once the business chooses a platform.
+6. Trust content that needs approval before it can be shown: case studies (client approval), certifications or compliance frameworks, an insights hub, and the five extra services.
 
 ## Required Change Workflow
 

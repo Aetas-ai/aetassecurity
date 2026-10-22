@@ -83,7 +83,7 @@ const heroId = `page-hero-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').repl
       {(primaryLabel && primaryHref) || (secondaryLabel && secondaryHref) ? (
         <div class="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:items-center">
           {primaryLabel && primaryHref ? (
-            <Button href={primaryHref} accent={accent} arrow={!primaryExternal} external={primaryExternal} stretch>{primaryLabel}</Button>
+            <Button href={primaryHref} accent={accent} external={primaryExternal} stretch>{primaryLabel}</Button>
           ) : null}
           {secondaryLabel && secondaryHref ? (
             <Button href={secondaryHref} variant="secondary" stretch external={secondaryExternal}>{secondaryLabel}</Button>

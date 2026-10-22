@@ -1,0 +1,2 @@
+# Keep LF everywhere (Windows checkouts included) so scripts and diffs stay consistent.
+* text=auto eol=lf

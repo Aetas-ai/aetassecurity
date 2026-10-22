@@ -16,6 +16,8 @@ interface Props {
   noIndex?: boolean;
   /** Key of a generated share image in public/og/ (see scripts/generate-og-images.mjs). */
   socialImage?: string;
+  /** Extra schema.org nodes for this page (e.g. a Service), added to the shared @graph. */
+  structuredData?: Record<string, unknown>[];
 }
 
 const {
@@ -23,6 +25,7 @@ const {
   description = 'Aetas Security provides Managed Extended Detection and Response (MXDR) and Offensive Security, including Network Security Testing and Application Security Testing.',
   noIndex = false,
   socialImage = 'default',
+  structuredData: extraStructuredData = [],
 } = Astro.props;
 
 const brandName = 'Aetas Security';
@@ -82,6 +85,7 @@ const structuredData = {
       about: { '@id': `${organizationUrl}#organization` },
       inLanguage: 'en',
     },
+    ...extraStructuredData,
   ],
 };
 ---

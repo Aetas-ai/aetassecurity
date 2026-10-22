@@ -5,13 +5,14 @@
  * this fixed element. Behaviour lives in src/scripts/site-nav.ts.
  */
 import ServiceIcon from './ServiceIcon.astro';
-import { contact, demoLink, isActivePath, panelFootLink, primaryNav, serviceNav } from '../data/navigation';
+import { contact, demoLink, isActivePath, isServicesPath, primaryNav, serviceNav, servicesHubLink } from '../data/navigation';
 
 interface Props {
   currentPath: string;
 }
 
 const { currentPath } = Astro.props;
+const servicesActive = isServicesPath(currentPath);
 ---
 
 <div id="mobile-menu-overlay" class="mobile-nav-overlay lg:hidden" aria-hidden="true"></div>
@@ -38,7 +39,7 @@ const { currentPath } = Astro.props;
     <button
       type="button"
       class="mobile-nav-accordion"
-      aria-expanded="false"
+      aria-expanded={servicesActive ? 'true' : 'false'}
       aria-controls="mobile-services"
       data-mobile-accordion
     >
@@ -48,7 +49,7 @@ const { currentPath } = Astro.props;
       </svg>
     </button>
 
-    <ul id="mobile-services" class="mobile-nav-services" hidden>
+    <ul id="mobile-services" class="mobile-nav-services" hidden={!servicesActive}>
       {serviceNav.map((service) => (
         <li class="mobile-nav-service">
           <a href={service.href} class="mobile-nav-service-head">
@@ -68,7 +69,7 @@ const { currentPath } = Astro.props;
         </li>
       ))}
       <li>
-        <a href={panelFootLink.href} class="mobile-nav-finder">{panelFootLink.label}<span aria-hidden="true">→</span></a>
+        <a href={servicesHubLink.href} class="mobile-nav-finder">{servicesHubLink.label}</a>
       </li>
     </ul>
 
