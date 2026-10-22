@@ -1,0 +1,207 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import SiteHeader from '../components/SiteHeader.astro';
+import MobileNav from '../components/MobileNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { contact, social } from '../data/navigation';
+import '@fontsource-variable/inter';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  noIndex?: boolean;
+  /** Key of a generated share image in public/og/ (see scripts/generate-og-images.mjs). */
+  socialImage?: string;
+}
+
+const {
+  title,
+  description = 'Aetas Security provides Managed Extended Detection and Response (MXDR) and Offensive Security, including Network Security Testing and Application Security Testing.',
+  noIndex = false,
+  socialImage = 'default',
+} = Astro.props;
+
+const brandName = 'Aetas Security';
+const pageTitle = title.includes(brandName) ? title : `${title} | ${brandName}`;
+const currentPath = Astro.url.pathname;
+const siteUrl = Astro.site ?? Astro.url.origin;
+const canonicalUrl = new URL(currentPath, siteUrl);
+const organizationUrl = new URL('/', siteUrl);
+const logoUrl = new URL('/icon.png', siteUrl);
+const socialImageUrl = new URL(`/og/${socialImage}.png`, siteUrl);
+const robotsContent = noIndex
+  ? 'noindex, nofollow'
+  : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${organizationUrl}#organization`,
+      name: brandName,
+      url: organizationUrl.toString(),
+      logo: {
+        '@type': 'ImageObject',
+        url: logoUrl.toString(),
+        width: 512,
+        height: 512,
+      },
+      email: contact.email,
+      telephone: contact.phone,
+      sameAs: social.map((link) => link.href),
+      description:
+        'Aetas Security, the cybersecurity practice of Aetas Global Innovation, provides Managed Extended Detection and Response (MXDR) and Offensive Security.',
+      knowsAbout: [
+        'Managed Extended Detection and Response',
+        'Offensive Security',
+        'Network Security Testing',
+        'Application Security Testing',
+        'Penetration testing',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${organizationUrl}#website`,
+      url: organizationUrl.toString(),
+      name: brandName,
+      publisher: { '@id': `${organizationUrl}#organization` },
+      inLanguage: 'en',
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${canonicalUrl}#webpage`,
+      url: canonicalUrl.toString(),
+      name: pageTitle,
+      description,
+      isPartOf: { '@id': `${organizationUrl}#website` },
+      about: { '@id': `${organizationUrl}#organization` },
+      inLanguage: 'en',
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/icon.png" sizes="512x512" />
+    <link rel="apple-touch-icon" href="/icon.png" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="title" content={pageTitle} />
+    <meta name="description" content={description} />
+    <meta name="robots" content={robotsContent} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={brandName} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={pageTitle} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+    <!-- Self-hosted variable font (Inter for body and headings); preload the Latin subset used above the fold. -->
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+
+    <ClientRouter />
+  </head>
+  <body class="bg-brand-bg text-gray-100 font-sans antialiased overflow-x-hidden min-h-screen flex flex-col selection:bg-[var(--color-accent)]/30 selection:text-white">
+    <SiteHeader currentPath={currentPath} />
+    <MobileNav currentPath={currentPath} />
+
+    <main class="min-w-0 w-full max-w-full flex-grow pt-[var(--site-header-height)]">
+      <slot />
+    </main>
+
+    <SiteFooter />
+
+    <script>
+      import { closeSiteNav, initSiteNav } from '../scripts/site-nav';
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let revealObserver: IntersectionObserver | undefined;
+
+      let motionObserver: IntersectionObserver | undefined;
+
+      const updateHeader = () => {
+        document.querySelector('.site-header')?.toggleAttribute('data-scrolled', window.scrollY > 24);
+      };
+
+      // Infinite animations (the demo window)
+      // pause while off-screen so they do not consume frames out of view.
+      const initMotionPausing = () => {
+        motionObserver?.disconnect();
+        motionObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            entry.target.toggleAttribute('data-motion-paused', !entry.isIntersecting);
+          });
+        }, { rootMargin: '120px 0px' });
+        document.querySelectorAll('[data-motion]').forEach((element) => motionObserver?.observe(element));
+      };
+
+      const initAnimations = () => {
+        revealObserver?.disconnect();
+        if (reduceMotion) return;
+
+        const targets: Element[] = [];
+        const prepare = (element: Element, direction: string, delay = 0) => {
+          const htmlElement = element as HTMLElement;
+          htmlElement.classList.add('agi-reveal', `agi-reveal-${direction}`);
+          htmlElement.style.setProperty('--agi-reveal-delay', `${Math.min(delay, 420)}ms`);
+          targets.push(element);
+        };
+
+        document.querySelectorAll('[data-reveal]').forEach((element) => prepare(element, 'up'));
+        document.querySelectorAll('[data-reveal-left]').forEach((element) => prepare(element, 'left'));
+        document.querySelectorAll('[data-reveal-right]').forEach((element) => prepare(element, 'right'));
+        document.querySelectorAll('[data-reveal-group]').forEach((group) => {
+          Array.from(group.children).forEach((element, index) => prepare(element, 'up', index * 70));
+        });
+
+        revealObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('agi-reveal-visible');
+            observer.unobserve(entry.target);
+          });
+        }, { rootMargin: '0px 0px -12% 0px', threshold: 0.04 });
+
+        targets.forEach((target) => revealObserver?.observe(target));
+      };
+
+      document.addEventListener('astro:page-load', () => {
+        updateHeader();
+        initAnimations();
+        initMotionPausing();
+        initSiteNav();
+      });
+
+      document.addEventListener('astro:before-preparation', () => {
+        closeSiteNav();
+        revealObserver?.disconnect();
+        motionObserver?.disconnect();
+      });
+
+      document.addEventListener('astro:after-swap', () => {
+        document.body.classList.remove('overflow-hidden');
+      });
+      window.addEventListener('scroll', updateHeader, { passive: true });
+    </script>
+  </body>
+</html>

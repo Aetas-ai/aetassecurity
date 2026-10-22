@@ -1,0 +1,75 @@
+---
+import ServiceIcon from './ServiceIcon.astro';
+import { contact, demoLink, legalLinks, primaryNav, serviceNav, social } from '../data/navigation';
+---
+
+<footer class="site-footer">
+  <div class="site-footer-spectrum" aria-hidden="true"><span></span></div>
+
+  <div class="mx-auto max-w-7xl px-6 pb-10 pt-16">
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <a href="/" class="inline-flex h-12 w-48 items-center rounded-md transition-opacity hover:opacity-90" aria-label="Aetas Security home">
+          <img src="/logo.png" alt="Aetas Security" width="865" height="176" class="h-full w-full object-contain object-left" loading="lazy" decoding="async" />
+        </a>
+        <p class="mt-5 max-w-sm text-sm leading-relaxed text-gray-400">
+          Aetas Security provides Managed Extended Detection and Response (MXDR) and Offensive Security for organizations that need expert-led detection, response, and testing.
+        </p>
+        <a href={demoLink.href} class="agi-btn agi-btn--dark-secondary mt-6 min-h-10 px-4 py-2" target="_blank" rel="noopener noreferrer">{demoLink.label}<span class="agi-btn-arrow" aria-hidden="true">↗</span><span class="sr-only">(opens in a new tab)</span></a>
+      </div>
+
+      <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-4">
+        <div class="sm:col-span-2 lg:col-span-2">
+          <h2 class="site-footer-heading">Services</h2>
+          <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+            {serviceNav.map((service) => (
+              <li class="site-footer-service">
+                <a href={service.href} class="site-footer-service-head">
+                  <ServiceIcon service={service.key} class="h-4 w-4" />
+                  {service.label}
+                </a>
+                <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-1.5">
+                  {service.capabilities.map((capability) => (
+                    <li><a href={capability.href} class="site-footer-link text-[0.8125rem]">{capability.label}</a></li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="site-footer-heading">Company</h2>
+          <ul class="space-y-2.5">
+            {primaryNav.map((link) => (
+              <li><a href={link.href} class="site-footer-link">{link.label}</a></li>
+            ))}
+            {social.map((link) => (
+              <li><a href={link.href} class="site-footer-link" target="_blank" rel="noopener noreferrer">{link.label}<span class="sr-only"> (opens in a new tab)</span></a></li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="site-footer-heading">Contact</h2>
+          <ul class="space-y-2.5">
+            <li><a href={contact.phoneHref} class="site-footer-link">{contact.phone}</a></li>
+            <li><a href={`mailto:${contact.email}`} class="site-footer-link">{contact.email}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-14 flex flex-col gap-4 border-t border-white/[0.06] pt-6 text-xs text-gray-500 sm:flex-row sm:items-center sm:justify-between">
+      <p>
+        &copy; {new Date().getFullYear()} Aetas Security. Part of Aetas Global Innovation ·{' '}
+        <a href="https://aetas.ai" class="site-footer-link text-xs" target="_blank" rel="noopener noreferrer">aetas.ai<span class="sr-only"> (opens in a new tab)</span></a>
+      </p>
+      <ul class="flex flex-wrap items-center gap-x-5 gap-y-2">
+        {legalLinks.map((link) => (
+          <li><a href={link.href} class="site-footer-link text-xs">{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</footer>

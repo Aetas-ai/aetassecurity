@@ -1,0 +1,23 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+
+// [CONFIRM] legal review before launch (CONTENT-TODO.md).
+---
+
+<Layout socialImage="terms" title="Terms & Conditions" description="Read the Aetas Security terms and conditions for www.aetassecurity.com.">
+  <section class="mx-auto max-w-4xl px-5 py-20 sm:px-6 sm:py-24">
+    <Breadcrumbs class="mb-6" items={[{ label: 'Home', href: '/' }, { label: 'Terms & Conditions', href: '/legal/terms' }]} />
+    <h1 class="text-3xl sm:text-4xl font-display font-bold text-white mb-8">Terms &amp; Conditions</h1>
+    <div class="space-y-6 text-base leading-8 text-gray-300">
+      <p>Last updated: October 23, 2026</p>
+      <p>By accessing www.aetassecurity.com, operated by Aetas Security, the cybersecurity practice of Aetas Global Innovation, you agree to these Terms &amp; Conditions.</p>
+      <h2 class="text-xl font-display font-bold text-white mt-8">1. Acceptable Use</h2>
+      <p>You agree not to probe, scan, or test the vulnerability of this website, or attempt to bypass any security controls, without our written authorization.</p>
+      <h2 class="text-xl font-display font-bold text-white mt-8">2. Intellectual Property</h2>
+      <p>All trademarks, logos, designs, and content displayed on this website are the property of Aetas Security, Aetas Global Innovation, or their respective owners. Unauthorized use is prohibited.</p>
+      <h2 class="text-xl font-display font-bold text-white mt-8">3. Disclaimers</h2>
+      <p>Content on this website is general information. Service scope, deliverables, and responsibilities are defined only in a signed service agreement. Simulated product examples on this website are illustrative and do not show live systems or results.</p>
+    </div>
+  </section>
+</Layout>

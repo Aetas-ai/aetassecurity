@@ -1,0 +1,706 @@
+@import "tailwindcss";
+@import "./product-ui.css";
+
+@theme {
+  --color-brand-bg: #08090a;
+  --color-surface-dark: #0c0d0e;
+  --color-surface-dark-raised: #111214;
+  --color-surface-light: #f5f5f6;
+  --color-surface-light-muted: #ececee;
+  --color-ink: #0f1011;
+  --color-ink-muted: #55585e;
+  --color-line-light: #dcdde0;
+
+  /* Duotone: neutrals plus ONE accent, used sparingly. The former service
+     accent names are aliases so existing classes keep working. */
+  --color-accent: #3aaee0;
+  --color-accent-ink: #0b6f9c;
+  --color-accent-text: #8fd3f2;
+  --color-ai: var(--color-accent);
+  --color-security: var(--color-accent);
+  --color-global: var(--color-accent);
+  --color-governance: var(--color-accent);
+
+  /* Neutral (not blue-tinted) greys, so existing text-gray-* classes match. */
+  --color-gray-100: #f7f8f8;
+  --color-gray-200: #e4e5e7;
+  --color-gray-300: #d0d3d8;
+  --color-gray-400: #b4b8bf;
+  --color-gray-500: #8a8f98;
+  --color-gray-600: #62666d;
+  --color-gray-700: #3e4147;
+  --color-gray-800: #23252a;
+  --color-gray-900: #141516;
+
+  --font-weight-bold: 600;
+  --font-display: "Inter Variable", "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  /* Fluid type scale: one source for display, section, and card headings. */
+  --text-display: clamp(2.5rem, 1.55rem + 3.9vw, 4.5rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.04em;
+  --text-h2: clamp(2rem, 1.4rem + 2.3vw, 3.25rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.032em;
+  --text-h3: clamp(1.25rem, 1.12rem + 0.45vw, 1.5rem);
+  --text-h3--line-height: 1.25;
+  --text-h3--letter-spacing: -0.015em;
+  --text-lede: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  --text-lede--line-height: 1.65;
+
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --radius-card: 0.75rem;
+}
+
+/* Metric-matched fallback keeps text from shifting when Inter arrives. */
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial");
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+  size-adjust: 107.12%;
+}
+
+@layer base {
+  :root {
+    --site-header-height: 4rem;
+    --duration-fast: 160ms;
+    --duration-base: 220ms;
+    --duration-slow: 560ms;
+    --section-space: clamp(4.5rem, 3.25rem + 4vw, 7rem);
+    --shadow-card-light: 0 1px 2px rgba(15, 23, 42, 0.04), 0 18px 45px -30px rgba(15, 23, 42, 0.34);
+    --shadow-card-light-hover: 0 1px 2px rgba(15, 23, 42, 0.05), 0 26px 56px -30px rgba(15, 23, 42, 0.45);
+    --shadow-card-dark: 0 18px 44px -34px rgba(0, 0, 0, 0.85);
+    --focus-ring: 2px solid rgba(255, 255, 255, 0.9);
+    --radius-control: 0.5rem;
+    --radius-window: 0.875rem;
+
+    /* Dark-first elevation: page, band, raised panel, overlay. */
+    --surface-0: #08090a;
+    --surface-1: #0c0d0e;
+    --surface-2: #111214;
+    --surface-3: #17181b;
+    --line-subtle: rgba(255, 255, 255, 0.06);
+    --line-strong: rgba(255, 255, 255, 0.11);
+    --shadow-window:
+      0 0 0 1px rgba(0, 0, 0, 0.55),
+      0 30px 70px -30px rgba(0, 0, 0, 0.95),
+      0 10px 24px -14px rgba(0, 0, 0, 0.7);
+
+    /* Surface-aware text roles. Light surfaces redefine these below, so
+       text-strong / text-muted read correctly wherever they are used. */
+    --surface-text: #f7f8f8;
+    --surface-text-muted: #8a8f98;
+    --surface-line: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Short laptop screens (wide but at most 900px tall, e.g. 1366×768, 1536×864) get
+     width-fluid sizes near their maximum, so cap headings and use height-based spacing. */
+  @media (min-width: 1024px) and (max-height: 900px) {
+    :root {
+      --text-display: clamp(2.5rem, 1.2rem + 2.6vw, 3.5rem);
+      --text-h2: clamp(1.875rem, 1.2rem + 1.6vw, 2.5rem);
+      --text-lede: 1rem;
+      --section-space: clamp(4rem, 2.5rem + 5vh, 6rem);
+    }
+  }
+
+  h1, h2 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  html {
+    background-color: var(--color-brand-bg);
+    scroll-padding-top: calc(var(--site-header-height) + 1rem);
+    min-height: 100%;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-x: clip;
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    background-color: var(--color-brand-bg);
+    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+
+  main,
+  header,
+  footer {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  main {
+    background-color: var(--color-brand-bg);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+
+  a,
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  input:disabled,
+  select:disabled,
+  textarea:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
+::view-transition {
+  background-color: var(--color-brand-bg);
+}
+
+/* The header becomes more solid once the page scrolls under it. */
+.site-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(8, 9, 10, 0.66);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  transition:
+    background-color var(--duration-base) ease,
+    border-color var(--duration-base) ease,
+    box-shadow var(--duration-base) ease;
+}
+
+.site-header[data-scrolled] {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  background: rgba(8, 9, 10, 0.94);
+  box-shadow: 0 12px 32px -20px rgba(0, 0, 0, 0.9);
+}
+
+@utility text-strong {
+  color: var(--surface-text);
+}
+
+@utility text-muted {
+  color: var(--surface-text-muted);
+}
+
+@utility border-surface {
+  border-color: var(--surface-line);
+}
+
+/* Shared components. Kept in the components layer so page utilities can
+   still override them deliberately. */
+@layer components {
+  .section-light,
+  .section-light-muted,
+  .agi-card--light {
+    --surface-text: var(--color-ink);
+    --surface-text-muted: var(--color-ink-muted);
+    --surface-line: var(--color-line-light);
+  }
+
+  .section-light,
+  .section-light-muted {
+    color: var(--surface-text);
+  }
+
+  .section-light :focus-visible,
+  .section-light-muted :focus-visible {
+    outline-color: var(--color-ink);
+  }
+
+  /* Service accents. --accent is the brand hue, --accent-ink is the readable
+     variant on light surfaces, --accent-text the readable variant on dark. */
+  .accent-ai,
+  .accent-security,
+  .accent-global,
+  .accent-governance {
+    --accent: var(--color-accent);
+    --accent-ink: var(--color-accent-ink);
+    --accent-text: var(--color-accent-text);
+  }
+
+  .agi-section {
+    padding-block: var(--section-space);
+    padding-inline: 1.5rem;
+  }
+
+  .agi-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--color-gray-500);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  .agi-eyebrow::before {
+    width: 0.4rem;
+    height: 0.4rem;
+    flex: none;
+    border-radius: 9999px;
+    background: var(--color-accent);
+    content: '';
+  }
+
+  :where(.section-light, .section-light-muted, .agi-card--light) .agi-eyebrow {
+    color: var(--color-ink-muted);
+  }
+
+  .agi-section-heading {
+    display: flex;
+    max-width: 48rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .agi-section-heading--center {
+    margin-inline: auto;
+    align-items: center;
+    text-align: center;
+  }
+
+  .agi-section-heading h2,
+  .agi-heading-fade {
+    background: linear-gradient(180deg, var(--surface-text) 40%, color-mix(in srgb, var(--surface-text) 64%, transparent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .agi-section-heading h2 {
+    font-size: var(--text-h2);
+    letter-spacing: var(--text-h2--letter-spacing);
+    line-height: var(--text-h2--line-height);
+  }
+
+  .agi-section-heading p {
+    max-width: 42rem;
+    color: var(--surface-text-muted);
+    font-size: var(--text-lede);
+    line-height: var(--text-lede--line-height);
+  }
+
+  /* Cards share one radius, border, and motion language on both surfaces. */
+  .agi-card {
+    position: relative;
+    border: 1px solid var(--surface-line);
+    border-radius: var(--radius-card);
+    padding: clamp(1.5rem, 1.25rem + 0.8vw, 2rem);
+    transition:
+      transform var(--duration-base) var(--ease-out-expo),
+      box-shadow var(--duration-base) ease,
+      border-color var(--duration-base) ease,
+      background-color var(--duration-base) ease;
+  }
+
+  .agi-card--light {
+    background: #ffffff;
+    box-shadow: var(--shadow-card-light);
+    color: var(--surface-text);
+  }
+
+  .agi-card--dark {
+    border-color: var(--line-subtle);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 55%),
+      var(--surface-2);
+    box-shadow: var(--shadow-card-dark), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .agi-card--accent {
+    border-top: 3px solid var(--accent);
+  }
+
+  /* On dark surfaces the accent is a fading hairline rather than a bar. */
+  .agi-card--dark.agi-card--accent {
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  .agi-card--dark.agi-card--accent::after {
+    position: absolute;
+    inset: -1px 0 auto;
+    height: 1px;
+    border-radius: inherit;
+    background: linear-gradient(90deg, transparent, var(--accent) 30%, transparent 85%);
+    content: '';
+    pointer-events: none;
+  }
+
+  .agi-card--interactive:hover,
+  .agi-card--interactive:focus-within {
+    transform: translateY(-3px);
+  }
+
+  .agi-card--light.agi-card--interactive:hover,
+  .agi-card--light.agi-card--interactive:focus-within {
+    border-color: #b9c7d5;
+    box-shadow: var(--shadow-card-light-hover);
+  }
+
+  .agi-card--dark.agi-card--interactive:hover,
+  .agi-card--dark.agi-card--interactive:focus-within {
+    border-color: color-mix(in srgb, var(--accent, #ffffff) 32%, rgba(255, 255, 255, 0.1));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--accent, #ffffff) 6%, transparent), rgba(255, 255, 255, 0) 60%),
+      var(--surface-3);
+  }
+
+  .agi-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--accent-ink, var(--surface-text));
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .agi-card--dark .agi-card-link,
+  .agi-card-link--on-dark {
+    color: var(--accent-text, var(--surface-text));
+  }
+
+  .agi-card-link::after {
+    content: '→';
+    transition: transform var(--duration-base) var(--ease-out-expo);
+  }
+
+  .agi-card-link:hover::after,
+  .agi-card--interactive:hover .agi-card-link::after {
+    transform: translateX(3px);
+  }
+
+  /* Buttons: one shape and motion; tone picks the surface, accent the hue. */
+  .agi-btn {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-control);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    transition:
+      background-color var(--duration-base) ease,
+      border-color var(--duration-base) ease,
+      color var(--duration-base) ease,
+      box-shadow var(--duration-base) ease,
+      transform var(--duration-base) var(--ease-out-expo);
+  }
+
+  .agi-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .agi-btn:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .agi-btn-arrow {
+    transition: transform var(--duration-base) var(--ease-out-expo);
+  }
+
+  .agi-btn:hover .agi-btn-arrow {
+    transform: translateX(3px);
+  }
+
+  .agi-btn--dark-primary {
+    background: #e6e6e6;
+    color: #08090a;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  .agi-btn--dark-primary:hover {
+    background: #ffffff;
+  }
+
+  .agi-btn--dark-secondary {
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+  }
+
+  .agi-btn--dark-secondary:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .agi-btn--light-primary {
+    border-color: var(--color-ink);
+    background: var(--color-ink);
+    color: #ffffff;
+    box-shadow: 0 12px 28px -18px rgba(16, 23, 34, 0.7);
+  }
+
+  .agi-btn--light-primary:hover {
+    border-color: #263447;
+    background: #263447;
+  }
+
+  .agi-btn--light-secondary {
+    border-color: #b9c6d3;
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--color-ink);
+  }
+
+  .agi-btn--light-secondary:hover {
+    border-color: #8fa0b2;
+    background: #ffffff;
+  }
+
+  .agi-btn--light-primary:focus-visible,
+  .agi-btn--light-secondary:focus-visible {
+    outline-color: var(--color-ink);
+  }
+
+  /* Numbered or labelled steps used for workflows and engagement stages. */
+  .agi-step-index {
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--accent, #ffffff) 35%, transparent);
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--accent, #ffffff) 12%, transparent);
+    color: var(--accent-text, #ffffff);
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  :where(.section-light, .section-light-muted, .agi-card--light) .agi-step-index {
+    color: var(--accent-ink, var(--color-ink));
+  }
+
+  /* Form fields: readable sentence-case labels and one input treatment.
+     .form-on-light (below) adapts these to light surfaces. */
+  .agi-field-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #d0d3d8;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .agi-input {
+    width: 100%;
+    min-height: 3rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-control);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem 1rem;
+    color: #ffffff;
+    font-size: 0.9375rem;
+    transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease, background-color var(--duration-fast) ease;
+  }
+
+  .agi-input::placeholder {
+    color: #8b95a5;
+  }
+
+  .agi-input:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .agi-input:focus {
+    border-color: var(--accent, var(--color-ai));
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, var(--color-ai)) 22%, transparent);
+    outline: none;
+  }
+
+  /* The native option list ignores the translucent field background, so give it a dark surface. */
+  select.agi-input {
+    color-scheme: dark;
+  }
+
+  .agi-input option {
+    background: var(--color-surface-dark-raised);
+    color: #ffffff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agi-card--interactive:hover,
+  .agi-card--interactive:focus-within,
+  .agi-btn:hover,
+  .agi-btn:active {
+    transform: none;
+  }
+}
+
+/* Gentle one-time entrance for above-the-fold hero content. It animates
+   transform only, so text paints immediately and LCP is not delayed. */
+@keyframes agi-rise {
+  from { transform: translate3d(0, 14px, 0); }
+}
+
+.agi-hero-enter > * {
+  animation: agi-rise 640ms var(--ease-out-expo) both;
+}
+
+.agi-hero-enter > :nth-child(2) { animation-delay: 50ms; }
+.agi-hero-enter > :nth-child(3) { animation-delay: 100ms; }
+.agi-hero-enter > :nth-child(n + 4) { animation-delay: 150ms; }
+
+/* Content swaps inside React islands: the keyed element remounts and this
+   replays, replacing the former animation library. */
+@keyframes agi-swap-in {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+}
+
+@keyframes agi-fade-in {
+  from { opacity: 0; }
+}
+
+.agi-swap-in {
+  animation: agi-swap-in 300ms var(--ease-out-expo) both;
+}
+
+.agi-fade-in {
+  animation: agi-fade-in 420ms ease both;
+}
+
+.agi-swap-in[data-delay="1"] { animation-delay: 60ms; }
+.agi-swap-in[data-delay="2"] { animation-delay: 120ms; }
+.agi-swap-in[data-delay="3"] { animation-delay: 180ms; }
+.agi-swap-in[data-delay="4"] { animation-delay: 240ms; }
+
+/* Infinite decorative animations pause while off-screen (see Layout.astro). */
+[data-motion-paused],
+[data-motion-paused] *,
+[data-motion-paused] *::before,
+[data-motion-paused] *::after {
+  animation-play-state: paused !important;
+}
+
+/* Scroll reveals */
+.agi-reveal {
+  --agi-reveal-delay: 0ms;
+  opacity: 0;
+  transition:
+    opacity var(--duration-slow) var(--ease-out-expo) var(--agi-reveal-delay),
+    transform var(--duration-slow) var(--ease-out-expo) var(--agi-reveal-delay);
+}
+
+.agi-reveal-up { transform: translate3d(0, 1.25rem, 0); }
+.agi-reveal-left { transform: translate3d(-1.5rem, 0, 0); }
+.agi-reveal-right { transform: translate3d(1.5rem, 0, 0); }
+.agi-reveal-pop { transform: translate3d(0, 1rem, 0) scale(0.88); }
+
+.agi-reveal-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Section system. Dark-first: .section-dark-raised and .agi-band carry most
+   pages; .section-light* is reserved for forms, legal, and editorial bands. */
+.section-light,
+.section-light-muted,
+.section-dark-raised {
+  --section-background: var(--color-surface-light);
+  --section-border: #d9e2eb;
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  border-color: var(--section-border);
+}
+
+.section-light-muted {
+  --section-background: var(--color-surface-light-muted);
+  --section-border: #d3dde7;
+}
+
+.section-dark-raised {
+  --section-background: var(--surface-1);
+  --section-border: rgba(255, 255, 255, 0.06);
+}
+
+.section-light::before,
+.section-light-muted::before,
+.section-dark-raised::before {
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  z-index: -2;
+  width: 100vw;
+  border-block: 1px solid var(--section-border);
+  background: var(--section-background);
+  content: '';
+  transform: translateX(-50%);
+}
+
+.page-hero + .section-light,
+.page-hero + .section-light-muted {
+  border-top-width: 0;
+}
+
+.page-hero + .section-light::before,
+.page-hero + .section-light-muted::before {
+  border-top-width: 0;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .agi-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

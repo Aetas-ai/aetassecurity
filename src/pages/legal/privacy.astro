@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { contact } from '../../data/navigation';
+
+// [CONFIRM] legal review before launch (CONTENT-TODO.md).
+---
+
+<Layout socialImage="privacy" title="Privacy Policy" description="Read the Aetas Security privacy policy for www.aetassecurity.com.">
+  <section class="mx-auto max-w-4xl px-5 py-20 sm:px-6 sm:py-24">
+    <Breadcrumbs class="mb-6" items={[{ label: 'Home', href: '/' }, { label: 'Privacy Policy', href: '/legal/privacy' }]} />
+    <h1 class="text-3xl sm:text-4xl font-display font-bold text-white mb-8">Privacy Policy</h1>
+    <div class="space-y-6 text-base leading-8 text-gray-300">
+      <p>Last updated: October 23, 2026</p>
+      <p>Aetas Security ("we", "us", or "our"), the cybersecurity practice of Aetas Global Innovation, operates www.aetassecurity.com. This policy explains what information we collect through this website and how we use it.</p>
+      <h2 class="text-xl font-display font-bold text-white mt-8">1. Information We Collect</h2>
+      <p>This website does not include sign-up or contact forms. When you email or call us, we receive the information you choose to share, such as your name, email address, company, and requirements. If you book a demo, the booking service collects the details you enter.</p>
+      <h2 class="text-xl font-display font-bold text-white mt-8">2. How We Use Information</h2>
+      <p>We use the information you share to respond to your inquiry and to discuss Aetas Security services with you.</p>
+      <h2 class="text-xl font-display font-bold text-white mt-8">3. Cookies and Analytics</h2>
+      <p>This website does not use advertising or analytics cookies.</p>
+      <h2 class="text-xl font-display font-bold text-white mt-8">4. Information Protection</h2>
+      <p>We use reasonable administrative, technical, and organizational safeguards designed to protect the information you share with us.</p>
+      <h2 class="text-xl font-display font-bold text-white mt-8">5. Contact</h2>
+      <p>Questions about this policy can be sent to <a href={`mailto:${contact.email}`} class="font-semibold text-[var(--color-accent-text)] underline-offset-4 hover:underline">{contact.email}</a>.</p>
+    </div>
+  </section>
+</Layout>

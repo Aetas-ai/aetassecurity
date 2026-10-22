@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { CalendarDays, Mail, Phone } from 'lucide-react';
+import { contact, demoLink } from '../data/navigation';
+
+// Phase 1: no on-site form. Phase 2 reuses the aetas.ai secure form pipeline (HANDOFF.md).
+const channels = [
+  {
+    Icon: CalendarDays,
+    title: demoLink.label,
+    body: 'Book a time with our team to discuss MXDR or Offensive Security for your environment.',
+    href: demoLink.href,
+    label: 'Choose a time',
+    external: true,
+  },
+  {
+    Icon: Mail,
+    title: 'Email',
+    body: 'Send us your requirements and we will follow up.',
+    href: `mailto:${contact.email}`,
+    label: contact.email,
+    external: false,
+  },
+  {
+    Icon: Phone,
+    title: 'Phone',
+    body: 'Speak with our team directly.',
+    href: contact.phoneHref,
+    label: contact.phone,
+    external: false,
+  },
+];
+---
+
+<Layout socialImage="contact" title="Contact Aetas Security" description="Contact Aetas Security about Managed Extended Detection and Response (MXDR), Network Security Testing, or Application Security Testing (Pen Testing). Request a demo, email, or call.">
+  <PageHero
+    breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Contact', href: '/contact' }]}
+    eyebrow="Contact"
+    title="Talk to Aetas Security."
+    description="Discuss Managed Extended Detection and Response (MXDR), Network Security Testing, or Application Security Testing (Pen Testing) with our cybersecurity specialists."
+    accent="security"
+    compact
+  />
+
+  <section class="agi-band agi-section" aria-label="Contact channels">
+    <ul class="mx-auto grid max-w-7xl grid-cols-1 gap-5 md:grid-cols-3" data-reveal-group>
+      {channels.map(({ Icon, title, body, href, label, external }) => (
+        <li class="agi-card agi-card--dark agi-card--accent agi-card--interactive accent-security flex flex-col">
+          <span class="nav-service-icon h-10 w-10 rounded-xl">
+            <Icon className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden="true" focusable="false" />
+          </span>
+          <h2 class="mt-5 font-display text-lg font-bold text-white">{title}</h2>
+          <p class="mt-2 flex-1 text-sm leading-relaxed text-muted">{body}</p>
+          <a
+            href={href}
+            class="agi-card-link agi-card-link--on-dark mt-5 [overflow-wrap:anywhere]"
+            target={external ? '_blank' : undefined}
+            rel={external ? 'noopener noreferrer' : undefined}
+          >
+            {label}{external && <span class="sr-only"> (opens in a new tab)</span>}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
