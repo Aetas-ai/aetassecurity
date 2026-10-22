@@ -502,6 +502,18 @@
     background: var(--surface-1);
   }
 
+  /* Faint, static network tile behind section bands, fading toward the centre
+     so cards and text sit on quiet navy. Heroes use the animated NetworkBackdrop. */
+  .agi-band::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url('/backdrop/network-tile.svg') center / 480px 480px repeat;
+    mask-image: radial-gradient(ellipse 75% 85% at 50% 50%, transparent 35%, #000 100%);
+    content: '';
+    pointer-events: none;
+  }
+
   .agi-band--deep {
     background: var(--surface-0);
   }

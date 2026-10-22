@@ -2,13 +2,14 @@
 /** Homepage hero: approved headline and calls to action beside the threat radar. */
 import Button from './Button.astro';
 import ThreatRadar from './ThreatRadar.astro';
+import NetworkBackdrop from './NetworkBackdrop.astro';
 import { demoLink } from '../data/navigation';
 
 const headline = ['Detect threats.', 'Test defenses.', 'Strengthen resilience.'];
 ---
 
 <section class="home-hero relative isolate overflow-hidden px-6" aria-labelledby="home-hero-title">
-  <div class="agi-grid-mask" aria-hidden="true"></div>
+  <NetworkBackdrop />
 
   <div class="mx-auto grid w-full max-w-7xl items-center gap-12 py-14 sm:py-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 lg:py-12">
     <div class="agi-hero-enter flex min-w-0 flex-col items-start gap-6">
