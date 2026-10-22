@@ -1,66 +1,147 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
+import FormSubmitButton from '../components/FormSubmitButton.astro';
 import { CalendarDays, Mail, Phone } from 'lucide-react';
 import { contact, demoLink } from '../data/navigation';
+import { nextSteps } from '../data/approach';
 
-// Phase 1: no on-site form. Phase 2 reuses the aetas.ai secure form pipeline (HANDOFF.md).
+// Values must match the `service` enum in src/lib/server/forms.ts.
+const serviceOptions = [
+  ['mxdr', 'MXDR (Managed Extended Detection and Response)'],
+  ['network-testing', 'Network Security Testing'],
+  ['application-testing', 'Application Security Testing (Pen Testing)'],
+  ['msp-partnership', 'MSP partnership'],
+  ['general', 'General inquiry'],
+];
+
 const channels = [
-  {
-    Icon: CalendarDays,
-    title: demoLink.label,
-    body: 'Book a time with our team to discuss MXDR or Offensive Security for your environment.',
-    href: demoLink.href,
-    label: 'Choose a time',
-    external: true,
-  },
-  {
-    Icon: Mail,
-    title: 'Email',
-    body: 'Send us your requirements and we will follow up.',
-    href: `mailto:${contact.email}`,
-    label: contact.email,
-    external: false,
-  },
-  {
-    Icon: Phone,
-    title: 'Phone',
-    body: 'Speak with our team directly.',
-    href: contact.phoneHref,
-    label: contact.phone,
-    external: false,
-  },
+  { Icon: CalendarDays, title: demoLink.label, body: 'Book a time with our team.', href: demoLink.href, label: 'Choose a time', external: true },
+  { Icon: Mail, title: 'Email', body: 'Write to us directly.', href: `mailto:${contact.email}`, label: contact.email, external: false },
+  { Icon: Phone, title: 'Phone', body: 'Speak with our team.', href: contact.phoneHref, label: contact.phone, external: false },
 ];
 ---
 
-<Layout socialImage="contact" title="Contact Aetas Security" description="Contact Aetas Security about Managed Extended Detection and Response (MXDR), Network Security Testing, or Application Security Testing (Pen Testing). Request a demo, email, or call.">
+<Layout socialImage="contact" title="Contact Aetas Security" description="Contact Aetas Security about Managed Extended Detection and Response (MXDR), Network Security Testing, or Application Security Testing (Pen Testing). Send a request, book a demo, email, or call.">
   <PageHero
     breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Contact', href: '/contact' }]}
     title="Talk to Aetas Security."
-    description="Discuss Managed Extended Detection and Response (MXDR), Network Security Testing, or Application Security Testing (Pen Testing) with our cybersecurity specialists."
+    description="Tell us what you need to protect or test. A security specialist will follow up to discuss scope."
     accent="security"
     compact
   />
 
-  <section class="agi-band agi-section" aria-label="Contact channels">
-    <ul class="mx-auto grid max-w-7xl grid-cols-1 gap-5 md:grid-cols-3">
-      {channels.map(({ Icon, title, body, href, label, external }) => (
-        <li class="agi-card agi-card--dark agi-card--accent agi-card--interactive accent-security flex flex-col">
-          <span class="nav-service-icon h-10 w-10 rounded-xl">
-            <Icon className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden="true" focusable="false" />
-          </span>
-          <h2 class="mt-5 font-display text-lg font-bold text-white">{title}</h2>
-          <p class="mt-2 flex-1 text-sm leading-relaxed text-muted">{body}</p>
-          <a
-            href={href}
-            class="agi-card-link agi-card-link--on-dark mt-5 [overflow-wrap:anywhere]"
-            target={external ? '_blank' : undefined}
-            rel={external ? 'noopener noreferrer' : undefined}
-          >
-            {label}{external && <span class="sr-only"> (opens in a new tab)</span>}
-          </a>
-        </li>
-      ))}
-    </ul>
+  <section class="agi-band agi-section" aria-label="Contact Aetas Security">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
+      <div class="agi-card agi-card--dark lg:col-span-7">
+        <h2 class="font-display text-h3 font-semibold text-white">Send a request</h2>
+        <p class="mt-2 text-sm leading-relaxed text-muted">All fields are required.</p>
+
+        <form class="mt-8 space-y-6" name="aetas-security-contact" method="post" action="/api/forms/contact" data-secure-form novalidate>
+          <input type="hidden" name="csrf-token" value="" />
+          <p class="form-honeypot" aria-hidden="true">
+            <label for="contact-website">Leave this field empty</label>
+            <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off" maxlength="200" />
+          </p>
+          <p class="form-status" data-form-status role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+
+          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div>
+              <label for="contact-first-name" class="agi-field-label">First name</label>
+              <input id="contact-first-name" name="first-name" type="text" required autocomplete="given-name" maxlength="80" aria-describedby="contact-first-name-error" class="agi-input" />
+              <p id="contact-first-name-error" class="form-field-error" data-field-error="first-name" hidden></p>
+            </div>
+            <div>
+              <label for="contact-last-name" class="agi-field-label">Last name</label>
+              <input id="contact-last-name" name="last-name" type="text" required autocomplete="family-name" maxlength="80" aria-describedby="contact-last-name-error" class="agi-input" />
+              <p id="contact-last-name-error" class="form-field-error" data-field-error="last-name" hidden></p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div>
+              <label for="contact-email" class="agi-field-label">Work email</label>
+              <input id="contact-email" name="email" type="email" required autocomplete="email" inputmode="email" maxlength="254" aria-describedby="contact-email-error" class="agi-input" />
+              <p id="contact-email-error" class="form-field-error" data-field-error="email" hidden></p>
+            </div>
+            <div>
+              <label for="contact-company" class="agi-field-label">Company</label>
+              <input id="contact-company" name="company" type="text" required autocomplete="organization" maxlength="120" aria-describedby="contact-company-error" class="agi-input" />
+              <p id="contact-company-error" class="form-field-error" data-field-error="company" hidden></p>
+            </div>
+          </div>
+
+          <div>
+            <label for="contact-service" class="agi-field-label">Service</label>
+            <select id="contact-service" name="service" required aria-describedby="contact-service-error" class="agi-input">
+              <option value="" disabled selected>Choose a service</option>
+              {serviceOptions.map(([value, label]) => <option value={value}>{label}</option>)}
+            </select>
+            <p id="contact-service-error" class="form-field-error" data-field-error="service" hidden></p>
+          </div>
+
+          <div>
+            <label for="contact-message" class="agi-field-label">What do you need?</label>
+            <textarea id="contact-message" name="message" rows="5" required minlength="20" maxlength="3000" aria-describedby="contact-message-hint contact-message-error" class="agi-input"></textarea>
+            <p id="contact-message-hint" class="mt-1.5 text-xs text-gray-500">For example, the environment or application in scope and any timing you are working to.</p>
+            <p id="contact-message-error" class="form-field-error" data-field-error="message" hidden></p>
+          </div>
+
+          <FormSubmitButton label="Send request" class="agi-btn agi-btn--dark-primary w-full" />
+        </form>
+      </div>
+
+      <div class="flex flex-col gap-5 lg:col-span-5">
+        <ul class="space-y-4">
+          {channels.map(({ Icon, title, body, href, label, external }) => (
+            <li class="agi-card agi-card--dark flex items-start gap-4 p-5">
+              <span class="nav-service-icon h-10 w-10 flex-none">
+                <Icon className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden="true" focusable="false" />
+              </span>
+              <div class="min-w-0">
+                <h2 class="font-display text-base font-semibold text-white">{title}</h2>
+                <p class="mt-1 text-sm text-muted">{body}</p>
+                <a
+                  href={href}
+                  class="agi-card-link agi-card-link--on-dark mt-2 [overflow-wrap:anywhere]"
+                  target={external ? '_blank' : undefined}
+                  rel={external ? 'noopener noreferrer' : undefined}
+                >
+                  {label}{external && <span class="sr-only"> (opens in a new tab)</span>}
+                </a>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div class="agi-card agi-card--dark p-5">
+          <h2 class="font-display text-base font-semibold text-white">What happens next</h2>
+          <ol class="mt-4 space-y-4">
+            {nextSteps.map(([title, body], index) => (
+              <li class="flex gap-3">
+                <span class="agi-step-index h-7 w-7 text-xs">{index + 1}</span>
+                <div>
+                  <p class="text-sm font-semibold text-white">{title}</p>
+                  <p class="mt-0.5 text-sm leading-relaxed text-muted">{body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </div>
   </section>
+
+  <script>
+    import '../scripts/secure-forms';
+
+    // Links such as /contact?service=mxdr preselect the matching service.
+    document.addEventListener('astro:page-load', () => {
+      const select = document.getElementById('contact-service') as HTMLSelectElement | null;
+      const requested = new URLSearchParams(window.location.search).get('service');
+      if (select && requested && [...select.options].some((option) => option.value === requested && !option.disabled)) {
+        select.value = requested;
+      }
+    });
+  </script>
 </Layout>

@@ -20,32 +20,36 @@ export interface ServiceNavItem extends NavLink {
   capabilities: NavLink[];
 }
 
+// Two columns in the Services menu: detection and response, and Offensive Security.
 export const serviceNav: ServiceNavItem[] = [
   {
     key: 'mxdr',
     label: 'MXDR',
-    href: '/#mxdr',
-    tag: 'Managed Extended Detection and Response',
+    href: '/services/mxdr',
+    tag: 'Detection and response',
     blurb: 'Monitor, investigate, respond, and document, with analyst approval before containment.',
     capabilities: [
-      { label: 'Managed detection and response', href: '/#mxdr', hint: 'Monitor, Investigate, Respond, Document' },
-      { label: 'Expert in the Loop', href: '/#expert-in-the-loop', hint: 'Expert Human Oversight of AI' },
+      { label: 'Managed Extended Detection and Response', href: '/services/mxdr', hint: 'Monitor, Investigate, Respond, Document' },
+      { label: 'Expert in the Loop', href: '/about#expert-in-the-loop', hint: 'Expert Human Oversight of AI' },
     ],
   },
   {
     key: 'offensive',
     label: 'Offensive Security',
-    href: '/#offensive-security',
+    href: '/services#offensive-security',
     tag: 'Security testing',
     blurb: 'Dedicated testing that shows how your networks and applications hold up.',
     capabilities: [
-      { label: 'Network Security Testing', href: '/#network-testing', hint: 'Offensive Security' },
-      { label: 'Application Security Testing', href: '/#application-testing', hint: 'Pen Testing' },
+      { label: 'Network Security Testing', href: '/services/network-security-testing', hint: 'Exposure, configuration, attack paths' },
+      { label: 'Application Security Testing', href: '/services/application-security-testing', hint: 'Pen Testing' },
     ],
   },
 ];
 
+export const servicesHubLink: NavLink = { label: 'View all services', href: '/services' };
+
 export const primaryNav: NavLink[] = [
+  { label: 'About', href: '/about' },
   { label: 'Partners', href: '/partners' },
   { label: 'Contact', href: '/contact' },
 ];
@@ -59,7 +63,6 @@ export const contact = {
 };
 
 export const demoLink: NavLink = { label: 'Request a demo', href: contact.bookingUrl };
-export const panelFootLink: NavLink = { label: 'Talk to our team', href: '/contact' };
 
 /** [CONFIRM] social profiles (CONTENT-TODO.md). */
 export const social: NavLink[] = [
@@ -71,6 +74,8 @@ export const legalLinks: NavLink[] = [
   { label: 'Privacy Policy', href: '/legal/privacy' },
   { label: 'Terms & Conditions', href: '/legal/terms' },
 ];
+
+export const isServicesPath = (currentPath: string) => currentPath === '/services' || currentPath.startsWith('/services/');
 
 export const isActivePath = (currentPath: string, href: string) => {
   const path = href.split('#')[0];

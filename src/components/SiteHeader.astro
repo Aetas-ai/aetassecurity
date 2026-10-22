@@ -5,13 +5,14 @@
  * in src/scripts/site-nav.ts.
  */
 import ServiceIcon from './ServiceIcon.astro';
-import { demoLink, isActivePath, panelFootLink, primaryNav, serviceNav } from '../data/navigation';
+import { demoLink, isActivePath, isServicesPath, primaryNav, serviceNav, servicesHubLink } from '../data/navigation';
 
 interface Props {
   currentPath: string;
 }
 
 const { currentPath } = Astro.props;
+const servicesActive = isServicesPath(currentPath);
 ---
 
 <header class="site-header fixed inset-x-0 top-0 z-50">
@@ -29,6 +30,7 @@ const { currentPath } = Astro.props;
             aria-expanded="false"
             aria-controls="services-menu"
             data-nav-trigger
+            data-active={servicesActive ? '' : undefined}
           >
             Services
             <svg class="site-nav-chevron" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
@@ -66,7 +68,7 @@ const { currentPath } = Astro.props;
               </ul>
               <div class="nav-panel-foot" data-nav-column>
                 <p>Not sure which service fits your need?</p>
-                <a href={panelFootLink.href} class="nav-panel-foot-link">{panelFootLink.label}<span aria-hidden="true">→</span></a>
+                <a href={servicesHubLink.href} class="nav-panel-foot-link" aria-current={currentPath === servicesHubLink.href ? 'page' : undefined}>{servicesHubLink.label}</a>
               </div>
             </div>
           </div>

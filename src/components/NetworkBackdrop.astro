@@ -1,0 +1,121 @@
+---
+/**
+ * Faint "monitored network" map behind page heroes. A few nodes pulse; with
+ * `trace`, a short signal travels one path in the logo gradient. Decorative
+ * (aria-hidden), masked away from the text column, paused off-screen via
+ * data-motion, and static under reduced motion. Section bands use the static
+ * tile in public/backdrop/network-tile.svg instead.
+ */
+interface Props {
+  /** Animate a signal along one path (off on the homepage, where the radar leads). */
+  trace?: boolean;
+}
+
+const { trace = false } = Astro.props;
+
+// Hand-placed so every build (and its CSP hashes) is identical.
+const nodes: [number, number][] = [
+  [40, 80], [180, 40], [300, 150], [130, 260], [420, 60], [520, 190], [380, 320], [640, 90],
+  [720, 240], [600, 380], [820, 60], [900, 180], [860, 330], [1000, 90], [1080, 230], [980, 400],
+  [1160, 60], [1170, 340], [760, 500], [900, 570], [1100, 520], [520, 500], [300, 480], [140, 560],
+];
+const edges: [number, number][] = [
+  [0, 1], [1, 2], [0, 3], [2, 3], [1, 4], [2, 5], [4, 5], [3, 6], [5, 6], [4, 7], [5, 8], [7, 8],
+  [6, 9], [8, 9], [7, 10], [8, 11], [10, 11], [9, 12], [11, 12], [10, 13], [11, 14], [13, 14],
+  [12, 15], [14, 15], [13, 16], [14, 17], [16, 17], [15, 17], [12, 18], [9, 18], [18, 19], [15, 19],
+  [19, 20], [17, 20], [9, 21], [6, 22], [21, 22], [21, 18], [22, 23], [3, 23],
+];
+const pulsing = [8, 11, 14, 19];
+const tracePath = [3, 6, 9, 12, 15, 17].map((index) => nodes[index].join(',')).join(' ');
+---
+
+<div class:list={['network-backdrop pointer-events-none absolute inset-0 -z-10', trace && 'has-trace']} aria-hidden="true" data-motion>
+  <svg viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <defs>
+      <linearGradient id="network-trace" gradientUnits="userSpaceOnUse" x1="130" y1="0" x2="1170" y2="0">
+        <stop offset="0" stop-color="#22d3ee" />
+        <stop offset="1" stop-color="#2f6bff" />
+      </linearGradient>
+    </defs>
+    <g class="network-edges">
+      {edges.map(([a, b]) => (
+        <line x1={nodes[a][0]} y1={nodes[a][1]} x2={nodes[b][0]} y2={nodes[b][1]} vector-effect="non-scaling-stroke" />
+      ))}
+    </g>
+    {trace && <polyline class="network-trace" points={tracePath} pathLength="1" stroke="url(#network-trace)" vector-effect="non-scaling-stroke" />}
+    <g class="network-nodes">
+      {nodes.map(([x, y], index) => (
+        <circle
+          cx={x}
+          cy={y}
+          r={pulsing.includes(index) ? 3.5 : 2.5}
+          class:list={[pulsing.includes(index) && 'is-pulsing']}
+          style={pulsing.includes(index) ? `animation-delay: ${pulsing.indexOf(index) * 1.5}s; transform-origin: ${x}px ${y}px` : undefined}
+        />
+      ))}
+    </g>
+  </svg>
+</div>
+
+<style>
+  /* Strongest on the right, fading out under the text column. */
+  .network-backdrop {
+    mask-image: radial-gradient(ellipse 70% 40% at 100% 0%, #000 10%, transparent 80%);
+  }
+
+  @media (min-width: 1024px) {
+    .network-backdrop {
+      mask-image: linear-gradient(100deg, transparent 24%, rgba(0, 0, 0, 0.35) 44%, #000 72%);
+    }
+  }
+
+  .network-backdrop svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .network-edges line {
+    stroke: rgba(143, 211, 242, 0.12);
+    stroke-width: 1;
+  }
+
+  .network-nodes circle {
+    fill: rgba(143, 211, 242, 0.32);
+  }
+
+  .network-nodes .is-pulsing {
+    fill: #3aaee0;
+    opacity: 0.55;
+  }
+
+  .network-trace {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-dasharray: 0 1;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .network-nodes .is-pulsing {
+      animation: network-pulse 6s ease-in-out infinite;
+    }
+
+    .network-trace {
+      animation: network-trace 10s linear infinite;
+    }
+  }
+
+  @keyframes network-pulse {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.6); }
+  }
+
+  /* A short signal crosses the map in the first quarter of each cycle. */
+  @keyframes network-trace {
+    0% { opacity: 0; stroke-dasharray: 0.14 1; stroke-dashoffset: 0.14; }
+    2% { opacity: 0.9; }
+    24% { opacity: 0.9; stroke-dasharray: 0.14 1; stroke-dashoffset: -1; }
+    26%, 100% { opacity: 0; stroke-dasharray: 0.14 1; stroke-dashoffset: -1; }
+  }
+</style>

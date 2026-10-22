@@ -1,0 +1,179 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceIcon from '../../components/ServiceIcon.astro';
+import Button from '../../components/Button.astro';
+import { demoLink } from '../../data/navigation';
+import { services } from '../../data/services';
+
+const groups = [
+  {
+    id: 'detection-and-response',
+    title: 'Detection and response',
+    lede: 'Ongoing security monitoring and response for your environment.',
+    items: services.filter((service) => service.group === 'Detection and response'),
+  },
+  {
+    id: 'offensive-security',
+    title: 'Offensive Security',
+    lede: 'Dedicated testing engagements that evaluate network and application defenses.',
+    items: services.filter((service) => service.group === 'Offensive Security'),
+  },
+];
+
+// Need-to-service guidance, written for the reader's situation (drafted; CONTENT-TODO.md).
+const fit = [
+  { need: 'You want your environment watched, with suspicious activity investigated and contained.', slug: 'mxdr' },
+  { need: 'You need to know how exposed your network is and which attack paths exist.', slug: 'network-security-testing' },
+  { need: 'You need to find security weaknesses in a web application or API.', slug: 'application-security-testing' },
+].map((row) => ({ ...row, service: services.find((service) => service.slug === row.slug)! }));
+---
+
+<Layout socialImage="services" title="Cybersecurity Services" description="Aetas Security services: Managed Extended Detection and Response (MXDR), Network Security Testing, and Application Security Testing (Pen Testing).">
+  <PageHero
+    breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services' }]}
+    title="Managed detection and offensive testing."
+    description="Aetas Security services are organized into Managed Extended Detection and Response (MXDR) and Offensive Security."
+    accent="security"
+    compact
+    primaryLabel={demoLink.label}
+    primaryHref={demoLink.href}
+    primaryExternal
+    secondaryLabel="Contact us"
+    secondaryHref="/contact"
+  >
+    <figure slot="aside" class="services-map">
+      <figcaption class="agi-label">Aetas Security services</figcaption>
+      {groups.map((group) => (
+        <div class="services-map-group">
+          <p class="agi-eyebrow">{group.title}</p>
+          <ul>
+            {group.items.map((service) => (
+              <li>
+                <a href={`/services/${service.slug}`} class="services-map-tile as-chamfer">
+                  <span class="nav-service-icon h-8 w-8 flex-none">
+                    <ServiceIcon service={service.icon} class="h-4 w-4" />
+                  </span>
+                  <span class="min-w-0">
+                    <span class="block font-display text-[0.9375rem] font-semibold text-white">{service.shortName}</span>
+                    <span class="block text-xs leading-snug text-gray-400">{service.focus.join(' · ')}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </figure>
+  </PageHero>
+
+  {groups.map((group, index) => (
+    <section id={group.id} class:list={['agi-section', index % 2 === 1 && 'agi-band']} aria-labelledby={`${group.id}-heading`}>
+      <div class="mx-auto max-w-7xl">
+        <SectionHeading id={`${group.id}-heading`} title={group.title} lede={group.lede} />
+        <ul class:list={['mt-10 grid grid-cols-1 gap-5', group.items.length > 1 && 'md:grid-cols-2']}>
+          {group.items.map((service) => (
+            <li class="agi-card agi-card--dark agi-card--interactive flex flex-col">
+              <span class="nav-service-icon h-10 w-10">
+                <ServiceIcon service={service.icon} class="h-[1.125rem] w-[1.125rem]" />
+              </span>
+              <h3 class="mt-5 font-display text-h3 font-semibold text-white">{service.name}</h3>
+              <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">{service.summary}</p>
+              <ul class="mt-5 flex flex-1 flex-wrap content-start gap-2" aria-label={`${service.shortName} focus`}>
+                {service.focus.map((item) => (
+                  <li class="border border-[var(--line-strong)] px-2.5 py-1 text-xs text-gray-300">{item}</li>
+                ))}
+              </ul>
+              <a href={`/services/${service.slug}`} class="agi-card-link agi-card-link--on-dark mt-6">Explore {service.shortName}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  ))}
+
+  <section class="agi-section" aria-labelledby="fit-heading">
+    <div class="mx-auto max-w-7xl">
+      <SectionHeading id="fit-heading" title="Which service fits?" lede="Start from the situation you are in." />
+      <ul class="mt-10 divide-y divide-[var(--line-subtle)] border-y border-[var(--line-subtle)]">
+        {fit.map((row) => (
+          <li class="grid grid-cols-1 gap-3 py-6 md:grid-cols-12 md:items-center md:gap-8">
+            <p class="text-[0.9375rem] leading-relaxed text-gray-200 md:col-span-7">{row.need}</p>
+            <a href={`/services/${row.slug}`} class="agi-card-link agi-card-link--on-dark md:col-span-5 md:justify-self-end">{row.service.name}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="agi-band agi-section" aria-labelledby="services-cta-heading">
+    <SectionHeading
+      id="services-cta-heading"
+      align="center"
+      title="Not sure where to start?"
+      lede="Tell us what you need to protect or test, and a security specialist will help you choose and scope the right service."
+    >
+      <div class="mt-2 flex w-full flex-col justify-center gap-3 sm:flex-row sm:items-center">
+        <Button href="/contact" stretch>Contact us</Button>
+        <Button href={demoLink.href} variant="secondary" stretch external>{demoLink.label}</Button>
+      </div>
+    </SectionHeading>
+  </section>
+</Layout>
+
+<style>
+  .services-map {
+    position: relative;
+    display: flex;
+    width: min(100%, 24rem);
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-inline: auto;
+    padding: 1.5rem;
+  }
+
+  /* Reticle corners, matching the radar and the service diagrams. */
+  .services-map::before,
+  .services-map::after {
+    position: absolute;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 0 solid var(--color-accent);
+    content: '';
+  }
+
+  .services-map::before {
+    top: 0;
+    left: 0;
+    border-width: 2px 0 0 2px;
+  }
+
+  .services-map::after {
+    right: 0;
+    bottom: 0;
+    border-width: 0 2px 2px 0;
+  }
+
+  .services-map-group ul {
+    grid-template-columns: minmax(0, 1fr);
+    display: grid;
+    gap: 0.625rem;
+    margin-top: 0.75rem;
+  }
+
+  .services-map-tile {
+    --panel-cut: var(--cut-sm);
+    --panel-fill: var(--surface-2);
+    --panel-line: var(--line-strong);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .services-map-tile:hover {
+    --panel-fill: var(--surface-3);
+    --panel-line: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+</style>

@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 
 import node from '@astrojs/node';
 import react from '@astrojs/react';
@@ -35,10 +35,52 @@ export default defineConfig({
     server: './server'
   },
 
+  // Form delivery stays off until FORM_DELIVERY_ENABLED=true and a complete
+  // Resend (or webhook) configuration is set; see HANDOFF.md "Contact form".
+  env: {
+    schema: {
+      FORM_DELIVERY_ENABLED: envField.boolean({
+        context: 'server',
+        access: 'secret',
+        default: false
+      }),
+      FORM_CSRF_SECRET: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true
+      }),
+      FORM_DELIVERY_URL: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true
+      }),
+      FORM_DELIVERY_BEARER_TOKEN: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true
+      }),
+      RESEND_API_KEY: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true
+      }),
+      FORM_SENDER_EMAIL: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true
+      }),
+      CONTACT_RECIPIENT_EMAIL: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true
+      })
+    }
+  },
+
   integrations: [
     react(),
     sitemap({
-      filter: (page) => !page.includes('/404')
+      filter: (page) => !page.includes('/404') && !page.includes('/contact/thanks')
     }),
     securityHeaders()
   ],

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 480 480">
+  <!-- Seamless network tile for .agi-band backgrounds; nodes on opposite edges line up when repeated. -->
+  <g stroke="rgb(143,211,242)" stroke-opacity="0.13" stroke-width="1" fill="none">
+    <path d="M0 120 L110 90 L240 0 M110 90 L150 300 L270 390 L240 480 M240 0 L330 70 L380 230 L480 120 M330 70 L480 120 M150 300 L0 360 M380 230 L270 390 M270 390 L420 410 L480 360 M380 230 L420 410 M110 90 L330 70" />
+  </g>
+  <g fill="rgb(143,211,242)" fill-opacity="0.28">
+    <circle cx="0" cy="120" r="2" />
+    <circle cx="480" cy="120" r="2" />
+    <circle cx="240" cy="0" r="2" />
+    <circle cx="240" cy="480" r="2" />
+    <circle cx="0" cy="360" r="2" />
+    <circle cx="480" cy="360" r="2" />
+    <circle cx="110" cy="90" r="2" />
+    <circle cx="330" cy="70" r="2" />
+    <circle cx="380" cy="230" r="2" />
+    <circle cx="150" cy="300" r="2" />
+    <circle cx="270" cy="390" r="2" />
+    <circle cx="420" cy="410" r="2" />
+  </g>
+</svg>

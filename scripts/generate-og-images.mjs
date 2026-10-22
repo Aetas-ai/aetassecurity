@@ -21,6 +21,11 @@ const accent = '#3aaee0';
 const pages = [
   { key: 'default', label: 'Aetas Security', title: 'MXDR and Offensive Security for your business.' },
   { key: 'home', label: 'Aetas Security', title: 'Detect threats. Test defenses. Strengthen resilience.' },
+  { key: 'services', label: 'Services', title: 'Managed detection and offensive testing.' },
+  { key: 'mxdr', label: 'MXDR', title: 'Detection and response, guided by security professionals.' },
+  { key: 'network-testing', label: 'Network Security Testing', title: 'Test your network the way an attacker would.' },
+  { key: 'application-testing', label: 'Application Security Testing', title: 'Find the weaknesses in your applications first.' },
+  { key: 'about', label: 'About', title: 'Cybersecurity led by experts, with people in control.' },
   { key: 'partners', label: 'Partners', title: 'Technology partners and MSP partnerships.' },
   { key: 'contact', label: 'Contact', title: 'Talk to Aetas Security.' },
   { key: 'privacy', label: 'Legal', title: 'Privacy Policy' },

@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Button from './Button.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
+import NetworkBackdrop from './NetworkBackdrop.astro';
 
 interface Props {
   /** Optional trail rendered above the eyebrow (current page last). */
@@ -46,6 +47,9 @@ const {
 } = Astro.props;
 
 const accentClass = accent === 'neutral' ? undefined : `accent-${accent}`;
+// A named `aside` slot (service diagrams) replaces the focus list in the right column.
+const hasAside = Astro.slots.has('aside');
+const twoColumn = hasAside || focusItems.length > 0;
 const heroId = `page-hero-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
 ---
 
@@ -64,10 +68,10 @@ const heroId = `page-hero-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').repl
     <div class:list={['page-hero-light pointer-events-none absolute inset-0 -z-10', accentClass]} aria-hidden="true"></div>
   )}
 
-  <div class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(143,211,242,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(143,211,242,0.035)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:linear-gradient(to_bottom,black,transparent_94%)]" aria-hidden="true"></div>
-  <div class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(100deg,#050b16_0%,rgba(5,11,22,0.97)_43%,rgba(5,11,22,0.72)_70%,rgba(5,11,22,0.48)_100%)] max-xl:bg-[linear-gradient(180deg,rgba(5,11,22,0.82)_0%,#050b16_96%)]" aria-hidden="true"></div>
+  <NetworkBackdrop trace={!hasAside} />
+  <div class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(100deg,#050b16_0%,rgba(5,11,22,0.9)_40%,rgba(5,11,22,0.45)_70%,rgba(5,11,22,0.15)_100%)] max-xl:bg-[linear-gradient(180deg,rgba(5,11,22,0.82)_0%,#050b16_96%)]" aria-hidden="true"></div>
 
-  <div class:list={['page-hero-shell mx-auto grid min-w-0 w-full max-w-7xl items-center gap-12', focusItems.length > 0 ? 'xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] xl:gap-16' : '']}>
+  <div class:list={['page-hero-shell mx-auto grid min-w-0 w-full max-w-7xl items-center gap-12', hasAside ? 'lg:grid-cols-[minmax(0,1.1fr)_minmax(300px,0.9fr)] lg:gap-14' : twoColumn ? 'xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] xl:gap-16' : '']}>
     <div class:list={['agi-hero-enter flex min-w-0 max-w-3xl flex-col items-start gap-5 sm:gap-6', accentClass]}>
       {breadcrumbs && breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} class="-mb-1" />}
       {eyebrow && <span class="agi-eyebrow">{eyebrow}</span>}
@@ -83,7 +87,7 @@ const heroId = `page-hero-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').repl
       {(primaryLabel && primaryHref) || (secondaryLabel && secondaryHref) ? (
         <div class="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:items-center">
           {primaryLabel && primaryHref ? (
-            <Button href={primaryHref} accent={accent} arrow={!primaryExternal} external={primaryExternal} stretch>{primaryLabel}</Button>
+            <Button href={primaryHref} accent={accent} external={primaryExternal} stretch>{primaryLabel}</Button>
           ) : null}
           {secondaryLabel && secondaryHref ? (
             <Button href={secondaryHref} variant="secondary" stretch external={secondaryExternal}>{secondaryLabel}</Button>
@@ -94,7 +98,11 @@ const heroId = `page-hero-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').repl
       <slot />
     </div>
 
-    {focusItems.length > 0 ? (
+    {hasAside ? (
+      <div class="agi-hero-focus min-w-0">
+        <slot name="aside" />
+      </div>
+    ) : focusItems.length > 0 ? (
       <div class:list={['agi-hero-focus hidden xl:block', accentClass]} aria-label={`${focusLabel}`}>
         <div class="border-l border-[color-mix(in_srgb,var(--accent,#fff)_28%,transparent)] pl-8">
           <span class="agi-eyebrow">{focusLabel}</span>

@@ -1,0 +1,193 @@
+---
+/**
+ * Hero diagram for a service page: the process as connected, chamfered nodes,
+ * with an optional highlighted gate (MXDR: analyst approval before containment).
+ * A signal dot travels down the chain, passing behind the nodes. It is a real
+ * ordered list for assistive tech; motion pauses off-screen (data-motion) and
+ * stops under reduced motion.
+ */
+interface Props {
+  title: string;
+  nodes: string[];
+  gate?: { after: number; label: string };
+}
+
+const { title, nodes, gate } = Astro.props;
+---
+
+<figure class="service-diagram" data-motion>
+  <figcaption class="agi-label">{title}</figcaption>
+  <div class="service-diagram-chain">
+    <span class="service-diagram-signal" aria-hidden="true"></span>
+    <ol>
+      {nodes.map((node, index) => (
+        <>
+          <li class="service-diagram-node as-chamfer">
+            <span class="service-diagram-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <span>{node}</span>
+          </li>
+          {gate && gate.after === index && (
+            <li class="service-diagram-gate">
+              <span class="service-diagram-diamond" aria-hidden="true"></span>
+              <span class="service-diagram-gate-label">{gate.label}</span>
+            </li>
+          )}
+        </>
+      ))}
+    </ol>
+  </div>
+</figure>
+
+<style>
+  .service-diagram {
+    position: relative;
+    display: flex;
+    width: min(100%, 22rem);
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-inline: auto;
+    padding: 1.5rem;
+  }
+
+  /* Reticle corners, matching the radar and the demo window frame. */
+  .service-diagram::before,
+  .service-diagram::after {
+    position: absolute;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 0 solid var(--color-accent);
+    content: '';
+  }
+
+  .service-diagram::before {
+    top: 0;
+    left: 0;
+    border-width: 2px 0 0 2px;
+  }
+
+  .service-diagram::after {
+    right: 0;
+    bottom: 0;
+    border-width: 0 2px 2px 0;
+  }
+
+  .service-diagram-chain {
+    position: relative;
+  }
+
+  /* The connecting line runs behind every node. */
+  .service-diagram-chain::before {
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: 50%;
+    width: 2px;
+    background: linear-gradient(180deg, #22d3ee, #2f6bff);
+    content: '';
+    opacity: 0.55;
+    transform: translateX(-50%);
+  }
+
+  .service-diagram ol {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .service-diagram-node {
+    --panel-cut: var(--cut-sm);
+    --panel-fill: var(--surface-2);
+    --panel-line: var(--line-strong);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    color: var(--color-gray-100);
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .service-diagram-index {
+    color: var(--color-accent-text);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+  }
+
+  .service-diagram-gate {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 1.75rem;
+  }
+
+  .service-diagram-diamond {
+    grid-column: 2;
+    width: 0.875rem;
+    height: 0.875rem;
+    border: 2px solid var(--color-accent-text);
+    background: var(--surface-0);
+    box-shadow: 0 0 14px rgba(58, 174, 224, 0.55);
+    transform: rotate(45deg);
+  }
+
+  .service-diagram-gate-label {
+    grid-column: 3;
+    color: var(--color-accent-text);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .service-diagram-signal {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: #8fd3f2;
+    box-shadow: 0 0 12px 3px rgba(34, 211, 238, 0.6);
+    opacity: 0;
+    transform: translateX(-50%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .service-diagram-signal {
+      animation: diagram-signal 5s ease-in-out infinite;
+    }
+
+    .service-diagram-diamond {
+      animation: diagram-gate 5s ease-in-out infinite;
+    }
+  }
+
+  @keyframes diagram-signal {
+    0% { top: 0; opacity: 0; }
+    8% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { top: calc(100% - 0.5rem); opacity: 0; }
+  }
+
+  @keyframes diagram-gate {
+    0%, 100% { box-shadow: 0 0 10px rgba(58, 174, 224, 0.35); }
+    50% { box-shadow: 0 0 22px rgba(58, 174, 224, 0.85); }
+  }
+
+  /* Short laptops: tighter nodes so the hero still fits one screen. */
+  @media (min-width: 1024px) and (max-height: 900px) {
+    .service-diagram ol {
+      gap: 0.5rem;
+    }
+
+    .service-diagram-node {
+      padding-block: 0.5rem;
+    }
+  }
+</style>

@@ -12,12 +12,14 @@ Read [HANDOFF.md](./HANDOFF.md) before changing positioning, services, partners,
 
 ## Current Experience
 
-- Split hero with the approved headline, booking-link CTA, and an animated threat radar that acts out analyst-approved containment
+- A centred hero built on the line-drawn shield from the logo, with the approved headline, CTAs, and a strip linking the three service pages; service pages show their process as a diagram in the hero
 - A strip of the 7 approved cybersecurity partner logos under the hero
 - MXDR and Offensive Security service cards, the Expert in the Loop step strip, an FAQ with `FAQPage` structured data, and an AGI cross-link band
 - One code-rendered, clearly simulated MXDR console (React island) below the hero
+- A services hub and a dedicated page per service (MXDR, Network Security Testing, Application Security Testing), built from one template with Service and FAQ structured data
+- An About page: the practice-of-AGI statement, Expert in the Loop, principles, and the engagement model
 - Partners page with the 7 approved cybersecurity partners and the MSP partner programme
-- Contact page with the demo booking link, email, and phone (no on-site form in Phase 1)
+- Contact page with the secure form (sending off until activated), demo booking link, email, phone, and what happens next
 - Privacy Policy, Terms & Conditions, and a branded `noindex` 404
 - Header with a keyboard-accessible Services disclosure menu and an accessible mobile sheet
 - Canonical metadata, Organization/WebSite/WebPage structured data, per-page share images, robots.txt, and a generated sitemap
@@ -59,16 +61,16 @@ Aetas Security's own "command center" identity; see HANDOFF.md "Design System" f
 - Saira headings (weight 600, solid colour), Inter body, system monospace only for demo data.
 - Chamfered panels and buttons from the shield logo, drawn on `::before` so focus outlines stay visible; reticle corners frame the radar and the demo window; 2px radii.
 - Sentence-case labels only where they name content; numbering only for real sequences.
-- One orchestrated motion moment: the hero threat radar (Detected, then Analyst review, then Contained after approval). The partner marquee and the MXDR demo are the only other motion; all pause off-screen and respect `prefers-reduced-motion`. No scroll reveals.
+- One main motion moment per page: the shield draw on the homepage, the diagram signal on service pages, and the threat radar (Detected, then Analyst review, then Contained after approval) on About. The partner marquee and the MXDR demo are the only other motion; all pause off-screen and respect `prefers-reduced-motion`. No scroll reveals.
+- A faint network-map background: animated lightly in inner page heroes (`NetworkBackdrop.astro`), a static tile on section bands, plain navy behind long text.
 - Code-built visuals only. No stock or AI-generated imagery; at most one "Simulated" demo window per page, never in the hero.
 
 ## Routes
 
-- `/`
-- `/partners`
-- `/contact`
-- `/legal/privacy`, `/legal/terms`
-- 404 (branded, `noindex`, excluded from the sitemap)
+- `/`, `/services`, `/services/mxdr`, `/services/network-security-testing`, `/services/application-security-testing`
+- `/about`, `/partners`, `/contact`, `/contact/thanks` (noindex)
+- `/legal/privacy`, `/legal/terms`, 404 (branded, `noindex`, excluded from the sitemap)
+- `/api/forms/csrf`, `/api/forms/contact` (on-demand)
 
 ## Commands
 
@@ -79,6 +81,7 @@ npm test
 npm run build
 npm start          # runs dist/server/entry.mjs after a build
 npm run og:generate
+node scripts/check-form-security.mjs   # mocked form checks against the build
 ```
 
 `npm run build` runs the test suite before the Astro build. Run `git diff --check` alongside the production build before handoff.
