@@ -197,40 +197,40 @@ export const serviceBySlug = (slug: ServiceSlug) => {
 };
 
 /**
- * Additional capabilities carried over from the previous aetassecurity.com.
- * Each one renders only after business approval: set `confirmed: true` once
- * Sir Rob confirms it (CONTENT-TODO.md).
+ * Additional services from the previous aetassecurity.com, listed the way that
+ * site listed them (heading and one-line description, wording kept close to
+ * the original). Shown on the homepage and the services hub.
  */
 export interface Capability {
   title: string;
   body: string;
-  confirmed: boolean;
+  icon: 'clock' | 'siren' | 'soc' | 'compliance' | 'co-management';
 }
 
 export const capabilities: Capability[] = [
   {
-    title: '24/7 threat monitoring and response',
-    body: 'Around-the-clock monitoring, with detected threats investigated and acted on, not just reported.',
-    confirmed: false,
+    title: 'Around-the-clock threat monitoring and response',
+    body: 'We don’t just detect threats, we act, stopping incidents.',
+    icon: 'clock',
   },
   {
     title: 'Proactive incident response',
-    body: 'When threats are detected, our team responds, so you never face an attack alone.',
-    confirmed: false,
+    body: 'When threats are detected, we respond, so you never face an attack alone.',
+    icon: 'siren',
   },
   {
     title: 'Security Operations Center (SOC)',
-    body: 'Expert-led monitoring and incident handling by a dedicated team.',
-    confirmed: false,
+    body: 'Expert-led, round-the-clock monitoring and incident handling by a dedicated team.',
+    icon: 'soc',
   },
   {
     title: 'Regulatory compliance assistance',
     body: 'Helping you meet regulatory and auditing standards.',
-    confirmed: false,
+    icon: 'compliance',
   },
   {
     title: 'Co-management of security controls',
-    body: 'Security strategies that fit your specific business requirements, including co-management of security controls.',
-    confirmed: false,
+    body: 'Security strategies personalized to fit your specific business requirements, including co-management of security controls.',
+    icon: 'co-management',
   },
 ];

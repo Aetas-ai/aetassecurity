@@ -5,12 +5,11 @@ import PartnerMarquee from '../components/PartnerMarquee.astro';
 import Button from '../components/Button.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ServiceFaqSection from '../components/ServiceFaqSection.astro';
+import CapabilitiesSection from '../components/CapabilitiesSection.astro';
 import { demoLink } from '../data/navigation';
-import { capabilities } from '../data/services';
 import { engagementSteps, pillars } from '../data/approach';
 import { homeFaqs } from '../data/service-faqs';
 
-const confirmedCapabilities = capabilities.filter((capability) => capability.confirmed);
 ---
 
 <Layout
@@ -22,7 +21,9 @@ const confirmedCapabilities = capabilities.filter((capability) => capability.con
 
   <PartnerMarquee />
 
-  <section class="agi-section" aria-labelledby="why-heading">
+  <CapabilitiesSection />
+
+  <section class="agi-band agi-section" aria-labelledby="why-heading">
     <div class="mx-auto max-w-7xl">
       <SectionHeading id="why-heading" title="Why Aetas Security." />
       <ul class="mt-12 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -37,7 +38,7 @@ const confirmedCapabilities = capabilities.filter((capability) => capability.con
     </div>
   </section>
 
-  <section class="agi-band agi-section" aria-labelledby="engagement-heading">
+  <section class="agi-section" aria-labelledby="engagement-heading">
     <div class="mx-auto max-w-7xl">
       <SectionHeading id="engagement-heading" title="How engagements start." lede="Every engagement starts with a clear scope and named owners." />
       <ol class="agi-steps mt-12" style="--steps: 4">
@@ -50,22 +51,6 @@ const confirmedCapabilities = capabilities.filter((capability) => capability.con
       </ol>
     </div>
   </section>
-
-  {confirmedCapabilities.length > 0 && (
-    <section class="agi-section" aria-labelledby="capabilities-heading">
-      <div class="mx-auto max-w-7xl">
-        <SectionHeading id="capabilities-heading" title="Protection shaped around your business." />
-        <ul class="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {confirmedCapabilities.map((capability) => (
-            <li class="agi-card agi-card--dark">
-              <h3 class="font-display text-lg font-semibold text-white">{capability.title}</h3>
-              <p class="mt-2 text-sm leading-relaxed text-muted">{capability.body}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )}
 
   <ServiceFaqSection id="home" label="Aetas Security" items={homeFaqs} />
 

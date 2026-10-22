@@ -4,6 +4,7 @@ import PageHero from '../../components/PageHero.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import ServiceIcon from '../../components/ServiceIcon.astro';
 import Button from '../../components/Button.astro';
+import CapabilitiesSection from '../../components/CapabilitiesSection.astro';
 import { demoLink } from '../../data/navigation';
 import { services } from '../../data/services';
 
@@ -93,7 +94,9 @@ const fit = [
     </section>
   ))}
 
-  <section class="agi-section" aria-labelledby="fit-heading">
+  <CapabilitiesSection id="more-services" />
+
+  <section class="agi-band agi-section" aria-labelledby="fit-heading">
     <div class="mx-auto max-w-7xl">
       <SectionHeading id="fit-heading" title="Which service fits?" lede="Start from the situation you are in." />
       <ul class="mt-10 divide-y divide-[var(--line-subtle)] border-y border-[var(--line-subtle)]">
@@ -107,7 +110,7 @@ const fit = [
     </div>
   </section>
 
-  <section class="agi-band agi-section" aria-labelledby="services-cta-heading">
+  <section class="agi-section" aria-labelledby="services-cta-heading">
     <SectionHeading
       id="services-cta-heading"
       align="center"
