@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import PartnerMarquee from '../components/PartnerMarquee.astro';
+import ThreatRadar from '../components/ThreatRadar.astro';
 import Button from '../components/Button.astro';
 import { demoLink } from '../data/navigation';
 import { engagementSteps, expertSteps, principles } from '../data/approach';
@@ -23,12 +24,18 @@ import { engagementSteps, expertSteps, principles } from '../data/approach';
 
   <section id="expert-in-the-loop" class="agi-section" aria-labelledby="expert-heading">
     <div class="mx-auto max-w-7xl">
-      <SectionHeading
-        id="expert-heading"
-        eyebrow="Expert in the Loop"
-        title="AI-assisted detection, with experts in control."
-        lede="Aetas Security applies Human Led AI to help detect and prioritize threats, with Expert Human Oversight of AI (Expert in the Loop). AI supports the analyst; it does not act on your environment by itself."
-      />
+      <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+        <SectionHeading
+          id="expert-heading"
+          class="lg:col-span-7"
+          eyebrow="Expert in the Loop"
+          title="AI-assisted detection, with experts in control."
+          lede="Aetas Security applies Human Led AI to help detect and prioritize threats, with Expert Human Oversight of AI (Expert in the Loop). AI supports the analyst; it does not act on your environment by itself."
+        />
+        <div class="lg:col-span-5">
+          <ThreatRadar />
+        </div>
+      </div>
       <ol class="agi-steps mt-12" style="--steps: 4">
         {expertSteps.map(([title, body]) => (
           <li class="agi-step">

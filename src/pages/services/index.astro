@@ -42,7 +42,31 @@ const fit = [
     primaryExternal
     secondaryLabel="Contact us"
     secondaryHref="/contact"
-  />
+  >
+    <figure slot="aside" class="services-map">
+      <figcaption class="agi-label">Aetas Security services</figcaption>
+      {groups.map((group) => (
+        <div class="services-map-group">
+          <p class="agi-eyebrow">{group.title}</p>
+          <ul>
+            {group.items.map((service) => (
+              <li>
+                <a href={`/services/${service.slug}`} class="services-map-tile as-chamfer">
+                  <span class="nav-service-icon h-8 w-8 flex-none">
+                    <ServiceIcon service={service.icon} class="h-4 w-4" />
+                  </span>
+                  <span class="min-w-0">
+                    <span class="block font-display text-[0.9375rem] font-semibold text-white">{service.shortName}</span>
+                    <span class="block text-xs leading-snug text-gray-400">{service.focus.join(' · ')}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </figure>
+  </PageHero>
 
   {groups.map((group, index) => (
     <section id={group.id} class:list={['agi-section', index % 2 === 1 && 'agi-band']} aria-labelledby={`${group.id}-heading`}>
@@ -97,3 +121,59 @@ const fit = [
     </SectionHeading>
   </section>
 </Layout>
+
+<style>
+  .services-map {
+    position: relative;
+    display: flex;
+    width: min(100%, 24rem);
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-inline: auto;
+    padding: 1.5rem;
+  }
+
+  /* Reticle corners, matching the radar and the service diagrams. */
+  .services-map::before,
+  .services-map::after {
+    position: absolute;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 0 solid var(--color-accent);
+    content: '';
+  }
+
+  .services-map::before {
+    top: 0;
+    left: 0;
+    border-width: 2px 0 0 2px;
+  }
+
+  .services-map::after {
+    right: 0;
+    bottom: 0;
+    border-width: 0 2px 2px 0;
+  }
+
+  .services-map-group ul {
+    grid-template-columns: minmax(0, 1fr);
+    display: grid;
+    gap: 0.625rem;
+    margin-top: 0.75rem;
+  }
+
+  .services-map-tile {
+    --panel-cut: var(--cut-sm);
+    --panel-fill: var(--surface-2);
+    --panel-line: var(--line-strong);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .services-map-tile:hover {
+    --panel-fill: var(--surface-3);
+    --panel-line: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+</style>

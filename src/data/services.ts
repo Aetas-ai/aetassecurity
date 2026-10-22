@@ -31,6 +31,8 @@ export interface ServiceDetail {
   heroLede: string;
   cta: { label: string; href: string; external: boolean };
   focus: string[];
+  /** Hero diagram: the process as connected nodes, with an optional highlighted gate after one node. */
+  diagram: { nodes: string[]; gate?: { after: number; label: string } };
   coverageTitle: string;
   coverage: { title: string; body: string }[];
   steps: [string, string][];
@@ -58,6 +60,7 @@ export const services: ServiceDetail[] = [
     heroLede: 'Managed Extended Detection and Response (MXDR) provides continuous detection, investigation, response, and escalation guided by experienced security professionals, with analyst approval before containment.',
     cta: { label: demoLink.label, href: demoLink.href, external: true },
     focus: ['Monitor', 'Investigate', 'Respond', 'Document'],
+    diagram: { nodes: ['Monitor', 'Investigate', 'Respond', 'Document'], gate: { after: 1, label: 'Analyst approval' } },
     coverageTitle: 'Detection across the places attacks start.',
     coverage: [
       { title: 'Endpoints', body: 'Detections from workstations and servers, investigated with the surrounding process and host activity.' },
@@ -105,6 +108,7 @@ export const services: ServiceDetail[] = [
     heroLede: 'Network Security Testing is an Offensive Security engagement focused on network exposure, configuration weaknesses, and potential attack paths.',
     cta: { label: 'Scope a test', href: contactFor('network-testing'), external: false },
     focus: ['Network exposure', 'Configuration weaknesses', 'Potential attack paths'],
+    diagram: { nodes: ['Scope', 'Discovery', 'Testing', 'Reporting', 'Findings review'], gate: { after: 0, label: 'Rules of engagement agreed' } },
     coverageTitle: 'What a network test examines.',
     coverage: [
       { title: 'External network', body: 'Internet-facing systems and services, tested for weaknesses an outside attacker could find.' },
@@ -151,6 +155,7 @@ export const services: ServiceDetail[] = [
     heroLede: 'Application Security Testing (Pen Testing) is an Offensive Security engagement focused on identifying and documenting security weaknesses in your applications.',
     cta: { label: 'Scope a test', href: contactFor('application-testing'), external: false },
     focus: ['Web applications', 'APIs', 'Authentication and access control'],
+    diagram: { nodes: ['Scope', 'Discovery', 'Testing', 'Reporting', 'Findings review'], gate: { after: 0, label: 'Rules of engagement agreed' } },
     coverageTitle: 'What an application test examines.',
     coverage: [
       { title: 'Web applications', body: 'The application as your users see it, including its business logic.' },

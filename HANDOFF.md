@@ -54,7 +54,10 @@ Left out (not used by this site): the scroll-reveal system, Bob and the loading 
 - `src/data/partner-logos.ts`: the 7 approved cybersecurity partners (same as aetas.ai), plus `partnerPortalUrl`.
 - `src/data/demos.ts`: simulated MXDR data.
 - `src/components/ServicePage.astro`: the shared service page template, rendered by `src/pages/services/[slug].astro` with `Service` structured data.
-- `src/components/HomeHero.astro`, `ThreatRadar.astro`, `PartnerMarquee.astro`: the homepage hero, its radar, and the partner strip.
+- `src/components/HomeHero.astro` and `ShieldMark.astro`: the homepage hero (line-drawn shield, headline, CTAs, and a strip linking the three service pages).
+- `src/components/ServiceDiagram.astro`: the process diagram in each service page hero (`diagram` in `src/data/services.ts`); the services hub hero shows the services as linked tiles.
+- `src/components/ThreatRadar.astro`: the radar, now beside Expert in the Loop on About.
+- `src/components/PartnerMarquee.astro`: the partner strip.
 - `src/pages/index.astro` (overview and conversion), `services/index.astro` (hub), `about.astro`, `partners.astro`, `contact.astro`, `contact/thanks.astro`, `legal/*`, `404.astro`.
 - `src/lib/server/*`, `src/pages/api/forms/{csrf,contact}.ts`, `src/scripts/secure-forms.ts`, `src/components/FormSubmitButton.astro`, `src/middleware.ts`: the secure contact form (see "Contact form").
 - `scripts/security-policy.mjs`: CSP, security headers, `CANONICAL_ORIGIN`, and the `REDIRECTS` map.
@@ -81,8 +84,9 @@ Aetas Security has its own visual identity ("command center"); only the stack, t
 - **Type:** Saira (`@fontsource-variable/saira`, weight axis) for headings and labels at weight 600, solid colour; Inter for body; system monospace only for demo data.
 - **Shape:** chamfered (cut-corner) panels and buttons from the shield logo. `--cut` / `--cut-sm` set the cut; the shape and its 1px edge are drawn on `::before` (`.agi-card--dark`, `.agi-btn--dark-*`, or `.as-chamfer` with `--panel-fill` / `--panel-line`), so focus outlines are never clipped. Reticle corner brackets frame the radar and the demo window. Radii are 2px.
 - **Labels:** sentence case, only where they name the content (MXDR, Offensive Security, Expert in the Loop). Numbers only for real sequences (MXDR stages, Expert in the Loop steps, MSP onboarding).
-- **Motion:** one orchestrated moment, the hero `ThreatRadar`: the sweep passes a blip, which shows as Detected, then Analyst review, then Contained after approval (Expert in the Loop). The partner marquee and the demo are the only other motion. All three pause off-screen (`data-motion`); under reduced motion the radar is static, the marquee is a wrapped row, and the demo uses Previous/Next. There are no scroll reveals.
-- **Background:** a faint "monitored network" map. Page heroes use `NetworkBackdrop.astro` (inline SVG, masked away from the text column; a few nodes pulse, and on inner pages a short signal travels one path in the logo gradient; the homepage has pulses only so the radar leads). Section bands (`.agi-band`) use the static tile `public/backdrop/network-tile.svg`, faded toward the centre. Legal pages and long text sit on plain navy. Never put the map behind body text; it pauses off-screen and is static under reduced motion.
+- **Heroes:** the homepage hero is centred on the shield from the logo (`ShieldMark.astro`, traced from the logo master), which draws itself once and then glows softly, above the headline, CTAs, and a strip linking the three service pages. Service page heroes show the process as a diagram (`ServiceDiagram.astro`) with a highlighted gate (MXDR: analyst approval; testing: rules of engagement agreed) and a signal travelling down the chain; the hub hero shows the services as linked tiles.
+- **Motion:** each page has one main moment: the shield draw on the homepage, the diagram signal on service pages, and the `ThreatRadar` beside Expert in the Loop on About (Detected, then Analyst review, then Contained after approval). The partner marquee and the demo are the only other motion. All pause off-screen (`data-motion`); under reduced motion they are static (the marquee becomes a wrapped row and the demo uses Previous/Next). There are no scroll reveals.
+- **Background:** a faint "monitored network" map. Inner page heroes use `NetworkBackdrop.astro` (inline SVG, masked away from the text column; a few nodes pulse, and where the hero has no diagram a short signal travels one path in the logo gradient). The homepage hero uses a soft pool of logo-coloured light behind the shield instead. Section bands (`.agi-band`) use the static tile `public/backdrop/network-tile.svg`, faded toward the centre. Legal pages and long text sit on plain navy. Never put the map behind body text; it pauses off-screen and is static under reduced motion.
 - `accent-ai|security|global|governance` remain aliases of the accent so copied markup keeps working.
 
 ## Partners
@@ -97,12 +101,12 @@ One `MxdrConsole` window on `/services/mxdr` ("Follow a detection to containment
 
 | Route | Purpose |
 |---|---|
-| `/` | Overview and conversion: hero with radar, partner strip, the three services, "Why Aetas Security", how engagements start, FAQ, CTA |
+| `/` | Overview and conversion: shield hero with the service strip, partner strip, "Why Aetas Security", how engagements start, FAQ, CTA |
 | `/services` | Hub: Detection and response, Offensive Security (`#offensive-security`), "Which service fits?" |
 | `/services/mxdr` | Managed Extended Detection and Response (MXDR), with the simulated demo |
 | `/services/network-security-testing` | Network Security Testing |
 | `/services/application-security-testing` | Application Security Testing (Pen Testing) |
-| `/about` | Practice-of-AGI statement, Expert in the Loop (`#expert-in-the-loop`), principles, engagement model, partners, AGI links |
+| `/about` | Practice-of-AGI statement, Expert in the Loop (`#expert-in-the-loop`) with the threat radar, principles, engagement model, partners, AGI links |
 | `/partners` | The 7 approved partners and the MSP programme |
 | `/contact` | Secure form, booking link, email, phone, what happens next; `?service=mxdr|network-testing|application-testing|msp-partnership|general` preselects the picker |
 | `/contact/thanks` | `noindex` confirmation, excluded from the sitemap |

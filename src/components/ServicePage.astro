@@ -9,6 +9,7 @@ import PageHero from './PageHero.astro';
 import SectionHeading from './SectionHeading.astro';
 import ServiceFaqSection from './ServiceFaqSection.astro';
 import ServiceIcon from './ServiceIcon.astro';
+import ServiceDiagram from './ServiceDiagram.astro';
 import Button from './Button.astro';
 import MxdrConsole from './demos/MxdrConsole';
 import { serviceBySlug, type ServiceDetail } from '../data/services';
@@ -46,9 +47,9 @@ const serviceNode = {
     primaryExternal={service.cta.external}
     secondaryLabel={service.cta.external ? 'Contact us' : undefined}
     secondaryHref={service.cta.external ? contactHref : undefined}
-    focusLabel="Service focus"
-    focusItems={service.focus}
-  />
+  >
+    <ServiceDiagram slot="aside" title={`How ${service.shortName} runs`} nodes={service.diagram.nodes} gate={service.diagram.gate} />
+  </PageHero>
 
   <section class="agi-section" aria-labelledby="coverage-heading">
     <div class="mx-auto max-w-7xl">
