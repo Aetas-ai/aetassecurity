@@ -204,33 +204,34 @@ export const serviceBySlug = (slug: ServiceSlug) => {
 export interface Capability {
   title: string;
   body: string;
-  icon: 'clock' | 'siren' | 'soc' | 'compliance' | 'co-management';
+  /** Anchor on the services hub (/services#<id>) and the icon key. */
+  id: 'threat-monitoring' | 'incident-response' | 'soc' | 'compliance' | 'co-management';
 }
 
 export const capabilities: Capability[] = [
   {
     title: 'Around-the-clock threat monitoring and response',
     body: 'We don’t just detect threats, we act, stopping incidents.',
-    icon: 'clock',
+    id: 'threat-monitoring',
   },
   {
     title: 'Proactive incident response',
     body: 'When threats are detected, we respond, so you never face an attack alone.',
-    icon: 'siren',
+    id: 'incident-response',
   },
   {
     title: 'Security Operations Center (SOC)',
     body: 'Expert-led, round-the-clock monitoring and incident handling by a dedicated team.',
-    icon: 'soc',
+    id: 'soc',
   },
   {
     title: 'Regulatory compliance assistance',
     body: 'Helping you meet regulatory and auditing standards.',
-    icon: 'compliance',
+    id: 'compliance',
   },
   {
     title: 'Co-management of security controls',
     body: 'Security strategies personalized to fit your specific business requirements, including co-management of security controls.',
-    icon: 'co-management',
+    id: 'co-management',
   },
 ];

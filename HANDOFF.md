@@ -47,7 +47,7 @@ Left out (not used by this site): the scroll-reveal system, Bob and the loading 
 
 ## Important Files
 
-- `src/data/navigation.ts`: header, mobile, and footer links (Services menu, About, Partners, Contact), contact details (phone, email, booking URL), social links.
+- `src/data/navigation.ts`: header, mobile, and footer links (Services menu, About, Partners, Contact), contact details (phone, email, booking URL), social links. The Services menu has three columns (Detection and response, Offensive Security, Compliance and co-management); every item opens its own service page or its card on the hub (`/services#<id>`, ids from `capabilities`), and the card is highlighted on arrival. Keep menu items pointing only at pages or hub cards.
 - `src/data/services.ts`: `services`, the content of each service page (hero, CTA, coverage, steps, oversight, deliverables, FAQs, related), and `capabilities`, the five additional services from the old site (shown by `CapabilitiesSection.astro` on the homepage and the services hub).
 - `src/data/approach.ts`: homepage pillars, Expert in the Loop steps, principles, engagement steps, and the contact page's "what happens next".
 - `src/data/service-faqs.ts`: homepage FAQs.
