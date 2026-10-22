@@ -2,18 +2,23 @@
 @import "./product-ui.css";
 
 @theme {
-  --color-brand-bg: #08090a;
-  --color-surface-dark: #0c0d0e;
-  --color-surface-dark-raised: #111214;
+  --color-brand-bg: #050b16;
+  --color-surface-dark: #08111f;
+  --color-surface-dark-raised: #0d1a2e;
   --color-surface-light: #f5f5f6;
   --color-surface-light-muted: #ececee;
   --color-ink: #0f1011;
   --color-ink-muted: #55585e;
   --color-line-light: #dcdde0;
 
-  /* Duotone: neutrals plus ONE accent, used sparingly. The former service
-     accent names are aliases so existing classes keep working. */
+  /* Navy surfaces plus ONE cyan accent for UI. The logo's cyan-to-blue
+     gradient (--brand-gradient) is reserved for signature moments: the hero
+     radar, the MXDR pipeline line, and the header CTA edge. The former
+     service accent names are aliases so existing classes keep working. */
   --color-accent: #3aaee0;
+  --color-logo-blue: #2f6bff; /* decorative only, never text */
+  --color-detected: #f0523d; /* status only, always paired with a text label */
+  --color-review: #f5a524; /* status only, always paired with a text label */
   --color-accent-ink: #0b6f9c;
   --color-accent-text: #8fd3f2;
   --color-ai: var(--color-accent);
@@ -21,37 +26,37 @@
   --color-global: var(--color-accent);
   --color-governance: var(--color-accent);
 
-  /* Neutral (not blue-tinted) greys, so existing text-gray-* classes match. */
-  --color-gray-100: #f7f8f8;
-  --color-gray-200: #e4e5e7;
-  --color-gray-300: #d0d3d8;
-  --color-gray-400: #b4b8bf;
-  --color-gray-500: #8a8f98;
-  --color-gray-600: #62666d;
-  --color-gray-700: #3e4147;
-  --color-gray-800: #23252a;
-  --color-gray-900: #141516;
+  /* Navy-tinted greys, so existing text-gray-* classes sit on the navy surfaces. */
+  --color-gray-100: #e6f1f9;
+  --color-gray-200: #cfdde9;
+  --color-gray-300: #b3c4d4;
+  --color-gray-400: #9badc0;
+  --color-gray-500: #8a9bb0;
+  --color-gray-600: #5d6f84;
+  --color-gray-700: #34465c;
+  --color-gray-800: #1c2b40;
+  --color-gray-900: #0d1626;
 
   --font-weight-bold: 600;
-  --font-display: "Inter Variable", "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Saira Variable", "Saira", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter Variable", "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
 
   /* Fluid type scale: one source for display, section, and card headings. */
   --text-display: clamp(2.5rem, 1.55rem + 3.9vw, 4.5rem);
   --text-display--line-height: 1.04;
-  --text-display--letter-spacing: -0.04em;
+  --text-display--letter-spacing: -0.02em;
   --text-h2: clamp(2rem, 1.4rem + 2.3vw, 3.25rem);
   --text-h2--line-height: 1.08;
-  --text-h2--letter-spacing: -0.032em;
+  --text-h2--letter-spacing: -0.015em;
   --text-h3: clamp(1.25rem, 1.12rem + 0.45vw, 1.5rem);
   --text-h3--line-height: 1.25;
-  --text-h3--letter-spacing: -0.015em;
+  --text-h3--letter-spacing: -0.005em;
   --text-lede: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
   --text-lede--line-height: 1.65;
 
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
-  --radius-card: 0.75rem;
+  --radius-card: 0.125rem;
 }
 
 /* Metric-matched fallback keeps text from shifting when Inter arrives. */
@@ -74,17 +79,22 @@
     --shadow-card-light: 0 1px 2px rgba(15, 23, 42, 0.04), 0 18px 45px -30px rgba(15, 23, 42, 0.34);
     --shadow-card-light-hover: 0 1px 2px rgba(15, 23, 42, 0.05), 0 26px 56px -30px rgba(15, 23, 42, 0.45);
     --shadow-card-dark: 0 18px 44px -34px rgba(0, 0, 0, 0.85);
-    --focus-ring: 2px solid rgba(255, 255, 255, 0.9);
-    --radius-control: 0.5rem;
-    --radius-window: 0.875rem;
+    --focus-ring: 2px solid #8fd3f2;
+    --radius-control: 0.125rem;
+    --radius-window: 0.125rem;
 
-    /* Dark-first elevation: page, band, raised panel, overlay. */
-    --surface-0: #08090a;
-    --surface-1: #0c0d0e;
-    --surface-2: #111214;
-    --surface-3: #17181b;
-    --line-subtle: rgba(255, 255, 255, 0.06);
-    --line-strong: rgba(255, 255, 255, 0.11);
+    /* Chamfered corners echo the facets of the Aetas Security shield. */
+    --cut: 0.875rem;
+    --cut-sm: 0.5rem;
+    --brand-gradient: linear-gradient(90deg, #22d3ee, #2f6bff);
+
+    /* Navy elevation: page, band, raised panel, overlay. */
+    --surface-0: #050b16;
+    --surface-1: #08111f;
+    --surface-2: #0d1a2e;
+    --surface-3: #13243d;
+    --line-subtle: rgba(143, 211, 242, 0.08);
+    --line-strong: rgba(143, 211, 242, 0.16);
     --shadow-window:
       0 0 0 1px rgba(0, 0, 0, 0.55),
       0 30px 70px -30px rgba(0, 0, 0, 0.95),
@@ -92,9 +102,9 @@
 
     /* Surface-aware text roles. Light surfaces redefine these below, so
        text-strong / text-muted read correctly wherever they are used. */
-    --surface-text: #f7f8f8;
-    --surface-text-muted: #8a8f98;
-    --surface-line: rgba(255, 255, 255, 0.08);
+    --surface-text: #e6f1f9;
+    --surface-text-muted: #8a9bb0;
+    --surface-line: rgba(143, 211, 242, 0.1);
   }
 
   /* Short laptop screens (wide but at most 900px tall, e.g. 1366×768, 1536×864) get
@@ -183,8 +193,8 @@
 
 /* The header becomes more solid once the page scrolls under it. */
 .site-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  background: rgba(8, 9, 10, 0.66);
+  border-bottom: 1px solid rgba(143, 211, 242, 0.06);
+  background: rgba(5, 11, 22, 0.7);
   backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
   transition:
@@ -194,8 +204,8 @@
 }
 
 .site-header[data-scrolled] {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-  background: rgba(8, 9, 10, 0.94);
+  border-bottom-color: rgba(143, 211, 242, 0.12);
+  background: rgba(5, 11, 22, 0.94);
   box-shadow: 0 12px 32px -20px rgba(0, 0, 0, 0.9);
 }
 
@@ -248,24 +258,25 @@
     padding-inline: 1.5rem;
   }
 
+  /* Sentence-case label, used only where it names the content (MXDR,
+     Offensive Security), led by a small chamfered tick from the shield. */
   .agi-eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 0.625rem;
-    color: var(--color-gray-500);
-    font-size: 0.75rem;
+    gap: 0.5rem;
+    color: var(--color-accent-text);
+    font-family: var(--font-display);
+    font-size: 0.875rem;
     font-weight: 600;
-    letter-spacing: 0.08em;
     line-height: 1.3;
-    text-transform: uppercase;
   }
 
   .agi-eyebrow::before {
-    width: 0.4rem;
-    height: 0.4rem;
+    width: 0.625rem;
+    height: 0.375rem;
     flex: none;
-    border-radius: 9999px;
     background: var(--color-accent);
+    clip-path: polygon(0.1875rem 0, 100% 0, calc(100% - 0.1875rem) 100%, 0 100%);
     content: '';
   }
 
@@ -287,12 +298,10 @@
     text-align: center;
   }
 
+  /* Solid headings in Saira; aetas.ai's white-to-grey fade is not used here. */
   .agi-section-heading h2,
   .agi-heading-fade {
-    background: linear-gradient(180deg, var(--surface-text) 40%, color-mix(in srgb, var(--surface-text) 64%, transparent));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--surface-text);
   }
 
   .agi-section-heading h2 {
@@ -327,12 +336,43 @@
     color: var(--surface-text);
   }
 
-  .agi-card--dark {
-    border-color: var(--line-subtle);
+  /* Chamfered panels: the cut-corner shape and its 1px edge are drawn on
+     ::before (clip-path + diagonal gradients), so the element itself stays
+     rectangular and its focus outline is never clipped. */
+  .agi-card--dark,
+  .agi-btn--dark-primary,
+  .agi-btn--dark-secondary,
+  .as-chamfer {
+    position: relative;
+    isolation: isolate;
+    border-color: transparent;
+    background: none;
+  }
+
+  .agi-card--dark::before,
+  .agi-btn--dark-primary::before,
+  .agi-btn--dark-secondary::before,
+  .as-chamfer::before {
+    --c: var(--panel-cut, var(--cut));
+    --edge: linear-gradient(to bottom right, transparent calc(50% - 0.75px), var(--panel-line, transparent) calc(50% - 0.75px) calc(50% + 0.75px), transparent calc(50% + 0.75px));
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 55%),
-      var(--surface-2);
-    box-shadow: var(--shadow-card-dark), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      var(--edge) top left / var(--c) var(--c) no-repeat,
+      var(--edge) bottom right / var(--c) var(--c) no-repeat,
+      var(--panel-fill, transparent);
+    box-shadow: inset 0 0 0 1px var(--panel-line, transparent);
+    clip-path: polygon(var(--c) 0, 100% 0, 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, 0 100%, 0 var(--c));
+    content: '';
+    pointer-events: none;
+    transition: background-color var(--duration-base) ease;
+  }
+
+  .agi-card--dark {
+    --panel-fill: var(--surface-2);
+    --panel-line: var(--line-strong);
+    box-shadow: none;
   }
 
   .agi-card--accent {
@@ -346,10 +386,9 @@
 
   .agi-card--dark.agi-card--accent::after {
     position: absolute;
-    inset: -1px 0 auto;
-    height: 1px;
-    border-radius: inherit;
-    background: linear-gradient(90deg, transparent, var(--accent) 30%, transparent 85%);
+    inset: 0 var(--cut) auto calc(var(--cut) + 1rem);
+    height: 2px;
+    background: var(--accent);
     content: '';
     pointer-events: none;
   }
@@ -367,10 +406,8 @@
 
   .agi-card--dark.agi-card--interactive:hover,
   .agi-card--dark.agi-card--interactive:focus-within {
-    border-color: color-mix(in srgb, var(--accent, #ffffff) 32%, rgba(255, 255, 255, 0.1));
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--accent, #ffffff) 6%, transparent), rgba(255, 255, 255, 0) 60%),
-      var(--surface-3);
+    --panel-fill: var(--surface-3);
+    --panel-line: color-mix(in srgb, var(--color-accent) 45%, transparent);
   }
 
   .agi-card-link {
@@ -387,14 +424,16 @@
     color: var(--accent-text, var(--surface-text));
   }
 
-  .agi-card-link::after {
-    content: '→';
-    transition: transform var(--duration-base) var(--ease-out-expo);
+  .agi-card-link {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: 0.3em;
+    transition: text-decoration-color var(--duration-base) ease;
   }
 
-  .agi-card-link:hover::after,
-  .agi-card--interactive:hover .agi-card-link::after {
-    transform: translateX(3px);
+  .agi-card-link:hover,
+  .agi-card--interactive:hover .agi-card-link {
+    text-decoration-color: currentColor;
   }
 
   /* Buttons: one shape and motion; tone picks the surface, accent the hue. */
@@ -435,25 +474,27 @@
     transform: translateX(3px);
   }
 
+  /* Cyan primary with navy text (7.8:1); chamfered like the shield. */
   .agi-btn--dark-primary {
-    background: #e6e6e6;
-    color: #08090a;
-    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.4);
+    --panel-cut: var(--cut-sm);
+    --panel-fill: var(--color-accent);
+    color: var(--surface-0);
   }
 
   .agi-btn--dark-primary:hover {
-    background: #ffffff;
+    --panel-fill: var(--color-accent-text);
   }
 
   .agi-btn--dark-secondary {
-    border-color: rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.04);
-    color: #ffffff;
+    --panel-cut: var(--cut-sm);
+    --panel-fill: rgba(143, 211, 242, 0.04);
+    --panel-line: rgba(143, 211, 242, 0.28);
+    color: var(--color-gray-100);
   }
 
   .agi-btn--dark-secondary:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.09);
+    --panel-fill: rgba(143, 211, 242, 0.1);
+    --panel-line: rgba(143, 211, 242, 0.5);
   }
 
   .agi-btn--light-primary {
@@ -493,7 +534,6 @@
     align-items: center;
     justify-content: center;
     border: 1px solid color-mix(in srgb, var(--accent, #ffffff) 35%, transparent);
-    border-radius: 9999px;
     background: color-mix(in srgb, var(--accent, #ffffff) 12%, transparent);
     color: var(--accent-text, #ffffff);
     font-family: var(--font-display);
@@ -608,39 +648,6 @@
   animation-play-state: paused !important;
 }
 
-/* Scroll reveals */
-.agi-reveal {
-  --agi-reveal-delay: 0ms;
-  opacity: 0;
-  transition:
-    opacity var(--duration-slow) var(--ease-out-expo) var(--agi-reveal-delay),
-    transform var(--duration-slow) var(--ease-out-expo) var(--agi-reveal-delay);
-}
-
-.agi-reveal-up { transform: translate3d(0, 1.25rem, 0); }
-.agi-reveal-left { transform: translate3d(-1.5rem, 0, 0); }
-.agi-reveal-right { transform: translate3d(1.5rem, 0, 0); }
-.agi-reveal-pop { transform: translate3d(0, 1rem, 0) scale(0.88); }
-
-.agi-reveal-visible {
-  opacity: 1;
-  transform: translate3d(0, 0, 0) scale(1);
-}
-
-.glass-panel {
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.glass-panel-hover:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  transform: translateY(-2px);
-}
-
 /* Section system. Dark-first: .section-dark-raised and .agi-band carry most
    pages; .section-light* is reserved for forms, legal, and editorial bands. */
 .section-light,
@@ -697,10 +704,5 @@
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
-  }
-
-  .agi-reveal {
-    opacity: 1;
-    transform: none;
   }
 }

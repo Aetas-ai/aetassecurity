@@ -1,0 +1,56 @@
+---
+/** Homepage hero: approved headline and calls to action beside the threat radar. */
+import Button from './Button.astro';
+import ThreatRadar from './ThreatRadar.astro';
+import { demoLink } from '../data/navigation';
+
+const headline = ['Detect threats.', 'Test defenses.', 'Strengthen resilience.'];
+---
+
+<section class="home-hero relative isolate overflow-hidden px-6" aria-labelledby="home-hero-title">
+  <div class="agi-grid-mask" aria-hidden="true"></div>
+
+  <div class="mx-auto grid w-full max-w-7xl items-center gap-12 py-14 sm:py-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 lg:py-12">
+    <div class="agi-hero-enter flex min-w-0 flex-col items-start gap-6">
+      <p class="agi-eyebrow">Advanced Cybersecurity Solutions for your business.</p>
+
+      <h1 id="home-hero-title" class="home-hero-title font-display font-semibold">
+        {headline.map((line) => <span class="block">{line}</span>)}
+      </h1>
+
+      <p class="max-w-xl text-lede text-gray-300">
+        Aetas Security, the cybersecurity practice of Aetas Global Innovation, provides Managed Extended Detection and Response (MXDR) and Offensive Security for monitoring, investigation, response, and security testing.
+      </p>
+
+      <div class="flex w-full flex-col gap-3 pt-1 sm:w-auto sm:flex-row sm:items-center">
+        <Button href={demoLink.href} external stretch>{demoLink.label}</Button>
+        <Button href="/contact" variant="secondary" stretch>Contact us</Button>
+      </div>
+    </div>
+
+    <ThreatRadar />
+  </div>
+</section>
+
+<style>
+  .home-hero {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - var(--site-header-height));
+    min-height: calc(100dvh - var(--site-header-height));
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .home-hero-title {
+    color: var(--color-gray-100);
+    font-size: var(--text-display);
+    letter-spacing: var(--text-display--letter-spacing);
+    line-height: 1.02;
+  }
+
+  @media (min-width: 1024px) and (max-height: 900px) {
+    .home-hero > div {
+      padding-block: 2rem;
+    }
+  }
+</style>

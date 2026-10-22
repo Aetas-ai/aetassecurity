@@ -36,7 +36,6 @@ const channels = [
 <Layout socialImage="contact" title="Contact Aetas Security" description="Contact Aetas Security about Managed Extended Detection and Response (MXDR), Network Security Testing, or Application Security Testing (Pen Testing). Request a demo, email, or call.">
   <PageHero
     breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Contact', href: '/contact' }]}
-    eyebrow="Contact"
     title="Talk to Aetas Security."
     description="Discuss Managed Extended Detection and Response (MXDR), Network Security Testing, or Application Security Testing (Pen Testing) with our cybersecurity specialists."
     accent="security"
@@ -44,7 +43,7 @@ const channels = [
   />
 
   <section class="agi-band agi-section" aria-label="Contact channels">
-    <ul class="mx-auto grid max-w-7xl grid-cols-1 gap-5 md:grid-cols-3" data-reveal-group>
+    <ul class="mx-auto grid max-w-7xl grid-cols-1 gap-5 md:grid-cols-3">
       {channels.map(({ Icon, title, body, href, label, external }) => (
         <li class="agi-card agi-card--dark agi-card--accent agi-card--interactive accent-security flex flex-col">
           <span class="nav-service-icon h-10 w-10 rounded-xl">

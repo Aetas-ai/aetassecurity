@@ -17,28 +17,13 @@ interface Props {
 const { logo, height, labelled = false, class: className } = Astro.props;
 ---
 
-{logo.kind === 'svg' ? (
-  <svg
-    class={className}
-    viewBox={logo.viewBox}
-    preserveAspectRatio="xMidYMid meet"
-    style={`height: ${height}; width: calc(${height} * ${logo.width / logo.height})`}
-    role={labelled ? 'img' : undefined}
-    aria-label={labelled ? logo.name : undefined}
-    aria-hidden={labelled ? undefined : 'true'}
-    focusable="false"
-  >
-    {logo.paths.map((path) => <path fill={path.fill} d={path.d} />)}
-  </svg>
-) : (
-  <img
-    class={className}
-    src={logo.src}
-    alt={labelled ? logo.name : ''}
-    width={logo.width}
-    height={logo.height}
-    style={`height: ${height}; width: auto`}
-    loading="lazy"
-    decoding="async"
-  />
-)}
+<img
+  class={className}
+  src={logo.src}
+  alt={labelled ? logo.name : ''}
+  width={logo.width}
+  height={logo.height}
+  style={`height: ${height}; width: auto`}
+  loading="lazy"
+  decoding="async"
+/>
