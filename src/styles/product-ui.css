@@ -514,6 +514,20 @@
     pointer-events: none;
   }
 
+  /* Royal-blue glow from one edge (after the Heimdal reference); bands
+     alternate sides so consecutive sections do not repeat. */
+  .agi-band {
+    background:
+      radial-gradient(48rem 26rem at 100% 0%, color-mix(in srgb, var(--glow-blue) 35%, transparent), transparent 70%),
+      var(--surface-1);
+  }
+
+  .agi-band:nth-of-type(even) {
+    background:
+      radial-gradient(48rem 26rem at 0% 100%, color-mix(in srgb, var(--glow-blue) 35%, transparent), transparent 70%),
+      var(--surface-1);
+  }
+
   .agi-band--deep {
     background: var(--surface-0);
   }

@@ -42,3 +42,34 @@ export const nextSteps: Pair[] = [
   ['Scoping conversation', 'We discuss your environment, goals, and constraints.'],
   ['Proposed scope', 'You receive a proposed scope with responsibilities, boundaries, and next steps.'],
 ];
+
+/**
+ * Homepage "Why it matters" framing and the AI-governance points beside
+ * Expert in the Loop (drafted, CONTENT-TODO.md #28). No statistics here:
+ * sourced figures go in `threatStats` (src/data/proof.ts).
+ */
+export const whyItMatters = {
+  title: 'Detection only helps when someone acts on it.',
+  body: [
+    'Alerts pile up, experienced analysts are hard to hire, and attackers look for the gaps between tools.',
+    'Aetas Security pairs Human Led AI with experienced security professionals, so detections are investigated, decisions are reviewed, and every action is documented.',
+  ],
+};
+
+export const governance: Pair[] = [
+  ['AI assists, people decide', 'AI helps correlate detections and summarize activity. It does not take containment actions on its own.'],
+  ['Approval before containment', 'Isolating a host or disabling an account waits for a security analyst’s approval, through your agreed escalation paths.'],
+  ['Every action documented', 'Decisions, actions, and outcomes are recorded, so your team can see what happened and why.'],
+];
+
+/**
+ * Rotating homepage hero taglines (src/scripts/hero-taglines.ts). Approved
+ * wording only; new lines go through CONTENT-TODO.md #29 first. The first
+ * one is the static line for screen readers, no-JS, and reduced motion.
+ */
+export const heroTaglines: string[] = [
+  'Monitor, investigate, respond, and document.',
+  'Human Led AI with Expert Human Oversight of AI.',
+  'Analyst approval before containment.',
+  'Network Security Testing and Application Security Testing (Pen Testing).',
+];

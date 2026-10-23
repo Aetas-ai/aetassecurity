@@ -1,8 +1,10 @@
 ---
 /**
  * Shared layout for each /services/<slug> page, driven by src/data/services.ts:
- * hero, coverage, process, expert oversight and deliverables, the MXDR demo
- * (MXDR only), FAQ, related services, and a closing call to action.
+ * hero, the urgent contact band (Incident Response), service metrics,
+ * coverage, process, expert oversight and deliverables, the MXDR demo (MXDR
+ * only), case studies, FAQ, related resources and services, and a closing
+ * call to action. Proof sections show slots in placeholder mode only.
  */
 import Layout from '../layouts/Layout.astro';
 import PageHero from './PageHero.astro';
@@ -11,7 +13,14 @@ import ServiceFaqSection from './ServiceFaqSection.astro';
 import ServiceIcon from './ServiceIcon.astro';
 import ServiceDiagram from './ServiceDiagram.astro';
 import Button from './Button.astro';
+import StatBand from './StatBand.astro';
+import CustomerStories from './CustomerStories.astro';
+import ResourceCard from './ResourceCard.astro';
+import ContentSlot from './ContentSlot.astro';
 import MxdrConsole from './demos/MxdrConsole';
+import { Mail, Phone } from 'lucide-react';
+import { contact } from '../data/navigation';
+import { getResourcesForService } from '../data/resources';
 import { serviceBySlug, type ServiceDetail } from '../data/services';
 
 interface Props {
@@ -23,6 +32,7 @@ const siteUrl = Astro.site ?? Astro.url.origin;
 const pageUrl = new URL(`/services/${service.slug}`, siteUrl).toString();
 const contactHref = `/contact?service=${service.formValue}`;
 const related = service.related.map(serviceBySlug);
+const resources = await getResourcesForService(service.slug);
 
 const serviceNode = {
   '@type': 'Service',
@@ -50,6 +60,31 @@ const serviceNode = {
   >
     <ServiceDiagram slot="aside" title={`How ${service.shortName} runs`} nodes={service.diagram.nodes} gate={service.diagram.gate} />
   </PageHero>
+
+  {service.urgent && (
+    <section class="urgent-band px-6 py-10" aria-labelledby="urgent-heading">
+      <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-6 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <h2 id="urgent-heading" class="font-display text-h3 font-semibold text-white">Under attack right now?</h2>
+          <p class="mt-2 text-[0.9375rem] leading-relaxed text-muted">Call or email us. Do not wait for a scheduled meeting.</p>
+        </div>
+        <ul class="flex flex-col gap-3 sm:flex-row lg:col-span-7 lg:justify-end">
+          <li><a href={contact.phoneHref} class="agi-btn agi-btn--dark-primary w-full sm:w-auto"><Phone className="h-4 w-4" strokeWidth={2} aria-hidden="true" focusable="false" />{contact.phone}</a></li>
+          <li><a href={`mailto:${contact.email}`} class="agi-btn agi-btn--dark-secondary w-full sm:w-auto"><Mail className="h-4 w-4" strokeWidth={2} aria-hidden="true" focusable="false" />{contact.email}</a></li>
+        </ul>
+        <ContentSlot class="lg:col-span-12" variant="inline" title="Emergency line and hours" expects="A staffed incident line and the hours it is answered; no 24/7 claim until confirmed" todo={23} />
+      </div>
+    </section>
+  )}
+
+  <StatBand
+    id={`${service.slug}-stats`}
+    stats={service.stats ?? []}
+    title={`${service.shortName} by the numbers.`}
+    todo={16}
+    slotTitle="Service metric"
+    slotExpects="A measured figure with its definition, e.g. a median time or a count over a stated period"
+  />
 
   <section class="agi-section" aria-labelledby="coverage-heading">
     <div class="mx-auto max-w-7xl">
@@ -113,7 +148,20 @@ const serviceNode = {
     </section>
   )}
 
+  <CustomerStories title={`${service.shortName} in practice.`} caseStudiesOnly />
+
   <ServiceFaqSection id={service.slug} label={service.shortName} items={service.faqs} />
+
+  {resources.length > 0 && (
+    <section class="agi-band agi-section" aria-labelledby="service-resources-heading">
+      <div class="mx-auto max-w-7xl">
+        <SectionHeading id="service-resources-heading" title="Related resources." />
+        <ul class="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
+          {resources.map((entry) => <li><ResourceCard entry={entry} /></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
 
   <section class="agi-section" aria-labelledby="related-heading">
     <div class="mx-auto max-w-7xl">

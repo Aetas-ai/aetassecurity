@@ -1,0 +1,29 @@
+---
+/**
+ * A labelled, dashed slot showing where approved content goes. Renders only in
+ * placeholder mode (src/data/site-flags.ts); the build fails if this markup
+ * reaches a production build with placeholders off.
+ */
+import { showPlaceholders } from '../data/site-flags';
+
+interface Props {
+  /** What belongs here, e.g. "Customer metric". */
+  title: string;
+  /** What the approved content looks like and who provides it. */
+  expects?: string;
+  /** Row in CONTENT-TODO.md. */
+  todo: number;
+  variant?: 'card' | 'stat' | 'logo' | 'inline';
+  class?: string;
+}
+
+const { title, expects, todo, variant = 'card', class: className } = Astro.props;
+---
+
+{showPlaceholders && (
+  <div class:list={['content-slot', `content-slot--${variant}`, className]} data-placeholder>
+    <span class="content-slot-tag">Placeholder · CONTENT-TODO #{todo}</span>
+    <span class="content-slot-title">{title}</span>
+    {expects && <span class="content-slot-expects">{expects}</span>}
+  </div>
+)}

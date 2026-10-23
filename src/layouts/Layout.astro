@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions';
 import SiteHeader from '../components/SiteHeader.astro';
 import MobileNav from '../components/MobileNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import AnnouncementBar from '../components/AnnouncementBar.astro';
 import { contact, social } from '../data/navigation';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/saira';
@@ -61,6 +62,7 @@ const structuredData = {
         'Aetas Security, the cybersecurity practice of Aetas Global Innovation, provides Managed Extended Detection and Response (MXDR) and Offensive Security.',
       knowsAbout: [
         'Managed Extended Detection and Response',
+        'Incident response',
         'Offensive Security',
         'Network Security Testing',
         'Application Security Testing',
@@ -134,6 +136,7 @@ const structuredData = {
     <MobileNav currentPath={currentPath} />
 
     <main class="min-w-0 w-full max-w-full flex-grow pt-[var(--site-header-height)]">
+      <AnnouncementBar />
       <slot />
     </main>
 
@@ -141,6 +144,9 @@ const structuredData = {
 
     <script>
       import { closeSiteNav, initSiteNav } from '../scripts/site-nav';
+      import { destroyHeroGlobe, initHeroGlobe } from '../scripts/hero-globe';
+      import { destroyHeroTaglines, initHeroTaglines } from '../scripts/hero-taglines';
+      import { destroyReveal, initReveal } from '../scripts/reveal';
 
       let motionObserver: IntersectionObserver | undefined;
 
@@ -164,11 +170,17 @@ const structuredData = {
         updateHeader();
         initMotionPausing();
         initSiteNav();
+        initHeroGlobe();
+        initHeroTaglines();
+        initReveal();
       });
 
       document.addEventListener('astro:before-preparation', () => {
         closeSiteNav();
         motionObserver?.disconnect();
+        destroyHeroGlobe();
+        destroyHeroTaglines();
+        destroyReveal();
       });
 
       document.addEventListener('astro:after-swap', () => {

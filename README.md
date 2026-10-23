@@ -5,6 +5,7 @@ Astro website for **Aetas Security**, the cybersecurity practice of Aetas Global
 The site presents:
 
 - **Managed Extended Detection and Response (MXDR)**: Monitor, Investigate, Respond, Document.
+- **Incident Response**: help during and before an incident; every "Experienced a breach?" link opens it.
 - **Offensive Security**: Network Security Testing and Application Security Testing (Pen Testing).
 - **Expert in the Loop**: Human Led AI with Expert Human Oversight of AI; analysts approve containment.
 
@@ -12,11 +13,12 @@ Read [HANDOFF.md](./HANDOFF.md) before changing positioning, services, partners,
 
 ## Current Experience
 
-- A centred hero built on the line-drawn shield from the logo, with the approved headline, CTAs, and a strip linking the three service pages; service pages show their process as a diagram in the hero
-- A strip of the 7 approved cybersecurity partner logos under the hero
-- MXDR and Offensive Security service cards, the Expert in the Loop step strip, an FAQ with `FAQPage` structured data, and an AGI cross-link band
-- One code-rendered, clearly simulated MXDR console (React island) below the hero
-- A services hub and a dedicated page per service (MXDR, Network Security Testing, Application Security Testing), built from one template with Service and FAQ structured data
+- A homepage structured after Arctic Wolf, Huntress, and CrowdStrike: shield hero with a breach link and a strip linking the four service pages, partner strip, practice metrics, "Why it matters", numbered value cards, services grouped by outcome, Expert in the Loop with AI-governance points, customer proof, certifications, engagement steps, FAQ, latest resources, and a closing CTA
+- A utility row above the header ("Experienced a breach?", phone, email) and an optional announcement bar
+- Proof sections (metrics, threat statistics, logos, testimonials, case studies, recognitions) that show labelled placeholder slots in development and staging, and nothing on the live site until real content is approved
+- One code-rendered, clearly simulated MXDR console (React island) on `/services/mxdr`
+- A services hub and a dedicated page per service (MXDR, Incident Response, Network Security Testing, Application Security Testing), built from one template with Service and FAQ structured data
+- A Resources hub (security advisories, blog, guides) from Markdown content collections, with `Article` structured data
 - An About page: the practice-of-AGI statement, Expert in the Loop, principles, and the engagement model
 - Partners page with the 7 approved cybersecurity partners and the MSP partner programme
 - Contact page with the secure form (sending off until activated), demo booking link, email, phone, and what happens next
@@ -33,8 +35,8 @@ Read [HANDOFF.md](./HANDOFF.md) before changing positioning, services, partners,
 - Tailwind CSS 4 through `@tailwindcss/vite`
 - Self-hosted Saira (headings) and Inter (body) variable fonts via Fontsource
 - Lucide React icons
-- `@astrojs/sitemap`; `zod` reserved for the Phase 2 form pipeline
-- CSS keyframes and Intersection Observer reveals (no animation library)
+- `@astrojs/sitemap`; `zod` for the contact form schema and the Resources content collection
+- CSS keyframes, one canvas (the hero globe), and small bundled scripts for taglines and scroll entrances; no animation library
 - Node's built-in test runner
 
 ## Project Structure
@@ -42,7 +44,8 @@ Read [HANDOFF.md](./HANDOFF.md) before changing positioning, services, partners,
 ```text
 src/
   components/        Astro components; demos/ holds the MXDR React island
-  data/              Navigation and contact details, services, partners, FAQs, demo data
+  content/resources/ Resources hub articles (Markdown)
+  data/              Navigation and contact details, services, proof content, placeholder switch, partners, FAQs, demo data
   layouts/           Shared layout, metadata, structured data, and scripts
   pages/             Astro routes
   scripts/           Header and mobile navigation behaviour
@@ -61,27 +64,31 @@ Aetas Security's own "command center" identity; see HANDOFF.md "Design System" f
 - Saira headings (weight 600, solid colour), Inter body, system monospace only for demo data.
 - Chamfered panels and buttons from the shield logo, drawn on `::before` so focus outlines stay visible; reticle corners frame the radar and the demo window; 2px radii.
 - Sentence-case labels only where they name content; numbering only for real sequences.
-- One main motion moment per page: the shield draw on the homepage, the diagram signal on service pages, and the threat radar (Detected, then Analyst review, then Contained after approval) on About. The partner marquee and the MXDR demo are the only other motion; all pause off-screen and respect `prefers-reduced-motion`. No scroll reveals.
-- A faint network-map background: animated lightly in inner page heroes (`NetworkBackdrop.astro`), a static tile on section bands, plain navy behind long text.
+- One main motion moment per page: the particle globe with the shield on the homepage (detections go Detected → Analyst approval → Contained; tilts toward the pointer), the diagram signal on service pages, and the threat radar on About. Typed hero taglines, hero atmospheres, the partner marquee, and the MXDR demo are the other motion, plus light scroll entrances below the fold. All infinite motion pauses off-screen, and everything respects `prefers-reduced-motion`.
+- Brighter royal-blue and cyan glow in heroes and bands (after the Heimdal reference), a faint network-map background in inner page heroes (`NetworkBackdrop.astro`), a static tile on section bands, plain navy behind long text.
 - Code-built visuals only. No stock or AI-generated imagery; at most one "Simulated" demo window per page, never in the hero.
 
 ## Routes
 
-- `/`, `/services`, `/services/mxdr`, `/services/network-security-testing`, `/services/application-security-testing`
+- `/`, `/services`, `/services/mxdr`, `/services/incident-response`, `/services/network-security-testing`, `/services/application-security-testing`
+- `/resources`, `/resources/<id>`
 - `/about`, `/partners`, `/contact`, `/contact/thanks` (noindex)
 - `/legal/privacy`, `/legal/terms`, 404 (branded, `noindex`, excluded from the sitemap)
 - `/api/forms/csrf`, `/api/forms/contact` (on-demand)
 
 ## Commands
 
+Requires Node.js 22.23.4 or newer (Astro 7.4).
+
 ```sh
-npm install
+npm ci
 npm run dev
 npm test
 npm run build
 npm start          # runs dist/server/entry.mjs after a build
-npm run og:generate
+npm run og:generate  # on Linux: BROWSER_PATH=/usr/bin/google-chrome npm run og:generate
 node scripts/check-form-security.mjs   # mocked form checks against the build
+PUBLIC_SHOW_PLACEHOLDERS=true npm run build   # staging build with placeholder slots
 ```
 
-`npm run build` runs the test suite before the Astro build. Run `git diff --check` alongside the production build before handoff.
+`npm run build` runs the test suite before the Astro build. Placeholder slots appear in `npm run dev`; a production build fails if any reach it. Run `git diff --check` alongside the production build before handoff.

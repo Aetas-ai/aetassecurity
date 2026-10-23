@@ -104,7 +104,7 @@ export const contactForm: FormDefinition = {
     'last-name': nameField('Last name'),
     email: emailField,
     company: textField('Company', 120),
-    service: z.enum(['mxdr', 'network-testing', 'application-testing', 'msp-partnership', 'general'], {
+    service: z.enum(['mxdr', 'incident-response', 'network-testing', 'application-testing', 'msp-partnership', 'general'], {
       error: 'Choose a valid service.',
     }),
     message: messageField('Requirements'),

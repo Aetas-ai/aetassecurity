@@ -31,7 +31,7 @@ export const serviceNav: ServiceNavItem[] = [
     blurb: 'Monitor, investigate, respond, and document, with analyst approval before containment.',
     capabilities: [
       { label: 'Threat monitoring and response', href: '/services#threat-monitoring', hint: 'Around the clock' },
-      { label: 'Proactive incident response', href: '/services#incident-response' },
+      { label: 'Incident Response', href: '/services/incident-response', hint: 'Proactive and active incidents' },
       { label: 'Security Operations Center (SOC)', href: '/services#soc' },
     ],
   },
@@ -62,10 +62,14 @@ export const serviceNav: ServiceNavItem[] = [
 export const servicesHubLink: NavLink = { label: 'View all services', href: '/services' };
 
 export const primaryNav: NavLink[] = [
+  { label: 'Resources', href: '/resources' },
   { label: 'About', href: '/about' },
   { label: 'Partners', href: '/partners' },
   { label: 'Contact', href: '/contact' },
 ];
+
+/** Breach entry point, shown in the utility bar, mobile menu, and footer. */
+export const breachLink: NavLink = { label: 'Experienced a breach?', href: '/services/incident-response' };
 
 /** [CONFIRM] booking URL with Sir Rob (CONTENT-TODO.md). */
 export const contact = {

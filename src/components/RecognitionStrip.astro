@@ -1,0 +1,35 @@
+---
+/**
+ * Certifications held, compliance frameworks supported, and awards. Only
+ * confirmed items; empty shows slots in placeholder mode and nothing live.
+ */
+import { BadgeCheck } from 'lucide-react';
+import ContentSlot from './ContentSlot.astro';
+import { showPlaceholders } from '../data/site-flags';
+import { recognitions } from '../data/proof';
+
+const visible = recognitions.length > 0 || showPlaceholders;
+---
+
+{visible && (
+  <section class="agi-section recognition" aria-labelledby="recognition-heading">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 lg:grid-cols-12">
+      <h2 id="recognition-heading" class="font-display text-h3 font-semibold text-white lg:col-span-3">Certifications and frameworks.</h2>
+      <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-9 lg:grid-cols-4">
+        {recognitions.length > 0
+          ? recognitions.map((item) => (
+              <li class="recognition-item as-chamfer">
+                <BadgeCheck className="h-5 w-5 flex-none text-[var(--color-accent-text)]" strokeWidth={1.75} aria-hidden="true" focusable="false" />
+                <span>
+                  <span class="block font-display text-[0.9375rem] font-semibold text-white">{item.name}</span>
+                  <span class="block text-xs text-muted">{item.detail}</span>
+                </span>
+              </li>
+            ))
+          : Array.from({ length: 4 }, () => (
+              <li><ContentSlot variant="inline" title="Certification, framework, or award" expects="Name and what it covers" todo={21} /></li>
+            ))}
+      </ul>
+    </div>
+  </section>
+)}

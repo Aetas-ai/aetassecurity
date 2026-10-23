@@ -1,9 +1,9 @@
 ---
 /**
  * The additional services from the previous aetassecurity.com (src/data/services.ts
- * `capabilities`), shown as a card grid on the homepage and the services hub.
+ * `capabilities`), shown as a card grid on the services hub.
  */
-import { ClipboardCheck, Clock, Handshake, MonitorCheck, Siren } from 'lucide-react';
+import { ClipboardCheck, Clock, Handshake, MonitorCheck } from 'lucide-react';
 import SectionHeading from './SectionHeading.astro';
 import { capabilities } from '../data/services';
 
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const { id = 'capabilities' } = Astro.props;
-const icons = { 'threat-monitoring': Clock, 'incident-response': Siren, soc: MonitorCheck, compliance: ClipboardCheck, 'co-management': Handshake };
+const icons = { 'threat-monitoring': Clock, soc: MonitorCheck, compliance: ClipboardCheck, 'co-management': Handshake };
 ---
 
 <section id={id} class="agi-section" aria-labelledby={`${id}-heading`}>
@@ -22,7 +22,7 @@ const icons = { 'threat-monitoring': Clock, 'incident-response': Siren, soc: Mon
       title="Protecting your business with advanced cybersecurity solutions."
       lede="A proactive, holistic approach, with protection customized to your business’s unique needs."
     />
-    <ul class="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+    <ul class="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
       {capabilities.map((capability) => {
         const Icon = icons[capability.id];
         return (

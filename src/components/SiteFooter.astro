@@ -1,6 +1,6 @@
 ---
 import ServiceIcon from './ServiceIcon.astro';
-import { contact, demoLink, legalLinks, primaryNav, serviceNav, social } from '../data/navigation';
+import { breachLink, contact, demoLink, legalLinks, primaryNav, serviceNav, social } from '../data/navigation';
 ---
 
 <footer class="site-footer">
@@ -13,7 +13,7 @@ import { contact, demoLink, legalLinks, primaryNav, serviceNav, social } from '.
           <img src="/logo.png" alt="Aetas Security" width="865" height="176" class="h-full w-full object-contain object-left" loading="lazy" decoding="async" />
         </a>
         <p class="mt-5 max-w-sm text-sm leading-relaxed text-gray-400">
-          Aetas Security provides Managed Extended Detection and Response (MXDR) and Offensive Security for organizations that need expert-led detection, response, and testing.
+          Aetas Security provides Managed Extended Detection and Response (MXDR), Incident Response, and Offensive Security for organizations that need expert-led detection, response, and testing.
         </p>
         <a href={demoLink.href} class="agi-btn agi-btn--dark-secondary mt-6 min-h-10 px-4 py-2" target="_blank" rel="noopener noreferrer">{demoLink.label}<span class="agi-btn-arrow" aria-hidden="true">↗</span><span class="sr-only">(opens in a new tab)</span></a>
       </div>
@@ -53,6 +53,7 @@ import { contact, demoLink, legalLinks, primaryNav, serviceNav, social } from '.
         <div>
           <h2 class="site-footer-heading">Contact</h2>
           <ul class="space-y-2.5">
+            <li><a href={breachLink.href} class="site-footer-breach">{breachLink.label}</a></li>
             <li><a href={contact.phoneHref} class="site-footer-link">{contact.phone}</a></li>
             <li><a href={`mailto:${contact.email}`} class="site-footer-link">{contact.email}</a></li>
           </ul>

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./product-ui.css";
+@import "./sections.css";
 
 @theme {
   --color-brand-bg: #050b16;
@@ -71,7 +72,11 @@
 
 @layer base {
   :root {
-    --site-header-height: 4rem;
+    /* Header = utility row (lg and up) + main row; main content and full-height
+       heroes offset by the total. */
+    --site-utility-height: 0rem;
+    --site-header-row: 4rem;
+    --site-header-height: calc(var(--site-header-row) + var(--site-utility-height));
     --duration-fast: 160ms;
     --duration-base: 220ms;
     --duration-slow: 560ms;
@@ -87,6 +92,9 @@
     --cut: 0.875rem;
     --cut-sm: 0.5rem;
     --brand-gradient: linear-gradient(90deg, #22d3ee, #2f6bff);
+    /* Background-only glow (heroes, bands), after the Heimdal reference. */
+    --glow-blue: rgba(47, 107, 255, 0.5);
+    --glow-cyan: rgba(34, 211, 238, 0.22);
 
     /* Navy elevation: page, band, raised panel, overlay. */
     --surface-0: #050b16;
@@ -105,6 +113,12 @@
     --surface-text: #e6f1f9;
     --surface-text-muted: #8a9bb0;
     --surface-line: rgba(143, 211, 242, 0.1);
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --site-utility-height: 2.25rem;
+    }
   }
 
   /* Short laptop screens (wide but at most 900px tall, e.g. 1366×768, 1536×864) get
