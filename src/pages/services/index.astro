@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import PageHero from '../../components/PageHero.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import ServiceIcon from '../../components/ServiceIcon.astro';
+import { Image } from 'astro:assets';
 import Button from '../../components/Button.astro';
 import CapabilitiesSection from '../../components/CapabilitiesSection.astro';
 import { demoLink } from '../../data/navigation';
@@ -76,7 +77,10 @@ const fit = [
         <SectionHeading id={`${group.id}-heading`} title={group.title} lede={group.lede} />
         <ul class:list={['mt-10 grid grid-cols-1 gap-5', group.items.length > 1 && 'md:grid-cols-2']}>
           {group.items.map((service) => (
-            <li class="agi-card agi-card--dark agi-card--interactive flex flex-col">
+            <li class="agi-card agi-card--dark agi-card--interactive service-photo-card flex flex-col">
+              <div class="service-card-photo">
+                <Image src={service.photo} alt="" widths={[480, 800, 1200]} quality={65} sizes="(min-width: 768px) 45vw, 100vw" loading="lazy" decoding="async" />
+              </div>
               <span class="nav-service-icon h-10 w-10">
                 <ServiceIcon service={service.icon} class="h-[1.125rem] w-[1.125rem]" />
               </span>

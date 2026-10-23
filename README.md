@@ -67,7 +67,7 @@ Aetas Security's own "command center" identity; see HANDOFF.md "Design System" f
 - One main motion moment per page: the particle globe with the shield on the homepage (detections go Detected → Analyst approval → Contained; tilts toward the pointer), the diagram signal on service pages, and the threat radar on About. Typed hero taglines, hero atmospheres, the partner marquee, and the MXDR demo are the other motion, plus light scroll entrances below the fold. All infinite motion pauses off-screen, and everything respects `prefers-reduced-motion`.
 - Brighter royal-blue and cyan glow in heroes and bands (after the Heimdal reference), a faint network-map background in inner page heroes (`NetworkBackdrop.astro`), a static tile on section bands, plain navy behind long text.
 - A homepage rhythm after Arctic Wolf and Heimdal: cool light sections with navy ink and white cards, vivid royal-blue bands for the services platform diagram (`PlatformDiagram.astro`) and the closing CTA, navy everywhere else.
-- Code-built visuals only. No stock or AI-generated imagery; at most one "Simulated" demo window per page, never in the hero.
+- Licensed stock photos (free Unsplash photos, credited in `src/assets/photos/CREDITS.md`) in service and About heroes, service-card headers, the homepage "Why it matters" frame (`Photo.astro`), and behind the closing CTA, tinted royal blue so they sit in the palette; diagrams and the globe stay code-built. No AI-generated imagery; at most one "Simulated" demo window per page, never in the hero.
 
 ## Routes
 

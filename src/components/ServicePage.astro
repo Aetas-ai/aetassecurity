@@ -11,6 +11,7 @@ import PageHero from './PageHero.astro';
 import SectionHeading from './SectionHeading.astro';
 import ServiceFaqSection from './ServiceFaqSection.astro';
 import ServiceIcon from './ServiceIcon.astro';
+import { Image } from 'astro:assets';
 import ServiceDiagram from './ServiceDiagram.astro';
 import Button from './Button.astro';
 import StatBand from './StatBand.astro';
@@ -51,6 +52,7 @@ const serviceNode = {
     eyebrow={service.group}
     title={service.heroTitle}
     description={service.heroLede}
+    image={service.photo}
     accent="security"
     primaryLabel={service.cta.label}
     primaryHref={service.cta.href}
@@ -168,7 +170,10 @@ const serviceNode = {
       <SectionHeading id="related-heading" title="Related services." />
       <ul class="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
         {related.map((item) => (
-          <li class="agi-card agi-card--dark agi-card--interactive flex flex-col">
+          <li class="agi-card agi-card--dark agi-card--interactive service-photo-card flex flex-col">
+            <div class="service-card-photo">
+              <Image src={item.photo} alt="" widths={[480, 800, 1200]} quality={65} sizes="(min-width: 768px) 45vw, 100vw" loading="lazy" decoding="async" />
+            </div>
             <span class="nav-service-icon h-10 w-10">
               <ServiceIcon service={item.icon} class="h-[1.125rem] w-[1.125rem]" />
             </span>

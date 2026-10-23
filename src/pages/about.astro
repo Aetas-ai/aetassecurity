@@ -6,6 +6,8 @@ import PartnerMarquee from '../components/PartnerMarquee.astro';
 import ThreatRadar from '../components/ThreatRadar.astro';
 import Button from '../components/Button.astro';
 import { demoLink } from '../data/navigation';
+// Licensed Unsplash photo (src/assets/photos/CREDITS.md).
+import aboutPhoto from '../assets/photos/about.jpg';
 import { engagementSteps, expertSteps, principles } from '../data/approach';
 ---
 
@@ -13,6 +15,7 @@ import { engagementSteps, expertSteps, principles } from '../data/approach';
   <PageHero
     breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'About', href: '/about' }]}
     title="Cybersecurity led by experts, with people in control."
+    image={aboutPhoto}
     description="Aetas Security, the cybersecurity practice of Aetas Global Innovation, provides Managed Extended Detection and Response (MXDR) and Offensive Security, guided by experienced security professionals."
     accent="security"
     compact

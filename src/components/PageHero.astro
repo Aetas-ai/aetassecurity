@@ -63,7 +63,9 @@ const heroId = `page-hero-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').repl
 >
   {image ? (
     <div class="absolute inset-0 -z-20">
-      <Image src={image} alt={imageAlt} widths={[640, 960, 1440]} sizes="100vw" class="h-full w-full object-cover object-center brightness-[0.3] saturate-[0.72] scale-[1.01]" loading="eager" decoding="async" fetchpriority="high" />
+      <Image src={image} alt={imageAlt} widths={[640, 960, 1440, 1920]} sizes="100vw" quality={55} class="h-full w-full object-cover object-center brightness-[0.75] saturate-[0.85] scale-[1.01]" loading="eager" decoding="async" fetchpriority="high" />
+      {/* Royal-blue tint pulls any stock photo into the brand palette; the scrim below keeps the text side readable. */}
+      <div class="absolute inset-0 bg-[linear-gradient(120deg,rgba(11,31,77,0.5),rgba(18,58,156,0.18))]" aria-hidden="true"></div>
     </div>
   ) : (
     <div class:list={['page-hero-light pointer-events-none absolute inset-0 -z-10', accentClass]} aria-hidden="true"></div>

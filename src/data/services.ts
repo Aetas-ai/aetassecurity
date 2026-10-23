@@ -7,7 +7,13 @@
  * is listed in CONTENT-TODO.md. Do not add metrics, certifications, response
  * times, guarantees, customers, or unconfirmed services.
  */
+import type { ImageMetadata } from 'astro';
 import type { FaqItem } from './service-faqs';
+// Licensed Unsplash photos (src/assets/photos/CREDITS.md): theme only, never "our team".
+import mxdrPhoto from '../assets/photos/mxdr.jpg';
+import incidentResponsePhoto from '../assets/photos/incident-response.jpg';
+import networkTestingPhoto from '../assets/photos/network-testing.jpg';
+import applicationTestingPhoto from '../assets/photos/application-testing.jpg';
 import type { Stat } from './proof';
 import { demoLink } from './navigation';
 
@@ -19,6 +25,8 @@ export type ServiceFormValue = 'mxdr' | 'incident-response' | 'network-testing' 
 export interface ServiceDetail {
   slug: ServiceSlug;
   icon: ServiceIconKey;
+  /** Hero background and services-hub card image (decorative). */
+  photo: ImageMetadata;
   formValue: ServiceFormValue;
   group: 'Detection and response' | 'Offensive Security';
   name: string;
@@ -52,6 +60,7 @@ const contactFor = (value: ServiceFormValue) => `/contact?service=${value}`;
 export const services: ServiceDetail[] = [
   {
     slug: 'mxdr',
+    photo: mxdrPhoto,
     icon: 'mxdr',
     formValue: 'mxdr',
     group: 'Detection and response',
@@ -100,6 +109,7 @@ export const services: ServiceDetail[] = [
   },
   {
     slug: 'incident-response',
+    photo: incidentResponsePhoto,
     icon: 'incident',
     formValue: 'incident-response',
     group: 'Detection and response',
@@ -150,6 +160,7 @@ export const services: ServiceDetail[] = [
   },
   {
     slug: 'network-security-testing',
+    photo: networkTestingPhoto,
     icon: 'network',
     formValue: 'network-testing',
     group: 'Offensive Security',
@@ -197,6 +208,7 @@ export const services: ServiceDetail[] = [
   },
   {
     slug: 'application-security-testing',
+    photo: applicationTestingPhoto,
     icon: 'application',
     formValue: 'application-testing',
     group: 'Offensive Security',
