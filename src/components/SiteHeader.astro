@@ -1,11 +1,12 @@
 ---
 /**
- * Fixed site header: logo, Services mega menu (disclosure pattern), primary
- * links, and the Request a demo CTA (external booking page). Behaviour lives
- * in src/scripts/site-nav.ts.
+ * Fixed site header: a utility row (breach entry point, phone, email; lg and
+ * up), then the logo, Services mega menu (disclosure pattern), primary links,
+ * and the Request a demo CTA (external booking page). Behaviour lives in
+ * src/scripts/site-nav.ts.
  */
 import ServiceIcon from './ServiceIcon.astro';
-import { demoLink, isActivePath, isServicesPath, primaryNav, serviceNav, servicesHubLink } from '../data/navigation';
+import { breachLink, contact, demoLink, isActivePath, isServicesPath, primaryNav, serviceNav, servicesHubLink } from '../data/navigation';
 
 interface Props {
   currentPath: string;
@@ -16,7 +17,17 @@ const servicesActive = isServicesPath(currentPath);
 ---
 
 <header class="site-header fixed inset-x-0 top-0 z-50">
-  <div class="site-header-row mx-auto flex h-[var(--site-header-height)] max-w-7xl items-center gap-6 px-4 sm:px-6">
+  <div class="site-utility hidden lg:block">
+    <div class="mx-auto flex h-full max-w-7xl items-center justify-end gap-6 px-6">
+      <a href={breachLink.href} class="site-utility-breach" aria-current={currentPath === breachLink.href ? 'page' : undefined}>
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 1.5 2.5 3.6v4c0 3.2 2.3 5.8 5.5 6.9 3.2-1.1 5.5-3.7 5.5-6.9v-4L8 1.5Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" /><path d="M8 5v3.5M8 10.6v.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+        {breachLink.label}
+      </a>
+      <a href={contact.phoneHref} class="site-utility-link">{contact.phone}</a>
+      <a href={`mailto:${contact.email}`} class="site-utility-link">{contact.email}</a>
+    </div>
+  </div>
+  <div class="site-header-row mx-auto flex h-[var(--site-header-row)] max-w-7xl items-center gap-6 px-4 sm:px-6">
     <a href="/" class="site-header-logo" aria-label="Aetas Security home">
       <img src="/logo.png" alt="Aetas Security" width="865" height="176" class="h-full w-full object-contain object-left" decoding="async" />
     </a>

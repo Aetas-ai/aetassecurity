@@ -1,6 +1,6 @@
 # Aetas Security Website Handoff
 
-Last updated: October 23, 2026 (dedicated service pages, About, secure contact form)
+Last updated: October 23, 2026 (reference-site rebuild: Incident Response page and breach entry point, homepage restructure, Resources hub, proof sections in placeholder mode; Heimdal/Layers-style hero with particle globe, typed taglines, brighter glow, and scroll entrances)
 
 This is the primary implementation and positioning reference for developers and coding assistants working on the Aetas Security website (www.aetassecurity.com). It is a sibling of the aetas.ai website (github.com/Aetas-ai/Aetas): same stack, security build, and writing rules, with its own visual identity.
 
@@ -15,6 +15,7 @@ This is the primary implementation and positioning reference for developers and 
 Services:
 
 - **Managed Extended Detection and Response (MXDR)**: Monitor, Investigate, Respond, Document.
+- **Incident Response**: the old site's "proactive incident response", now its own page and the target of the "Experienced a breach?" link.
 - **Offensive Security**: Network Security Testing and Application Security Testing (Pen Testing).
 - **Expert in the Loop**: AI-assisted detection is presented as Human Led AI with Expert Human Oversight of AI (Expert in the Loop). Analysts review findings and approve containment. Never imply fully autonomous AI.
 
@@ -33,11 +34,12 @@ Same as aetas.ai:
 - Do not name internal service-delivery platforms, ticketing systems, or tools.
 - Do not frame services around one vendor-specific platform.
 - Publish partner names and logos only after business approval.
-- When unsure, add a `[CONFIRM]` placeholder in code and track it in `CONTENT-TODO.md`. Unconfirmed items stay unpublished (flags off), not visible as placeholder text.
+- When unsure, add a `[CONFIRM]` placeholder in code and track it in `CONTENT-TODO.md`. Unconfirmed items stay unpublished on the live site.
+- **Placeholder mode.** Proof sections (metrics, threat statistics, customer logos, testimonials, case studies, recognitions, pricing note, announcement) and draft resources render as dashed, labelled slots (`ContentSlot.astro`, "Placeholder · CONTENT-TODO #n") so the team can see what goes where. Placeholder mode is on in `astro dev` and off in production builds unless `PUBLIC_SHOW_PLACEHOLDERS=true` (staging only; `src/data/site-flags.ts`). The build fails if placeholder markup (`data-placeholder`) appears while the switch is off. Slots never hold invented figures, names, or quotes.
 
 ## Technical Stack
 
-Matches aetas.ai: Astro 7 (prerendered pages, Node adapter), React 19 islands via `@astrojs/react`, Tailwind CSS 4 via `@tailwindcss/vite`, `@fontsource-variable/inter` plus `@fontsource-variable/saira` for headings, `lucide-react`, `@astrojs/sitemap`, `zod` (reserved for the Phase 2 form pipeline), Node >= 22.12. Not Next.js. No animation library; CSS keyframes only. Tests use Node's built-in test runner.
+Matches aetas.ai: Astro 7 (prerendered pages, Node adapter), React 19 islands via `@astrojs/react`, Tailwind CSS 4 via `@tailwindcss/vite`, `@fontsource-variable/inter` plus `@fontsource-variable/saira` for headings, `lucide-react`, `@astrojs/sitemap`, `zod` (the contact form schema), Astro content collections for Resources, Node >= 22.23.4 (required by Astro 7.4). Not Next.js. No animation library; CSS keyframes only. Tests use Node's built-in test runner.
 
 ## What Was Copied From aetas.ai, and What Was Left Out
 
@@ -48,17 +50,23 @@ Left out (not used by this site): the scroll-reveal system, Bob and the loading 
 ## Important Files
 
 - `src/data/navigation.ts`: header, mobile, and footer links (Services menu, About, Partners, Contact), contact details (phone, email, booking URL), social links. The Services menu has three columns (Detection and response, Offensive Security, Compliance and co-management); every item opens its own service page or its card on the hub (`/services#<id>`, ids from `capabilities`), and the card is highlighted on arrival. Keep menu items pointing only at pages or hub cards.
-- `src/data/services.ts`: `services`, the content of each service page (hero, CTA, coverage, steps, oversight, deliverables, FAQs, related), and `capabilities`, the five additional services from the old site (shown by `CapabilitiesSection.astro` on the homepage and the services hub).
-- `src/data/approach.ts`: homepage pillars, Expert in the Loop steps, principles, engagement steps, and the contact page's "what happens next".
+- `src/data/services.ts`: `services`, the content of each service page (hero, CTA, coverage, steps, oversight, deliverables, FAQs, related, optional `urgent` band and `stats`); `capabilities`, the four remaining additional services from the old site (shown by `CapabilitiesSection.astro` on the services hub); and `outcomes`, the homepage grouping of every service by outcome.
+- `src/data/approach.ts`: homepage pillars, "Why it matters" copy, Expert in the Loop steps and governance points, principles, engagement steps, and the contact page's "what happens next".
+- `src/data/proof.ts`: metrics, threat statistics, customer logos, testimonials, case studies, recognitions, pricing note, and announcement, all empty until approved. `src/data/site-flags.ts`: the placeholder switch.
+- `src/components/ContentSlot.astro`, `StatBand.astro`, `LogoWall.astro`, `CustomerStories.astro`, `RecognitionStrip.astro`, `AnnouncementBar.astro`: the proof sections; each renders real entries, slots in placeholder mode, or nothing.
+- `src/content.config.ts`, `src/content/resources/*.md`, `src/data/resources.ts`, `ResourceCard.astro`, `src/pages/resources/`: the Resources hub (advisories, blog, guides). Front matter: title, description, type, date, services, author, draft.
 - `src/data/service-faqs.ts`: homepage FAQs.
 - `src/data/partner-logos.ts`: the 7 approved cybersecurity partners (same as aetas.ai), plus `partnerPortalUrl`.
 - `src/data/demos.ts`: simulated MXDR data.
 - `src/components/ServicePage.astro`: the shared service page template, rendered by `src/pages/services/[slug].astro` with `Service` structured data.
-- `src/components/HomeHero.astro` and `ShieldMark.astro`: the homepage hero (line-drawn shield, headline, CTAs, and a strip linking the three service pages).
+- `src/components/HomeHero.astro`: the homepage hero (headline with its last line in the accent, typed taglines, lede, CTAs, the breach link, `HeroGlobe` on the right, and a strip linking the four service pages).
+- `src/components/HeroGlobe.astro` + `src/scripts/hero-globe.ts` (math in `src/scripts/hero-globe-math.ts`, tested): the canvas particle globe with `ShieldMark` at its centre and the Detected → Analyst approval → Contained cycle; pointer tilt on fine pointers.
+- `src/components/HeroAtmosphere.astro`: hero glow, concentric rings, and drifting particles (`full` on the homepage, `soft` in `PageHero`).
+- `src/scripts/hero-taglines.ts` (`heroTaglines` in `src/data/approach.ts`) and `src/scripts/reveal.ts` (scroll entrances), initialised and torn down in `Layout.astro` on `astro:page-load` / `astro:before-preparation`.
 - `src/components/ServiceDiagram.astro`: the process diagram in each service page hero (`diagram` in `src/data/services.ts`); the services hub hero shows the services as linked tiles.
 - `src/components/ThreatRadar.astro`: the radar, now beside Expert in the Loop on About.
 - `src/components/PartnerMarquee.astro`: the partner strip.
-- `src/pages/index.astro` (overview and conversion), `services/index.astro` (hub), `about.astro`, `partners.astro`, `contact.astro`, `contact/thanks.astro`, `legal/*`, `404.astro`.
+- `src/pages/index.astro` (overview and conversion), `services/index.astro` (hub), `resources/index.astro` and `resources/[slug].astro`, `about.astro`, `partners.astro`, `contact.astro`, `contact/thanks.astro`, `legal/*`, `404.astro`.
 - `src/lib/server/*`, `src/pages/api/forms/{csrf,contact}.ts`, `src/scripts/secure-forms.ts`, `src/components/FormSubmitButton.astro`, `src/middleware.ts`: the secure contact form (see "Contact form").
 - `scripts/security-policy.mjs`: CSP, security headers, `CANONICAL_ORIGIN`, and the `REDIRECTS` map.
 - `scripts/security-headers-integration.mjs`: build-time CSP hashing, `.htaccess` (redirects, canonical host, headers), `_headers.json`, and installing the secure Node entry.
@@ -84,9 +92,10 @@ Aetas Security has its own visual identity ("command center"); only the stack, t
 - **Type:** Saira (`@fontsource-variable/saira`, weight axis) for headings and labels at weight 600, solid colour; Inter for body; system monospace only for demo data.
 - **Shape:** chamfered (cut-corner) panels and buttons from the shield logo. `--cut` / `--cut-sm` set the cut; the shape and its 1px edge are drawn on `::before` (`.agi-card--dark`, `.agi-btn--dark-*`, or `.as-chamfer` with `--panel-fill` / `--panel-line`), so focus outlines are never clipped. Reticle corner brackets frame the radar and the demo window. Radii are 2px.
 - **Labels:** sentence case, only where they name the content (MXDR, Offensive Security, Expert in the Loop). Numbers only for real sequences (MXDR stages, Expert in the Loop steps, MSP onboarding).
-- **Heroes:** the homepage hero is centred on the shield from the logo (`ShieldMark.astro`, traced from the logo master), which draws itself once and then glows softly, above the headline, CTAs, and a strip linking the three service pages. Service page heroes show the process as a diagram (`ServiceDiagram.astro`) with a highlighted gate (MXDR: analyst approval; testing: rules of engagement agreed) and a signal travelling down the chain; the hub hero shows the services as linked tiles.
-- **Motion:** each page has one main moment: the shield draw on the homepage, the diagram signal on service pages, and the `ThreatRadar` beside Expert in the Loop on About (Detected, then Analyst review, then Contained after approval). The partner marquee and the demo are the only other motion. All pause off-screen (`data-motion`); under reduced motion they are static (the marquee becomes a wrapped row and the demo uses Previous/Next). There are no scroll reveals.
-- **Background:** a faint "monitored network" map. Inner page heroes use `NetworkBackdrop.astro` (inline SVG, masked away from the text column; a few nodes pulse, and where the hero has no diagram a short signal travels one path in the logo gradient). The homepage hero uses a soft pool of logo-coloured light behind the shield instead. Section bands (`.agi-band`) use the static tile `public/backdrop/network-tile.svg`, faded toward the centre. Legal pages and long text sit on plain navy. Never put the map behind body text; it pauses off-screen and is static under reduced motion.
+- **Heroes:** after the Heimdal reference, the homepage hero is split: the headline slides in on the left with taglines that type, hold, and erase (approved wording only, `heroTaglines`), then the lede, CTAs, and breach link; on the right a code-drawn particle globe (`HeroGlobe`) carries the shield from the logo (`ShieldMark.astro`, which still draws itself once) at its centre. Every few seconds a detection appears on the globe ("Detected"), an arc carries it to the shield ("Analyst approval"), and only then does it turn "Contained". The globe grows in, tilts toward the pointer (not on touch devices), and sits on `HeroAtmosphere` (royal-blue and cyan glow, concentric rings, drifting particles). Never a fake dashboard or product screenshot. Service page heroes show the process as a diagram (`ServiceDiagram.astro`) with a highlighted gate (MXDR: analyst approval; testing: rules of engagement agreed) and a signal travelling down the chain; the hub hero shows the services as linked tiles.
+- **Motion:** each page has one main moment: the globe on the homepage, the diagram signal on service pages, and the `ThreatRadar` beside Expert in the Loop on About (Detected, then Analyst review, then Contained after approval). Hero atmospheres, the partner marquee, and the demo are ambient. Below-the-fold headings, cards, steps, stats, and FAQ rows fade and rise in once as they scroll into view (`reveal.ts`, 60 ms stagger); content already on screen is never hidden, and nothing is hidden without JavaScript. All infinite motion pauses off-screen (`data-motion`); under reduced motion everything is static (one globe frame, the first tagline, no entrances; the marquee becomes a wrapped row and the demo uses Previous/Next).
+- **Background:** brighter royal-blue and cyan glow (`--glow-blue`, `--glow-cyan`, backgrounds only, never under text contrast) plus a faint "monitored network" map. Inner page heroes layer `HeroAtmosphere variant="soft"` under `NetworkBackdrop.astro` (inline SVG, masked away from the text column; a few nodes pulse, and where the hero has no diagram a short signal travels one path in the logo gradient). The homepage hero uses `HeroAtmosphere` in full. Section bands (`.agi-band`) carry a royal-blue glow from alternating edges and the static tile `public/backdrop/network-tile.svg`, faded toward the centre. Legal pages and long text sit on plain navy. Never put the map behind body text; it pauses off-screen and is static under reduced motion.
+- **Patterns from the reference sites** (Arctic Wolf, Huntress, CrowdStrike; `src/styles/sections.css`): a utility row above the main header on large screens ("Experienced a breach?", phone, email; `--site-utility-height`, included in `--site-header-height`); an optional announcement bar at the top of the page; large stat numerals (Saira at weight 300, the only place below 600, in `--color-accent-text`) with numbered definition and source footnotes; numbered value cards (`01`–`04`, mono); outcome columns with arrow link lists; a hairline governance grid under Expert in the Loop; an urgent contact band on Incident Response; and dashed, hatched content slots for unapproved content. Status hues appear only in the radar, the demo chips, and the hero globe chips (always with a text label); never on the breach link.
 - `accent-ai|security|global|governance` remain aliases of the accent so copied markup keeps working.
 
 ## Partners
@@ -101,18 +110,22 @@ One `MxdrConsole` window on `/services/mxdr` ("Follow a detection to containment
 
 | Route | Purpose |
 |---|---|
-| `/` | Overview and conversion: shield hero with the service strip, partner strip, the additional services, "Why Aetas Security", how engagements start, FAQ, CTA |
+| `/` | Overview and conversion: shield hero with the breach link and service strip, partner strip, practice metrics, "Why it matters" (threat statistics), "Why Aetas Security" value cards, services by outcome, Expert in the Loop with governance points, customer logos, testimonials and case studies, certifications, how engagements start (and pricing note), FAQ, latest resources, CTA |
 | `/services` | Hub: Detection and response, Offensive Security (`#offensive-security`), the additional services (`#more-services`), "Which service fits?" |
 | `/services/mxdr` | Managed Extended Detection and Response (MXDR), with the simulated demo |
+| `/services/incident-response` | Incident Response, with the "Under attack right now?" phone and email band; target of every "Experienced a breach?" link |
 | `/services/network-security-testing` | Network Security Testing |
 | `/services/application-security-testing` | Application Security Testing (Pen Testing) |
+| `/resources`, `/resources/<id>` | Resources hub (advisories, blog, guides) and article pages with `Article` structured data; drafts only in placeholder mode |
 | `/about` | Practice-of-AGI statement, Expert in the Loop (`#expert-in-the-loop`) with the threat radar, principles, engagement model, partners, AGI links |
 | `/partners` | The 7 approved partners and the MSP programme |
-| `/contact` | Secure form, booking link, email, phone, what happens next; `?service=mxdr|network-testing|application-testing|msp-partnership|general` preselects the picker |
+| `/contact` | Secure form, booking link, email, phone, what happens next; `?service=mxdr|incident-response|network-testing|application-testing|msp-partnership|general` preselects the picker |
 | `/contact/thanks` | `noindex` confirmation, excluded from the sitemap |
 | `/legal/privacy`, `/legal/terms`, 404 | Legal pages and the branded `noindex` 404 |
 
-Each service page follows one template (`ServicePage.astro`): hero with breadcrumbs and a service-specific CTA (MXDR: Request a demo; testing: Scope a test, linking to `/contact?service=…`), what it covers, how it works, expert oversight and what you receive, the demo (MXDR only), FAQ, related services, and a closing CTA. Add a service by adding an entry to `services` in `src/data/services.ts` (and its form value to the contact schema), never by copying a page. The five additional services from the old site (around-the-clock threat monitoring and response, proactive incident response, SOC, regulatory compliance assistance, co-management of security controls) are listed, as the old site did, in a card section on the homepage and the hub; they do not have their own pages.
+Each service page follows one template (`ServicePage.astro`): hero with breadcrumbs and a service-specific CTA (MXDR: Request a demo; Incident Response: Get help now; testing: Scope a test, linking to `/contact?service=…`), the urgent contact band (Incident Response), service metrics, what it covers, how it works, expert oversight and what you receive, the demo (MXDR only), case studies, FAQ, related resources, related services, and a closing CTA. Add a service by adding an entry to `services` in `src/data/services.ts` (and its form value to the contact schema), never by copying a page. The four remaining additional services from the old site (around-the-clock threat monitoring and response, SOC, regulatory compliance assistance, co-management of security controls) are listed, as the old site did, in a card section on the hub and linked from the homepage outcome columns; they do not have their own pages. Proactive incident response became the Incident Response page.
+
+To publish a resource, add a Markdown file to `src/content/resources/` (see `advisory-template.md`) with `draft: false`. List service slugs in `services` to show it under "Related resources" on those service pages.
 
 ## Routes and Redirects
 
@@ -167,7 +180,8 @@ To activate (after Sir Rob's approval):
 3. Activate form delivery (see "Contact form").
 4. A browser check for CSP violations against the production build over HTTPS (local checks used the dev server).
 5. Analytics and consent, once the business chooses a platform.
-6. Trust content that needs approval before it can be shown: case studies (client approval), certifications or compliance frameworks, and an insights hub.
+6. Proof content for the placeholder slots (CONTENT-TODO.md rows 16 to 28): metrics, threat statistics, customer logos, testimonials, case studies, certifications, pricing note, the incident line and hours, the AI-and-data answer, and the first Resources posts.
+7. Industry and threat solution pages (by sector; ransomware, BEC, compliance), deferred until the served industries are confirmed.
 
 ## Required Change Workflow
 

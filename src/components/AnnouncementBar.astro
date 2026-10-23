@@ -1,0 +1,22 @@
+---
+/** Optional one-line announcement at the top of every page (src/data/proof.ts `announcement`). */
+import ContentSlot from './ContentSlot.astro';
+import { showPlaceholders } from '../data/site-flags';
+import { announcement } from '../data/proof';
+
+// The empty slot is shown on the homepage only, to keep inner pages readable.
+const showSlot = showPlaceholders && Astro.url.pathname === '/';
+---
+
+{announcement ? (
+  <div class="announcement-bar">
+    <p>
+      {announcement.text}{' '}
+      <a href={announcement.href}>{announcement.label}<span aria-hidden="true"> ›</span></a>
+    </p>
+  </div>
+) : showSlot && (
+  <div class="announcement-bar">
+    <ContentSlot variant="inline" title="Announcement" expects="One line and a link: a new advisory, event, or service" todo={27} />
+  </div>
+)}

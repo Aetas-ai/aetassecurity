@@ -1,0 +1,22 @@
+---
+/** One Resources entry as a card: type, date, title, description, link. */
+import { formatResourceDate, resourceTypeLabel, type Resource } from '../data/resources';
+
+interface Props {
+  entry: Resource;
+}
+
+const { entry } = Astro.props;
+const { title, description, type, date, draft } = entry.data;
+---
+
+<article class="resource-card agi-card agi-card--dark agi-card--interactive h-full">
+  <p class="resource-meta">
+    <span class="resource-type">{resourceTypeLabel(type)}</span>
+    <time datetime={date.toISOString().slice(0, 10)}>{formatResourceDate(date)}</time>
+    {draft && <span class="resource-type">Draft</span>}
+  </p>
+  <h3 class="mt-4 font-display text-lg font-semibold leading-snug text-white">{title}</h3>
+  <p class="mt-2 flex-1 text-sm leading-relaxed text-muted">{description}</p>
+  <a href={`/resources/${entry.id}`} class="agi-card-link agi-card-link--on-dark mt-5">Read {resourceTypeLabel(type).toLowerCase()}<span class="sr-only">: {title}</span></a>
+</article>

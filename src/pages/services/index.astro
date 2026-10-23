@@ -12,7 +12,7 @@ const groups = [
   {
     id: 'detection-and-response',
     title: 'Detection and response',
-    lede: 'Ongoing security monitoring and response for your environment.',
+    lede: 'Ongoing security monitoring and response for your environment, and help when an incident happens.',
     items: services.filter((service) => service.group === 'Detection and response'),
   },
   {
@@ -26,12 +26,13 @@ const groups = [
 // Need-to-service guidance, written for the reader's situation (drafted; CONTENT-TODO.md).
 const fit = [
   { need: 'You want your environment watched, with suspicious activity investigated and contained.', slug: 'mxdr' },
+  { need: 'You are dealing with a security incident now, or want a plan in place before one happens.', slug: 'incident-response' },
   { need: 'You need to know how exposed your network is and which attack paths exist.', slug: 'network-security-testing' },
   { need: 'You need to find security weaknesses in a web application or API.', slug: 'application-security-testing' },
 ].map((row) => ({ ...row, service: services.find((service) => service.slug === row.slug)! }));
 ---
 
-<Layout socialImage="services" title="Cybersecurity Services" description="Aetas Security services: Managed Extended Detection and Response (MXDR), Network Security Testing, and Application Security Testing (Pen Testing).">
+<Layout socialImage="services" title="Cybersecurity Services" description="Aetas Security services: Managed Extended Detection and Response (MXDR), Incident Response, Network Security Testing, and Application Security Testing (Pen Testing).">
   <PageHero
     breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services' }]}
     title="Managed detection and offensive testing."

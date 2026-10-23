@@ -1,0 +1,120 @@
+---
+/**
+ * Hero background: royal-blue and cyan glow, concentric rings, and slowly
+ * drifting particles (after the Heimdal and Layers references). `full` sits
+ * behind the homepage globe; `soft` is the dimmer version for inner page
+ * heroes. Decorative (aria-hidden), paused off-screen (data-motion), static
+ * under reduced motion. Particle positions are seeded so every build is
+ * identical (stable CSP hashes).
+ */
+import { seededRandom } from '../scripts/hero-globe-math';
+
+interface Props {
+  variant?: 'full' | 'soft';
+}
+
+const { variant = 'full' } = Astro.props;
+const random = seededRandom(variant === 'full' ? 7 : 11);
+const particles = Array.from({ length: variant === 'full' ? 26 : 14 }, () => ({
+  x: (random() * 100).toFixed(1),
+  y: (random() * 100).toFixed(1),
+  size: (1.5 + random() * 2.5).toFixed(1),
+  delay: (-random() * 18).toFixed(1),
+  duration: (14 + random() * 12).toFixed(1),
+}));
+const rings = [16, 26, 36, 46, 58, 72];
+---
+
+<div class:list={['hero-atmosphere', `hero-atmosphere--${variant}`]} aria-hidden="true" data-motion>
+  <div class="hero-atmosphere-glow"></div>
+  <svg class="hero-atmosphere-rings" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" focusable="false">
+    {rings.map((r, index) => <circle cx="100" cy="100" r={r} style={`--ring-index: ${index}`} vector-effect="non-scaling-stroke" />)}
+  </svg>
+  <div class="hero-atmosphere-particles">
+    {particles.map((p) => (
+      <span style={`left: ${p.x}%; top: ${p.y}%; width: ${p.size}px; height: ${p.size}px; animation-delay: ${p.delay}s; animation-duration: ${p.duration}s`}></span>
+    ))}
+  </div>
+</div>
+
+<style>
+  /* Lowest layer of a hero: below PageHero's light, network map, and scrim (-z-10). */
+  .hero-atmosphere {
+    position: absolute;
+    inset: 0;
+    z-index: -20;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .hero-atmosphere-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(42rem 34rem at 74% 48%, var(--glow-blue), transparent 70%),
+      radial-gradient(30rem 24rem at 82% 30%, var(--glow-cyan), transparent 70%),
+      radial-gradient(36rem 30rem at 8% 100%, rgba(47, 107, 255, 0.14), transparent 70%),
+      linear-gradient(180deg, #050b16 0%, #071430 55%, #050b16 100%);
+  }
+
+  .hero-atmosphere--soft .hero-atmosphere-glow {
+    background:
+      radial-gradient(36rem 28rem at 86% 30%, color-mix(in srgb, var(--glow-blue) 60%, transparent), transparent 70%),
+      radial-gradient(26rem 20rem at 96% 70%, color-mix(in srgb, var(--glow-cyan) 55%, transparent), transparent 70%),
+      var(--surface-0);
+  }
+
+  .hero-atmosphere-rings {
+    position: absolute;
+    top: 50%;
+    left: 74%;
+    width: min(70rem, 120vw);
+    height: min(70rem, 120vw);
+    transform: translate(-50%, -50%);
+    fill: none;
+    stroke: rgba(143, 211, 242, 0.09);
+    stroke-width: 1;
+  }
+
+  .hero-atmosphere--soft .hero-atmosphere-rings {
+    left: 92%;
+    width: min(56rem, 110vw);
+    height: min(56rem, 110vw);
+    stroke: rgba(143, 211, 242, 0.06);
+  }
+
+  .hero-atmosphere-particles span {
+    position: absolute;
+    border-radius: 9999px;
+    background: #8fd3f2;
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.6);
+    opacity: 0.45;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-atmosphere-rings circle {
+      transform-origin: 100px 100px;
+      animation: ring-breathe 7s ease-in-out infinite;
+      animation-delay: calc(var(--ring-index) * -1.1s);
+    }
+
+    .hero-atmosphere-particles span {
+      animation-name: particle-drift;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+  }
+
+  @keyframes ring-breathe {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.025); }
+  }
+
+  @keyframes particle-drift {
+    0% { transform: translate3d(0, 0, 0); opacity: 0; }
+    15% { opacity: 0.55; }
+    50% { transform: translate3d(18px, -36px, 0); opacity: 0.35; }
+    85% { opacity: 0.55; }
+    100% { transform: translate3d(-8px, -72px, 0); opacity: 0; }
+  }
+</style>

@@ -1,7 +1,9 @@
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { copyFile, readdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { parseEnv } from 'node:util';
 import {
   CANONICAL_HOST,
   CANONICAL_ORIGIN,
@@ -92,6 +94,35 @@ function validateGeneratedHtml(html, filename) {
   if (violations.length > 0) {
     throw new Error(`${filename}: ${violations.join('; ')}`);
   }
+}
+
+// Content placeholders (src/components/ContentSlot.astro, draft resources)
+// carry data-placeholder. They are allowed only when the build opts in with
+// PUBLIC_SHOW_PLACEHOLDERS=true (src/data/site-flags.ts).
+export function findPlaceholderPages(pages, placeholdersAllowed) {
+  if (placeholdersAllowed) return [];
+  return pages
+    .filter(({ html }) => /\sdata-placeholder(?:[\s=>])/i.test(html))
+    .map(({ filename }) => filename);
+}
+
+// Same precedence as Astro's env loading: the process environment wins, then
+// .env.<mode>.local, .env.<mode>, .env.local, and .env.
+export function placeholdersEnabled(mode = 'production', root = process.cwd()) {
+  if (process.env.PUBLIC_SHOW_PLACEHOLDERS !== undefined) {
+    return process.env.PUBLIC_SHOW_PLACEHOLDERS === 'true';
+  }
+  for (const name of [`.env.${mode}.local`, `.env.${mode}`, '.env.local', '.env']) {
+    let source;
+    try {
+      source = readFileSync(path.join(root, name), 'utf8');
+    } catch {
+      continue;
+    }
+    const value = parseEnv(source).PUBLIC_SHOW_PLACEHOLDERS;
+    if (value !== undefined) return value === 'true';
+  }
+  return false;
 }
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -189,12 +220,14 @@ const SERVER_RUNTIME_FILES = [
 export default function securityHeaders() {
   let prerenderedPaths = [];
   let serverDirectory;
+  let projectRoot;
 
   return {
     name: 'aetas-security-headers',
     hooks: {
       'astro:config:done': ({ config }) => {
         serverDirectory = fileURLToPath(config.build.server);
+        projectRoot = fileURLToPath(config.root);
       },
       'astro:build:generated': ({ routeToHeaders }) => {
         prerenderedPaths = [...routeToHeaders.keys()];
@@ -206,12 +239,20 @@ export default function securityHeaders() {
         const htmlFiles = await collectFiles(outputDirectory, '.html');
         const scriptHashes = new Set();
         const styleHashes = new Set();
+        const pages = [];
 
         for (const htmlFile of htmlFiles) {
           const html = await readFile(htmlFile, 'utf8');
-          validateGeneratedHtml(html, path.relative(outputDirectory, htmlFile));
+          const filename = path.relative(outputDirectory, htmlFile);
+          validateGeneratedHtml(html, filename);
+          pages.push({ filename, html });
           collectInlineHashes(html, 'script').forEach((hash) => scriptHashes.add(hash));
           collectInlineHashes(html, 'style').forEach((hash) => styleHashes.add(hash));
+        }
+
+        const placeholderPages = findPlaceholderPages(pages, placeholdersEnabled('production', projectRoot));
+        if (placeholderPages.length > 0) {
+          throw new Error(`content placeholders in a production build (set PUBLIC_SHOW_PLACEHOLDERS=true only for staging): ${placeholderPages.join(', ')}`);
         }
 
         const sortedScriptHashes = [...scriptHashes].sort();

@@ -1,0 +1,63 @@
+---
+/**
+ * Testimonials and case studies. Each half renders real entries, slots in
+ * placeholder mode, or nothing; the section disappears when both are empty.
+ */
+import ContentSlot from './ContentSlot.astro';
+import SectionHeading from './SectionHeading.astro';
+import { showPlaceholders } from '../data/site-flags';
+import { caseStudies, testimonials } from '../data/proof';
+
+interface Props {
+  title?: string;
+  /** Hide the testimonials half (service pages show case studies only). */
+  caseStudiesOnly?: boolean;
+  band?: boolean;
+}
+
+const { title = 'Results our customers can speak to.', caseStudiesOnly = false, band = false } = Astro.props;
+const showQuotes = !caseStudiesOnly && (testimonials.length > 0 || showPlaceholders);
+const showCases = caseStudies.length > 0 || showPlaceholders;
+---
+
+{(showQuotes || showCases) && (
+  <section class:list={['agi-section', band && 'agi-band']} aria-labelledby="stories-heading">
+    <div class="mx-auto max-w-7xl">
+      <SectionHeading id="stories-heading" title={title} />
+
+      {showQuotes && (
+        <ul class="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3">
+          {testimonials.length > 0
+            ? testimonials.map((item) => (
+                <li class="agi-card agi-card--dark flex flex-col">
+                  <blockquote class="testimonial-quote flex-1">“{item.quote}”</blockquote>
+                  <p class="mt-6 font-display text-[0.9375rem] font-semibold text-white">{item.name}</p>
+                  <p class="text-[0.8125rem] text-muted">{item.role}, {item.company}</p>
+                </li>
+              ))
+            : Array.from({ length: 3 }, () => (
+                <li><ContentSlot title="Customer testimonial" expects="Quote, name, role, and company, with written permission" todo={19} /></li>
+              ))}
+        </ul>
+      )}
+
+      {showCases && (
+        <ul class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+          {caseStudies.length > 0
+            ? caseStudies.map((item) => (
+                <li class="agi-card agi-card--dark agi-card--interactive flex flex-col">
+                  <p class="agi-eyebrow">{item.client}</p>
+                  <h3 class="mt-4 font-display text-h3 font-semibold text-white">{item.title}</h3>
+                  <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">{item.summary}</p>
+                  <p class="case-outcome mt-5">{item.outcome}</p>
+                  {item.href && <a href={item.href} class="agi-card-link agi-card-link--on-dark mt-6">Read the case study</a>}
+                </li>
+              ))
+            : Array.from({ length: 2 }, () => (
+                <li><ContentSlot title="Case study" expects="Client sector, challenge, what we did, and the outcome, approved by the client" todo={20} /></li>
+              ))}
+        </ul>
+      )}
+    </div>
+  </section>
+)}

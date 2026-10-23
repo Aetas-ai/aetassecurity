@@ -20,7 +20,7 @@ export type DeliveryResult =
 // Match the wording visitors chose in each form's dropdown.
 const choiceLabels: Record<string, Record<string, string>> = {
   service: {
-    mxdr: 'MXDR', 'network-testing': 'Network Security Testing',
+    mxdr: 'MXDR', 'incident-response': 'Incident Response', 'network-testing': 'Network Security Testing',
     'application-testing': 'Application Security Testing', 'msp-partnership': 'MSP partnership',
     general: 'General inquiry',
   },

@@ -1,0 +1,35 @@
+---
+/**
+ * Customer logos (with written permission only). Empty: slots in placeholder
+ * mode, nothing on the live site. Partner logos use PartnerMarquee instead.
+ */
+import ContentSlot from './ContentSlot.astro';
+import { showPlaceholders } from '../data/site-flags';
+import { customerLogos } from '../data/proof';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'Trusted by organizations like yours.' } = Astro.props;
+const visible = customerLogos.length > 0 || showPlaceholders;
+---
+
+{visible && (
+  <section class="logo-wall agi-section" aria-labelledby="logo-wall-heading">
+    <div class="mx-auto max-w-7xl">
+      <h2 id="logo-wall-heading" class="logo-wall-title font-display">{title}</h2>
+      <ul class="logo-wall-grid">
+        {customerLogos.length > 0
+          ? customerLogos.map((logo) => (
+              <li class="logo-wall-item">
+                <img src={logo.src} alt={logo.name} width={logo.width} height={logo.height} loading="lazy" decoding="async" />
+              </li>
+            ))
+          : Array.from({ length: 6 }, () => (
+              <li><ContentSlot variant="logo" title="Customer logo" expects="With written permission" todo={18} /></li>
+            ))}
+      </ul>
+    </div>
+  </section>
+)}

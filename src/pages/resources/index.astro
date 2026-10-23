@@ -1,0 +1,80 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ResourceCard from '../../components/ResourceCard.astro';
+import ContentSlot from '../../components/ContentSlot.astro';
+import Button from '../../components/Button.astro';
+import { demoLink } from '../../data/navigation';
+import { showPlaceholders } from '../../data/site-flags';
+import { getResources, resourceTypes } from '../../data/resources';
+
+const entries = await getResources();
+const groups = resourceTypes.map((group) => ({ ...group, items: entries.filter((entry) => entry.data.type === group.type) }));
+const published = entries.filter((entry) => !entry.data.draft);
+---
+
+<Layout
+  socialImage="resources"
+  title="Resources"
+  description="Security advisories, blog posts, and guides from the Aetas Security team: detection and response, incident response, and offensive security testing."
+>
+  <PageHero
+    breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Resources', href: '/resources' }]}
+    title="Security advisories, write-ups, and guides."
+    description="Practical notes from the Aetas Security team on active threats, what we see in testing, and how to prepare for and respond to incidents."
+    accent="security"
+    compact
+  />
+
+  <section class="agi-section" aria-labelledby="resources-heading">
+    <div class="mx-auto max-w-7xl">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <SectionHeading id="resources-heading" title="Browse by type." />
+        <nav aria-label="Resource types" class="resource-filter">
+          {resourceTypes.map((group) => <a href={`#${group.type}`}>{group.plural}</a>)}
+        </nav>
+      </div>
+
+      {published.length === 0 && (
+        <p class="mt-10 max-w-2xl text-[0.9375rem] leading-relaxed text-muted">
+          Our first advisories and write-ups are being prepared. In the meantime, <a href="/contact" class="agi-card-link agi-card-link--on-dark">talk to a security specialist</a> about your environment.
+        </p>
+      )}
+
+      {groups.map((group) => (
+        <section id={group.type} class="mt-16 scroll-mt-32" aria-labelledby={`${group.type}-heading`}>
+          <div class="flex flex-col gap-2 border-b border-[var(--line-subtle)] pb-4 sm:flex-row sm:items-baseline sm:justify-between">
+            <h2 id={`${group.type}-heading`} class="font-display text-h3 font-semibold text-white">{group.plural}</h2>
+            <p class="text-sm text-muted">{group.blurb}</p>
+          </div>
+          {group.items.length > 0 ? (
+            <ul class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {group.items.map((entry) => <li><ResourceCard entry={entry} /></li>)}
+            </ul>
+          ) : showPlaceholders ? (
+            <ul class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+              <li><ContentSlot title={`First ${group.label.toLowerCase()}`} expects="A Markdown file in src/content/resources/ (see the advisory template draft)" todo={26} /></li>
+            </ul>
+          ) : (
+            <p class="mt-6 text-sm text-muted">Nothing published here yet.</p>
+          )}
+        </section>
+      ))}
+    </div>
+  </section>
+
+  <section class="agi-band agi-section" aria-labelledby="resources-cta-heading">
+    <SectionHeading
+      id="resources-cta-heading"
+      align="center"
+      title="Have a question about your own environment?"
+      lede="Tell us what you need to protect or test, and a security specialist will follow up."
+    >
+      <div class="mt-2 flex w-full flex-col justify-center gap-3 sm:flex-row sm:items-center">
+        <Button href="/contact" stretch>Contact us</Button>
+        <Button href={demoLink.href} variant="secondary" stretch external>{demoLink.label}</Button>
+      </div>
+    </SectionHeading>
+  </section>
+</Layout>

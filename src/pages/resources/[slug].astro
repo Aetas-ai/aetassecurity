@@ -1,0 +1,88 @@
+---
+import { render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ResourceCard from '../../components/ResourceCard.astro';
+import Button from '../../components/Button.astro';
+import { serviceBySlug } from '../../data/services';
+import { formatResourceDate, getResources, resourceTypeLabel, type Resource } from '../../data/resources';
+
+export async function getStaticPaths() {
+  const entries = await getResources();
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry, entries } }));
+}
+
+interface Props {
+  entry: Resource;
+  entries: Resource[];
+}
+
+const { entry, entries } = Astro.props;
+const { title, description, type, date, author, draft, services } = entry.data;
+const { Content } = await render(entry);
+const siteUrl = Astro.site ?? Astro.url.origin;
+const pageUrl = new URL(`/resources/${entry.id}`, siteUrl).toString();
+const isoDate = date.toISOString().slice(0, 10);
+const relatedServices = services.map(serviceBySlug);
+const more = entries.filter((item) => item.id !== entry.id).slice(0, 3);
+
+const articleNode = {
+  '@type': 'Article',
+  '@id': `${pageUrl}#article`,
+  headline: title,
+  description,
+  datePublished: isoDate,
+  url: pageUrl,
+  author: author ? { '@type': 'Person', name: author } : { '@id': `${new URL('/', siteUrl)}#organization` },
+  publisher: { '@id': `${new URL('/', siteUrl)}#organization` },
+};
+---
+
+<Layout socialImage="resources" title={title} description={description} noIndex={draft} structuredData={[articleNode]}>
+  <article class="mx-auto max-w-3xl px-5 py-16 sm:px-6 sm:py-20" aria-labelledby="article-title">
+    <Breadcrumbs class="mb-8" items={[{ label: 'Home', href: '/' }, { label: 'Resources', href: '/resources' }, { label: title, href: `/resources/${entry.id}` }]} />
+
+    {draft && (
+      <p class="draft-banner mb-8" data-placeholder>
+        Draft · visible only in placeholder mode (CONTENT-TODO #26). Set <code>draft: false</code> when it is approved.
+      </p>
+    )}
+
+    <p class="resource-meta">
+      <span class="resource-type">{resourceTypeLabel(type)}</span>
+      <time datetime={isoDate}>{formatResourceDate(date)}</time>
+      {author && <span>{author}</span>}
+    </p>
+    <h1 id="article-title" class="mt-5 font-display text-[clamp(2rem,1.5rem+2vw,3rem)] font-semibold leading-[1.1] text-white">{title}</h1>
+    <p class="mt-5 text-lede text-gray-300">{description}</p>
+
+    <div class="article-prose mt-10 border-t border-[var(--line-subtle)] pt-10">
+      <Content />
+    </div>
+
+    {relatedServices.length > 0 && (
+      <aside class="agi-card agi-card--dark mt-14" aria-labelledby="article-services-heading">
+        <h2 id="article-services-heading" class="font-display text-lg font-semibold text-white">Related services</h2>
+        <ul class="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+          {relatedServices.map((service) => (
+            <li><a href={`/services/${service.slug}`} class="agi-card-link agi-card-link--on-dark">{service.shortName}</a></li>
+          ))}
+        </ul>
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+          <Button href="/contact" stretch>Talk to a specialist</Button>
+        </div>
+      </aside>
+    )}
+  </article>
+
+  {more.length > 0 && (
+    <section class="agi-band agi-section" aria-labelledby="more-heading">
+      <div class="mx-auto max-w-7xl">
+        <h2 id="more-heading" class="font-display text-h3 font-semibold text-white">More from Resources</h2>
+        <ul class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3">
+          {more.map((item) => <li><ResourceCard entry={item} /></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
+</Layout>

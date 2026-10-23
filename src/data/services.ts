@@ -8,12 +8,13 @@
  * times, guarantees, customers, or unconfirmed services.
  */
 import type { FaqItem } from './service-faqs';
+import type { Stat } from './proof';
 import { demoLink } from './navigation';
 
-export type ServiceSlug = 'mxdr' | 'network-security-testing' | 'application-security-testing';
-export type ServiceIconKey = 'mxdr' | 'network' | 'application';
+export type ServiceSlug = 'mxdr' | 'incident-response' | 'network-security-testing' | 'application-security-testing';
+export type ServiceIconKey = 'mxdr' | 'incident' | 'network' | 'application';
 /** Values of the contact form's service picker (src/lib/server/forms.ts). */
-export type ServiceFormValue = 'mxdr' | 'network-testing' | 'application-testing';
+export type ServiceFormValue = 'mxdr' | 'incident-response' | 'network-testing' | 'application-testing';
 
 export interface ServiceDetail {
   slug: ServiceSlug;
@@ -40,6 +41,10 @@ export interface ServiceDetail {
   deliverables: string[];
   faqs: FaqItem[];
   related: ServiceSlug[];
+  /** Shows the "under attack now" contact band under the hero (Incident Response). */
+  urgent?: boolean;
+  /** Approved service metrics with definitions (CONTENT-TODO.md #16); empty shows slots in placeholder mode. */
+  stats?: Stat[];
 }
 
 const contactFor = (value: ServiceFormValue) => `/contact?service=${value}`;
@@ -91,7 +96,57 @@ export const services: ServiceDetail[] = [
       { question: 'Does AI contain threats automatically?', answer: 'No. Aetas Security applies Human Led AI with Expert Human Oversight of AI (Expert in the Loop). AI can help correlate and summarize activity, but a security analyst approves containment before it affects your systems or users.' },
       { question: 'What do you need from us to start?', answer: 'We start by agreeing scope: the environments to cover, the security technology already in place, and your escalation contacts and approval rules.' },
     ],
-    related: ['network-security-testing', 'application-security-testing'],
+    related: ['incident-response', 'network-security-testing'],
+  },
+  {
+    slug: 'incident-response',
+    icon: 'incident',
+    formValue: 'incident-response',
+    group: 'Detection and response',
+    name: 'Incident Response',
+    shortName: 'Incident Response',
+    summary: 'When threats are detected, we respond, so you never face an attack alone.',
+    seoTitle: 'Incident Response',
+    metaDescription: 'Aetas Security Incident Response: security specialists help you triage, contain, investigate, and recover from a security incident, with containment approved before it happens.',
+    ogKey: 'incident-response',
+    heroTitle: 'Experienced a breach? You do not face it alone.',
+    heroLede: 'When threats are detected, we respond. Aetas Security specialists help you triage, contain, investigate, and recover from a security incident, with every containment action approved before it happens.',
+    cta: { label: 'Get help now', href: contactFor('incident-response'), external: false },
+    focus: ['Triage', 'Contain', 'Investigate', 'Recover'],
+    diagram: { nodes: ['Triage', 'Contain', 'Investigate', 'Recover', 'Review'], gate: { after: 0, label: 'Analyst approval' } },
+    coverageTitle: 'Incidents we help you handle.',
+    coverage: [
+      { title: 'Ransomware', body: 'Contain the spread, understand what was affected, and plan a safe recovery.' },
+      { title: 'Business email compromise', body: 'Investigate suspicious mailbox activity, forwarding rules, and fraudulent requests.' },
+      { title: 'Compromised accounts', body: 'Review sign-in activity and secure accounts an attacker may control.' },
+      { title: 'Malware on endpoints', body: 'Investigate affected workstations and servers and the activity around them.' },
+      { title: 'Suspicious cloud activity', body: 'Examine unexpected changes and access across your cloud environments.' },
+      { title: 'Preparation', body: 'Agree contacts, escalation paths, and approval rules before an incident, so response starts faster.' },
+    ],
+    steps: [
+      ['Triage', 'Understand what is happening, what is affected, and how urgent it is.'],
+      ['Contain', 'Stop the spread with containment actions approved by a security analyst and your team.'],
+      ['Investigate', 'Establish how the attacker got in and what they did, based on the available evidence.'],
+      ['Recover', 'Support the return to normal operations and remove what the attacker left behind.'],
+      ['Post-incident review', 'Walk through what happened and agree the improvements that reduce the chance of a repeat.'],
+    ],
+    oversight: {
+      title: 'Containment is approved before it happens.',
+      body: 'In an incident, speed matters, and so does control. Human Led AI can help correlate activity, but actions such as isolating a host or disabling an account happen only after a security analyst approves them, through the escalation paths agreed with your team.',
+    },
+    deliverables: [
+      'Triage of the incident and its scope',
+      'Containment actions, taken after analyst approval',
+      'An incident timeline built from the available evidence',
+      'A post-incident report with recommendations',
+    ],
+    faqs: [
+      { question: 'We think we are under attack. What should we do first?', answer: 'Contact us by phone or email straight away. Avoid powering off or wiping affected systems: disconnecting them from the network is usually safer and preserves the evidence needed to investigate.' },
+      { question: 'Does AI take containment actions on its own?', answer: 'No. Aetas Security applies Human Led AI with Expert Human Oversight of AI (Expert in the Loop). A security analyst approves containment before it affects your systems or users.' },
+      { question: 'What does proactive incident response mean?', answer: 'Agreeing contacts, escalation paths, and approval rules before an incident happens, so that when one does, response starts from a plan instead of from scratch.' },
+    ],
+    related: ['mxdr', 'network-security-testing'],
+    urgent: true,
   },
   {
     slug: 'network-security-testing',
@@ -199,13 +254,14 @@ export const serviceBySlug = (slug: ServiceSlug) => {
 /**
  * Additional services from the previous aetassecurity.com, listed the way that
  * site listed them (heading and one-line description, wording kept close to
- * the original). Shown on the homepage and the services hub.
+ * the original). Shown on the services hub. Proactive incident response now
+ * has its own page (/services/incident-response) and reuses that wording.
  */
 export interface Capability {
   title: string;
   body: string;
   /** Anchor on the services hub (/services#<id>) and the icon key. */
-  id: 'threat-monitoring' | 'incident-response' | 'soc' | 'compliance' | 'co-management';
+  id: 'threat-monitoring' | 'soc' | 'compliance' | 'co-management';
 }
 
 export const capabilities: Capability[] = [
@@ -213,11 +269,6 @@ export const capabilities: Capability[] = [
     title: 'Around-the-clock threat monitoring and response',
     body: 'We don’t just detect threats, we act, stopping incidents.',
     id: 'threat-monitoring',
-  },
-  {
-    title: 'Proactive incident response',
-    body: 'When threats are detected, we respond, so you never face an attack alone.',
-    id: 'incident-response',
   },
   {
     title: 'Security Operations Center (SOC)',
@@ -233,5 +284,48 @@ export const capabilities: Capability[] = [
     title: 'Co-management of security controls',
     body: 'Security strategies personalized to fit your specific business requirements, including co-management of security controls.',
     id: 'co-management',
+  },
+];
+
+/**
+ * Homepage services grouped by the outcome a buyer wants (drafted grouping,
+ * CONTENT-TODO.md #28). Each item opens a service page or its hub card.
+ */
+export interface Outcome {
+  id: 'respond' | 'test' | 'control';
+  title: string;
+  body: string;
+  items: { label: string; href: string }[];
+}
+
+export const outcomes: Outcome[] = [
+  {
+    id: 'respond',
+    title: 'Detect and respond',
+    body: 'Threats found, investigated, and contained, with analyst approval before containment.',
+    items: [
+      { label: 'Managed Extended Detection and Response (MXDR)', href: '/services/mxdr' },
+      { label: 'Incident Response', href: '/services/incident-response' },
+      { label: 'Around-the-clock threat monitoring and response', href: '/services#threat-monitoring' },
+      { label: 'Security Operations Center (SOC)', href: '/services#soc' },
+    ],
+  },
+  {
+    id: 'test',
+    title: 'Find weaknesses first',
+    body: 'Offensive Security testing that shows how your networks and applications hold up.',
+    items: [
+      { label: 'Network Security Testing', href: '/services/network-security-testing' },
+      { label: 'Application Security Testing (Pen Testing)', href: '/services/application-security-testing' },
+    ],
+  },
+  {
+    id: 'control',
+    title: 'Stay compliant and in control',
+    body: 'Support with regulatory standards and the day-to-day running of your security controls.',
+    items: [
+      { label: 'Regulatory compliance assistance', href: '/services#compliance' },
+      { label: 'Co-management of security controls', href: '/services#co-management' },
+    ],
   },
 ];

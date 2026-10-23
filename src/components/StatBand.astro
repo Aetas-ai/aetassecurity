@@ -1,0 +1,66 @@
+---
+/**
+ * Large-numeral metrics with their definitions and sources as footnotes.
+ * Empty lists show slots in placeholder mode and render nothing otherwise.
+ */
+import ContentSlot from './ContentSlot.astro';
+import SectionHeading from './SectionHeading.astro';
+import { showPlaceholders } from '../data/site-flags';
+import type { Stat } from '../data/proof';
+
+interface Props {
+  stats: Stat[];
+  /** Section heading; omit for a bare band directly under a hero. */
+  title?: string;
+  lede?: string;
+  todo: number;
+  slotTitle: string;
+  slotExpects: string;
+  slotCount?: number;
+  id?: string;
+  band?: boolean;
+}
+
+const { stats, title, lede, todo, slotTitle, slotExpects, slotCount = 3, id = 'stats', band = false } = Astro.props;
+const visible = stats.length > 0 || showPlaceholders;
+const notes = stats.filter((stat) => stat.definition || stat.source);
+---
+
+{visible && (
+  <section class:list={['agi-section stat-band', band && 'agi-band']} aria-labelledby={title ? `${id}-heading` : undefined} aria-label={title ? undefined : slotTitle}>
+    <div class="mx-auto max-w-7xl">
+      {title && <SectionHeading id={`${id}-heading`} title={title} lede={lede} />}
+      {stats.length > 0 ? (
+        <>
+          <dl class:list={['stat-grid', title && 'mt-12']} style={`--stat-count: ${Math.min(stats.length, 4)}`}>
+            {stats.map((stat) => (
+              <div class="stat-item">
+                <dt class="stat-label">{stat.label}{(stat.definition || stat.source) && <sup>{notes.indexOf(stat) + 1}</sup>}</dt>
+                <dd class="stat-value">{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
+          {notes.length > 0 && (
+            <ol class="stat-notes">
+              {notes.map((stat) => (
+                <li>
+                  {stat.definition}
+                  {stat.source && (
+                    <>
+                      {stat.definition && ' '}Source:{' '}
+                      {stat.source.href ? <a href={stat.source.href} target="_blank" rel="noopener noreferrer">{stat.source.label}<span class="sr-only"> (opens in a new tab)</span></a> : stat.source.label}
+                    </>
+                  )}
+                </li>
+              ))}
+            </ol>
+          )}
+        </>
+      ) : (
+        <div class:list={['stat-grid', title && 'mt-12']} style={`--stat-count: ${slotCount}`}>
+          {Array.from({ length: slotCount }, () => <ContentSlot variant="stat" title={slotTitle} expects={slotExpects} todo={todo} />)}
+        </div>
+      )}
+    </div>
+  </section>
+)}

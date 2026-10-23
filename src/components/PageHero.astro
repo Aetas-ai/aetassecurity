@@ -4,6 +4,7 @@ import type { ImageMetadata } from 'astro';
 import Button from './Button.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
 import NetworkBackdrop from './NetworkBackdrop.astro';
+import HeroAtmosphere from './HeroAtmosphere.astro';
 
 interface Props {
   /** Optional trail rendered above the eyebrow (current page last). */
@@ -68,6 +69,7 @@ const heroId = `page-hero-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').repl
     <div class:list={['page-hero-light pointer-events-none absolute inset-0 -z-10', accentClass]} aria-hidden="true"></div>
   )}
 
+  {!image && <HeroAtmosphere variant="soft" />}
   <NetworkBackdrop trace={!hasAside} />
   <div class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(100deg,#050b16_0%,rgba(5,11,22,0.9)_40%,rgba(5,11,22,0.45)_70%,rgba(5,11,22,0.15)_100%)] max-xl:bg-[linear-gradient(180deg,rgba(5,11,22,0.82)_0%,#050b16_96%)]" aria-hidden="true"></div>
 

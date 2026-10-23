@@ -1,0 +1,622 @@
+/*
+ * Section patterns adapted from the reference sites (HANDOFF.md "Design
+ * System"): utility row, announcement bar, stat numerals with footnotes,
+ * numbered value cards, outcome columns, proof sections, content slots, and
+ * the Resources hub. Imported by global.css after product-ui.css.
+ */
+
+@layer components {
+  /* ------------------------------------------------------- Utility row */
+  .site-utility {
+    height: var(--site-utility-height);
+    border-bottom: 1px solid var(--line-subtle);
+    background: rgba(3, 8, 18, 0.6);
+    font-size: 0.8125rem;
+  }
+
+  .site-utility-breach,
+  .site-utility-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color var(--duration-fast) ease;
+  }
+
+  .site-utility-breach {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .site-utility-breach svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--color-accent-text);
+  }
+
+  .site-utility-link {
+    color: var(--color-gray-400);
+  }
+
+  .site-utility-breach:hover,
+  .site-utility-link:hover {
+    color: var(--color-accent-text);
+  }
+
+  .mobile-nav-breach {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--line-strong);
+    background: rgba(143, 211, 242, 0.05);
+    padding: 0.75rem;
+    color: #ffffff;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .site-footer-breach {
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--color-accent) 60%, transparent);
+    text-underline-offset: 0.3em;
+  }
+
+  /* -------------------------------------------------- Announcement bar */
+  .announcement-bar {
+    border-bottom: 1px solid var(--line-subtle);
+    background: var(--surface-1);
+    padding: 0.625rem 1.5rem;
+    color: var(--color-gray-200);
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+
+  .announcement-bar a {
+    color: var(--color-accent-text);
+    font-weight: 600;
+  }
+
+  /* ----------------------------------------------------- Content slots */
+  .content-slot {
+    display: flex;
+    height: 100%;
+    min-height: 9rem;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.375rem;
+    border: 1px dashed color-mix(in srgb, var(--color-accent) 55%, transparent);
+    background: repeating-linear-gradient(135deg, rgba(58, 174, 224, 0.06) 0 10px, transparent 10px 20px);
+    padding: 1.25rem;
+  }
+
+  .content-slot--stat {
+    min-height: 8rem;
+  }
+
+  .content-slot--logo {
+    min-height: 4.5rem;
+    align-items: center;
+    padding: 0.75rem;
+    text-align: center;
+  }
+
+  .content-slot--inline {
+    min-height: 0;
+    padding: 0.75rem 1rem;
+  }
+
+  .announcement-bar .content-slot--inline {
+    max-width: 48rem;
+    margin-inline: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    column-gap: 0.75rem;
+    padding-block: 0.375rem;
+  }
+
+  .content-slot-tag {
+    color: var(--color-accent-text);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  .content-slot-title {
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .content-slot--logo .content-slot-tag,
+  .content-slot--logo .content-slot-expects {
+    display: none;
+  }
+
+  .content-slot-expects {
+    color: var(--color-gray-400);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  /* ------------------------------------------- Stat numerals + footnotes */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .stat-grid {
+      grid-template-columns: repeat(min(var(--stat-count, 3), 2), minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .stat-grid {
+      grid-template-columns: repeat(var(--stat-count, 3), minmax(0, 1fr));
+    }
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    border-top: 1px solid var(--line-strong);
+    padding-top: 1.25rem;
+  }
+
+  /* Light-weight numerals: the one place Saira drops below 600. */
+  .stat-value {
+    color: var(--color-accent-text);
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 2rem + 2.6vw, 4.25rem);
+    font-variant-numeric: tabular-nums;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .stat-label {
+    max-width: 22rem;
+    color: var(--color-gray-200);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .stat-label sup {
+    margin-left: 0.15rem;
+    color: var(--color-accent-text);
+  }
+
+  .stat-notes {
+    margin-top: 2rem;
+    border-top: 1px solid var(--line-subtle);
+    padding-top: 1rem;
+    padding-left: 1.25rem;
+    color: var(--color-gray-500);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    list-style: decimal;
+  }
+
+  .stat-notes a {
+    color: var(--color-gray-300);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  /* ------------------------------------------ "Why it matters" split */
+  .problem-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .problem-split {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 4rem;
+    }
+
+    .problem-split > :last-child {
+      border-left: 1px solid var(--line-strong);
+      padding-left: 4rem;
+    }
+  }
+
+  .problem-split .stat-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* ------------------------------------------ Numbered value cards */
+  .value-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    counter-reset: value;
+  }
+
+  @media (min-width: 640px) {
+    .value-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .value-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .value-card {
+      min-height: 15rem;
+    }
+
+    .value-card::after {
+      padding-bottom: 2.5rem;
+    }
+  }
+
+  .value-card {
+    display: flex;
+    flex-direction: column;
+    counter-increment: value;
+  }
+
+  .value-card::after {
+    order: -1;
+    margin-bottom: auto;
+    padding-bottom: 1.25rem;
+    color: var(--color-accent-text);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    content: counter(value, decimal-leading-zero);
+  }
+
+  /* -------------------------------------------------- Outcome columns */
+  .outcome-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 1024px) {
+    .outcome-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .outcome-links {
+    display: grid;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  .outcome-links a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--line-subtle);
+    padding-block: 0.8rem;
+    color: var(--color-gray-100);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: color var(--duration-fast) ease, padding var(--duration-base) var(--ease-out-expo);
+  }
+
+  .outcome-links a::after {
+    color: var(--color-accent-text);
+    content: '→';
+  }
+
+  .outcome-links a:hover {
+    padding-left: 0.375rem;
+    color: var(--color-accent-text);
+  }
+
+  /* ------------------------------------------------- Expert in the Loop */
+  .governance-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    border: 1px solid var(--line-subtle);
+    background: var(--line-subtle);
+  }
+
+  @media (min-width: 768px) {
+    .governance-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .governance-grid > li {
+    background: var(--surface-1);
+    padding: 1.5rem;
+  }
+
+  /* ---------------------------------------------------- Proof sections */
+  .logo-wall {
+    padding-block: clamp(3rem, 2.5rem + 2vw, 4.5rem);
+  }
+
+  .logo-wall-title {
+    color: var(--color-gray-100);
+    font-size: var(--text-h3);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .logo-wall-grid {
+    display: grid;
+    margin-top: 2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .logo-wall-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+
+  .logo-wall-item img {
+    width: 100%;
+    max-height: 2.5rem;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.72;
+  }
+
+  .testimonial-quote {
+    color: var(--color-gray-100);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  .case-outcome {
+    border-left: 2px solid var(--color-accent);
+    padding-left: 1rem;
+    color: #ffffff;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  .recognition {
+    padding-block: clamp(3rem, 2.5rem + 2vw, 4.5rem);
+  }
+
+  .recognition-item {
+    --panel-cut: var(--cut-sm);
+    --panel-fill: var(--surface-2);
+    --panel-line: var(--line-strong);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.125rem;
+  }
+
+  /* ---------------------------------------------- Urgent contact band */
+  .urgent-band {
+    border-bottom: 1px solid var(--line-strong);
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 60%),
+      var(--surface-1);
+  }
+
+  /* ---------------------------------------------- Hero globe chips */
+  /* Created by src/scripts/hero-globe.ts; the script sets `transform` to
+     the point's position and `translate` lifts the chip above it. */
+  .globe-chip {
+    --chip: var(--color-accent);
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid color-mix(in srgb, var(--chip) 55%, transparent);
+    background: rgba(5, 11, 22, 0.86);
+    padding: 0.25rem 0.55rem;
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    translate: -50% calc(-100% - 14px);
+    clip-path: polygon(0.3rem 0, 100% 0, 100% calc(100% - 0.3rem), calc(100% - 0.3rem) 100%, 0 100%, 0 0.3rem);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .globe-chip::before {
+    width: 0.45rem;
+    height: 0.45rem;
+    flex: none;
+    border-radius: 9999px;
+    background: var(--chip);
+    box-shadow: 0 0 8px var(--chip);
+    content: '';
+  }
+
+  .globe-chip.is-visible {
+    opacity: 1;
+  }
+
+  .globe-chip.is-behind {
+    opacity: 0;
+  }
+
+  .globe-chip--detected {
+    --chip: var(--color-detected);
+  }
+
+  .globe-chip--review {
+    --chip: var(--color-review);
+  }
+
+  .globe-chip--centre {
+    translate: -50% 0;
+  }
+
+  /* ------------------------------------------------- Scroll entrances */
+  /* src/scripts/reveal.ts marks below-the-fold content; html.js-reveal is
+     only set when motion is allowed, so nothing is hidden otherwise. */
+  .js-reveal [data-reveal] {
+    transition:
+      opacity 0.6s ease var(--reveal-delay, 0ms),
+      transform 0.7s var(--ease-out-expo) var(--reveal-delay, 0ms);
+  }
+
+  .js-reveal [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js-reveal [data-reveal]:not([data-revealed]) {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* ------------------------------------------------------- Resources */
+  .resource-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .resource-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    color: var(--color-gray-400);
+    font-size: 0.8125rem;
+  }
+
+  .resource-type {
+    border: 1px solid var(--line-strong);
+    padding: 0.125rem 0.5rem;
+    color: var(--color-accent-text);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  .resource-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .resource-filter a {
+    border: 1px solid var(--line-strong);
+    padding: 0.4rem 0.875rem;
+    color: var(--color-gray-200);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: border-color var(--duration-fast) ease, color var(--duration-fast) ease;
+  }
+
+  .resource-filter a:hover {
+    border-color: var(--color-accent);
+    color: #ffffff;
+  }
+
+  .draft-banner {
+    border: 1px dashed color-mix(in srgb, var(--color-accent) 55%, transparent);
+    background: repeating-linear-gradient(135deg, rgba(58, 174, 224, 0.06) 0 10px, transparent 10px 20px);
+    padding: 0.875rem 1.125rem;
+    color: var(--color-gray-100);
+    font-size: 0.875rem;
+  }
+
+  /* Long-form article text: plain navy, no backdrop (HANDOFF.md). */
+  .article-prose {
+    color: var(--color-gray-300);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+
+  .article-prose > * + * {
+    margin-top: 1.25rem;
+  }
+
+  .article-prose h2 {
+    margin-top: 2.75rem;
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .article-prose h3 {
+    margin-top: 2rem;
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-size: 1.1875rem;
+    font-weight: 600;
+  }
+
+  .article-prose a {
+    color: var(--color-accent-text);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .article-prose ul,
+  .article-prose ol {
+    padding-left: 1.25rem;
+  }
+
+  .article-prose ul {
+    list-style: disc;
+  }
+
+  .article-prose ol {
+    list-style: decimal;
+  }
+
+  .article-prose li + li {
+    margin-top: 0.5rem;
+  }
+
+  .article-prose code {
+    border: 1px solid var(--line-subtle);
+    background: var(--surface-2);
+    padding: 0.1rem 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+
+  .article-prose pre {
+    overflow-x: auto;
+    border: 1px solid var(--line-subtle);
+    background: var(--surface-1);
+    padding: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .article-prose pre code {
+    border: 0;
+    background: none;
+    padding: 0;
+  }
+
+  .article-prose blockquote {
+    border-left: 2px solid var(--color-accent);
+    padding-left: 1rem;
+    color: var(--color-gray-200);
+  }
+}
