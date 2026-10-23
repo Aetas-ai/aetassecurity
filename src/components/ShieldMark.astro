@@ -39,10 +39,22 @@ const parts = [
 </div>
 
 <style>
+  /* The glow is a painted gradient behind the mark that only fades (composited),
+     not an animated drop-shadow filter that repaints every frame. */
   .shield-mark {
+    position: relative;
     display: flex;
     justify-content: center;
-    filter: drop-shadow(0 0 28px rgba(34, 211, 238, 0.22));
+  }
+
+  .shield-mark::before {
+    position: absolute;
+    inset: -35% -55%;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(34, 211, 238, 0.3), rgba(47, 107, 255, 0.14) 55%, transparent);
+    content: '';
+    opacity: 0.6;
+    pointer-events: none;
   }
 
   .shield-mark svg {
@@ -62,8 +74,9 @@ const parts = [
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .shield-mark {
+    .shield-mark::before {
       animation: shield-breathe 6s ease-in-out 2s infinite;
+      will-change: opacity;
     }
 
     .shield-line {
@@ -87,7 +100,7 @@ const parts = [
   }
 
   @keyframes shield-breathe {
-    0%, 100% { filter: drop-shadow(0 0 28px rgba(34, 211, 238, 0.22)); }
-    50% { filter: drop-shadow(0 0 44px rgba(47, 107, 255, 0.36)); }
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
   }
 </style>

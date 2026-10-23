@@ -62,6 +62,11 @@ export function depthShade(depth: number): number {
   return Math.min(1, Math.max(0, (depth + 1) / 2)) ** 1.6;
 }
 
+/** Quantizes a 0–1 shade to one of `buckets` colour steps, so a frame needs only `buckets` fill styles. */
+export function shadeBucket(shade: number, buckets: number): number {
+  return Math.min(buckets - 1, Math.max(0, Math.round(shade * (buckets - 1))));
+}
+
 /** Small deterministic PRNG (mulberry32) returning values in [0, 1). */
 export function seededRandom(seed: number): () => number {
   let state = seed >>> 0;

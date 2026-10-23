@@ -2,7 +2,7 @@
 
 Items to confirm with Sir Rob before launch. Unconfirmed items stay unpublished: flip the flag (or fill the value) in the named file once approved.
 
-Rows 16 to 29 are the proof and marketing sections added from the Arctic Wolf / Huntress / CrowdStrike review. In placeholder mode (`astro dev`, or a staging build with `PUBLIC_SHOW_PLACEHOLDERS=true`) each one shows as a dashed slot labelled with its row number; on the live site an empty slot renders nothing. Fill the named data with real, approved content only.
+Rows 16 to 29 are the proof and marketing sections added from the Arctic Wolf / Huntress / CrowdStrike review. In placeholder mode (`PUBLIC_SHOW_PLACEHOLDERS=true` in `.env` for dev, or a staging build) each one shows as a dashed slot labelled with its row number; on the live site an empty slot renders nothing. Fill the named data with real, approved content only.
 
 | # | Item | Where | Current state |
 |---|---|---|---|
@@ -35,6 +35,7 @@ Rows 16 to 29 are the proof and marketing sections added from the Arctic Wolf / 
 | 27 | **Announcement bar**: one line and a link | `src/data/proof.ts` `announcement` | unset |
 | 28 | **New homepage copy**: "Why it matters", the outcome grouping (Detect and respond / Find weaknesses first / Stay compliant and in control), the Expert in the Loop governance points, the two new FAQs, "Experienced a breach?" wording | `src/data/approach.ts`, `src/data/services.ts` `outcomes`, `src/data/service-faqs.ts` | drafted |
 | 29 | **Hero taglines**: the four rotating lines reuse approved wording (MXDR steps, Expert in the Loop, analyst approval, the testing services); approve any new lines before adding them | `src/data/approach.ts` `heroTaglines` | live on the branch |
+| 30 | **Platform diagram labels**: the core bar ("Expert in the Loop": Human Led AI, Analyst approval before containment, Every action documented) and the base bar ("Your environment": Endpoints, Identity, Email, Network, Cloud environments) | `src/components/PlatformDiagram.astro` | drafted from approved positioning and the MXDR coverage list |
 
 Dropped from the old site: the "Enter" gateway page, cart, broken newsletter form, "Travel Policy" and "Attributions" footer links, and the copy "Automated, Human-led AI-powered systems identify and neutralize threats in real time" (implied autonomous AI).
 

@@ -9,7 +9,7 @@
  * (data-motion-paused, set by Layout.astro) or the tab is hidden. Under
  * reduced motion one static frame is drawn. Chips always carry a text label.
  */
-import { depthShade, fibonacciSphere, project, quadraticPoint, rotate, seededRandom, type Point3 } from './hero-globe-math';
+import { depthShade, fibonacciSphere, project, quadraticPoint, rotate, seededRandom, shadeBucket, type Point3 } from './hero-globe-math';
 
 type Phase = 'detected' | 'review' | 'contained';
 
@@ -38,6 +38,17 @@ const EASE = 0.08;
 const SPIN = 0.00006; // radians per millisecond
 const PITCH = -0.32;
 
+// Particles are drawn in depth-shade buckets: one fill style per bucket per frame,
+// back (blue, faint) to front (cyan, bright), so the front always paints last.
+const BUCKETS = 12;
+const BUCKET_STYLES = Array.from({ length: BUCKETS }, (_, bucket) => {
+  const shade = bucket / (BUCKETS - 1);
+  const red = Math.round(47 + (34 - 47) * shade);
+  const green = Math.round(107 + (211 - 107) * shade);
+  const blue = Math.round(255 + (238 - 255) * shade);
+  return `rgba(${red}, ${green}, ${blue}, ${(0.1 + shade * 0.75).toFixed(3)})`;
+});
+
 const LABELS: Record<Phase, string> = { detected: 'Detected', review: 'Analyst approval', contained: 'Contained' };
 
 let teardown: (() => void) | undefined;
@@ -62,6 +73,12 @@ export function initHeroGlobe() {
   const hero = root.closest<HTMLElement>('section') ?? root;
 
   let points: Point3[] = [];
+  // Per-bucket x, y, size triples, reused every frame.
+  let bucketData: Float32Array[] = [];
+  const bucketCount = new Int32Array(BUCKETS);
+  // Halo and dark core never change between frames, so they are drawn once per resize.
+  const halo = document.createElement('canvas');
+  const core = document.createElement('canvas');
   let size = 0;
   let ratio = 1;
   let frame = 0;
@@ -96,16 +113,71 @@ export function initHeroGlobe() {
   }
 
   function resize() {
-    const rect = stage!.getBoundingClientRect();
-    size = Math.max(1, Math.round(Math.min(rect.width, rect.height || rect.width)));
-    ratio = Math.min(window.devicePixelRatio || 1, 2);
+    // Layout size, not getBoundingClientRect(): the stage is scaled during the
+    // entrance and tilted by the pointer, and either would shrink the canvas
+    // off-centre from the CSS-centred shield.
+    size = Math.max(1, Math.round(Math.min(stage!.clientWidth, stage!.clientHeight || stage!.clientWidth)));
+    // 1–2px dots gain nothing visible above 1.5× and cost twice the fill area at 2×.
+    ratio = Math.min(window.devicePixelRatio || 1, 1.5);
     canvas!.width = size * ratio;
     canvas!.height = size * ratio;
     canvas!.style.width = `${size}px`;
     canvas!.style.height = `${size}px`;
     const count = size < 420 ? 460 : 900;
-    if (points.length !== count) points = fibonacciSphere(count);
+    if (points.length !== count) {
+      points = fibonacciSphere(count);
+      bucketData = Array.from({ length: BUCKETS }, () => new Float32Array(count * 3));
+    }
+    paintStatic();
+    centreAtmosphere();
     if (!running) draw(performance.now());
+  }
+
+  // Publishes the globe's layout centre (ignoring entrance and tilt transforms)
+  // so HeroAtmosphere's glow and rings sit exactly behind it.
+  function centreAtmosphere() {
+    let x = stage!.offsetWidth / 2;
+    let y = stage!.offsetHeight / 2;
+    for (let element: HTMLElement | null = stage!; element && element !== hero; element = element.offsetParent as HTMLElement | null) {
+      x += element.offsetLeft;
+      y += element.offsetTop;
+    }
+    hero.style.setProperty('--globe-x', `${Math.round(x)}px`);
+    hero.style.setProperty('--globe-y', `${Math.round(y)}px`);
+  }
+
+  function paintStatic() {
+    const cx = size / 2;
+    const cy = size / 2;
+    const radius = size * 0.4;
+    for (const [layer, paint] of [
+      [halo, (layerContext: CanvasRenderingContext2D) => {
+        const gradient = layerContext.createRadialGradient(cx, cy, radius * 0.6, cx, cy, radius * 1.25);
+        gradient.addColorStop(0, 'rgba(47, 107, 255, 0.16)');
+        gradient.addColorStop(0.7, 'rgba(34, 211, 238, 0.06)');
+        gradient.addColorStop(1, 'rgba(34, 211, 238, 0)');
+        layerContext.fillStyle = gradient;
+        layerContext.fillRect(0, 0, size, size);
+      }],
+      [core, (layerContext: CanvasRenderingContext2D) => {
+        // A dark core keeps the shield readable over the particles.
+        const gradient = layerContext.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.48);
+        gradient.addColorStop(0, 'rgba(5, 11, 22, 0.9)');
+        gradient.addColorStop(0.65, 'rgba(5, 11, 22, 0.55)');
+        gradient.addColorStop(1, 'rgba(5, 11, 22, 0)');
+        layerContext.fillStyle = gradient;
+        layerContext.beginPath();
+        layerContext.arc(cx, cy, radius * 0.48, 0, Math.PI * 2);
+        layerContext.fill();
+      }],
+    ] as const) {
+      layer.width = size * ratio;
+      layer.height = size * ratio;
+      const layerContext = layer.getContext('2d');
+      if (!layerContext) continue;
+      layerContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+      paint(layerContext);
+    }
   }
 
   function yawAt(time: number) {
@@ -141,36 +213,35 @@ export function initHeroGlobe() {
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     ctx.clearRect(0, 0, size, size);
 
-    // Atmosphere around the sphere.
-    const halo = ctx.createRadialGradient(cx, cy, radius * 0.6, cx, cy, radius * 1.25);
-    halo.addColorStop(0, 'rgba(47, 107, 255, 0.16)');
-    halo.addColorStop(0.7, 'rgba(34, 211, 238, 0.06)');
-    halo.addColorStop(1, 'rgba(34, 211, 238, 0)');
-    ctx.fillStyle = halo;
-    ctx.fillRect(0, 0, size, size);
+    // Atmosphere around the sphere (pre-rendered in paintStatic).
+    ctx.drawImage(halo, 0, 0, size, size);
 
-    // Particles: blue at the back, cyan at the front.
+    // Particles: blue at the back, cyan at the front, grouped by shade bucket.
+    bucketCount.fill(0);
     for (const point of points) {
       const rotated = rotate(point, yaw, pitch);
       const projected = project(rotated, cx, cy, radius);
       const shade = depthShade(rotated.z);
-      const red = Math.round(47 + (34 - 47) * shade);
-      const green = Math.round(107 + (211 - 107) * shade);
-      const blue = Math.round(255 + (238 - 255) * shade);
-      ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${0.1 + shade * 0.75})`;
-      const dot = (0.55 + shade * 1.25) * projected.scale;
-      ctx.fillRect(projected.x - dot / 2, projected.y - dot / 2, dot, dot);
+      const bucket = shadeBucket(shade, BUCKETS);
+      const data = bucketData[bucket];
+      const offset = bucketCount[bucket]++ * 3;
+      data[offset] = projected.x;
+      data[offset + 1] = projected.y;
+      data[offset + 2] = (0.55 + shade * 1.25) * projected.scale;
+    }
+    for (let bucket = 0; bucket < BUCKETS; bucket++) {
+      const count = bucketCount[bucket] * 3;
+      if (!count) continue;
+      const data = bucketData[bucket];
+      ctx.fillStyle = BUCKET_STYLES[bucket];
+      for (let offset = 0; offset < count; offset += 3) {
+        const dot = data[offset + 2];
+        ctx.fillRect(data[offset] - dot / 2, data[offset + 1] - dot / 2, dot, dot);
+      }
     }
 
-    // A dark core keeps the shield readable over the particles.
-    const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.48);
-    core.addColorStop(0, 'rgba(5, 11, 22, 0.9)');
-    core.addColorStop(0.65, 'rgba(5, 11, 22, 0.55)');
-    core.addColorStop(1, 'rgba(5, 11, 22, 0)');
-    ctx.fillStyle = core;
-    ctx.beginPath();
-    ctx.arc(cx, cy, radius * 0.48, 0, Math.PI * 2);
-    ctx.fill();
+    // The dark core over the particles keeps the shield readable.
+    ctx.drawImage(core, 0, 0, size, size);
 
     let reviewing = false;
 
@@ -287,6 +358,7 @@ export function initHeroGlobe() {
 
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(stage);
+  resizeObserver.observe(hero);
   const pauseObserver = new MutationObserver(sync);
   pauseObserver.observe(root, { attributes: true, attributeFilter: ['data-motion-paused'] });
   document.addEventListener('visibilitychange', sync);
@@ -317,5 +389,7 @@ export function initHeroGlobe() {
     hero.removeEventListener('pointermove', onPointerMove);
     hero.removeEventListener('pointerleave', onPointerLeave);
     chipLayer.replaceChildren();
+    hero.style.removeProperty('--globe-x');
+    hero.style.removeProperty('--globe-y');
   };
 }

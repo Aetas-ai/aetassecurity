@@ -3,8 +3,11 @@
  * Hero radar: the site's one orchestrated motion moment. The sweep passes a
  * blip, which shows as detected, waits for analyst review, then turns
  * contained, acting out Expert in the Loop (no containment without analyst
- * approval). Decorative SVG; the legend carries the meaning in text.
- * Pauses off-screen (data-motion) and is static under reduced motion.
+ * approval). Decorative; the legend carries the meaning in text.
+ * The grid is a static SVG; the sweep and blips are HTML layers animating
+ * transform and opacity only, so they run on the compositor instead of
+ * repainting the SVG every frame. Pauses off-screen (data-motion) and is
+ * static under reduced motion.
  */
 const SWEEP_SECONDS = 9;
 
@@ -20,8 +23,9 @@ const blips = [
   const radians = ((blip.angle - 90) * Math.PI) / 180;
   return {
     ...blip,
-    x: +(200 + blip.radius * Math.cos(radians)).toFixed(1),
-    y: +(200 + blip.radius * Math.sin(radians)).toFixed(1),
+    // Position as a percentage of the 400×400 drawing.
+    x: +((200 + blip.radius * Math.cos(radians)) / 4).toFixed(2),
+    y: +((200 + blip.radius * Math.sin(radians)) / 4).toFixed(2),
     delay: `${((blip.angle / 360) * SWEEP_SECONDS).toFixed(2)}s`,
   };
 });
@@ -31,10 +35,6 @@ const blips = [
   <div class="threat-radar-frame">
     <svg viewBox="0 0 400 400" aria-hidden="true" focusable="false">
       <defs>
-        <linearGradient id="radar-sweep-fill" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#2f6bff" stop-opacity="0" />
-          <stop offset="1" stop-color="#22d3ee" stop-opacity="0.32" />
-        </linearGradient>
         <radialGradient id="radar-floor" cx="0.5" cy="0.5" r="0.5">
           <stop offset="0" stop-color="#3aaee0" stop-opacity="0.1" />
           <stop offset="1" stop-color="#3aaee0" stop-opacity="0" />
@@ -51,20 +51,21 @@ const blips = [
         <line x1="12" y1="200" x2="388" y2="200" />
       </g>
 
-      <g class="threat-radar-sweep">
-        <path d="M200 200 L200 16 A184 184 0 0 1 292 40.6 Z" fill="url(#radar-sweep-fill)" />
-        <line x1="200" y1="200" x2="292" y2="40.6" class="threat-radar-beam" />
-      </g>
-
-      {blips.map((blip) => (
-        <g class:list={['threat-radar-blip', `is-${blip.state}`]} style={`animation-delay: ${blip.delay}`}>
-          <circle class="threat-radar-ring" cx={blip.x} cy={blip.y} r="11" style={`animation-delay: ${blip.delay}; transform-origin: ${blip.x}px ${blip.y}px`} />
-          <circle class="threat-radar-dot" cx={blip.x} cy={blip.y} r="4.5" style={`animation-delay: ${blip.delay}`} />
-        </g>
-      ))}
-
       <image href="/icon.png" x="176" y="176" width="48" height="48" />
     </svg>
+
+    <div class="threat-radar-layer" aria-hidden="true">
+      <span class="threat-radar-sweep"></span>
+      {blips.map((blip) => (
+        <span class:list={['threat-radar-blip', `is-${blip.state}`]} style={`left: ${blip.x}%; top: ${blip.y}%; --delay: ${blip.delay}`}>
+          <span class="threat-radar-ring threat-radar-ring--review"></span>
+          <span class="threat-radar-ring threat-radar-ring--contained"></span>
+          <span class="threat-radar-dot threat-radar-dot--detected"></span>
+          <span class="threat-radar-dot threat-radar-dot--review"></span>
+          <span class="threat-radar-dot threat-radar-dot--contained"></span>
+        </span>
+      ))}
+    </div>
   </div>
 
   <figcaption class="threat-radar-legend">
@@ -129,35 +130,94 @@ const blips = [
     stroke-width: 1;
   }
 
-  .threat-radar-beam {
-    stroke: #22d3ee;
-    stroke-width: 1.5;
-    stroke-linecap: round;
+  /* The moving parts sit over the SVG's drawing area (the frame's padding box). */
+  .threat-radar-layer {
+    position: absolute;
+    inset: 0.75rem;
   }
 
+  /* Sweep: a 30° conic wedge (blue fading to cyan) plus its leading beam. */
   .threat-radar-sweep {
-    transform-box: view-box;
-    transform-origin: 200px 200px;
-    animation: radar-sweep var(--sweep) linear infinite;
+    position: absolute;
+    top: 4%;
+    left: 4%;
+    width: 92%;
+    height: 92%;
+    border-radius: 9999px;
+    background: conic-gradient(from 0deg, rgba(47, 107, 255, 0) 0deg, rgba(34, 211, 238, 0.32) 30deg, transparent 30deg);
+    will-change: transform;
   }
 
-  /* Static state (reduced motion, or before the sweep reaches a blip). */
-  .threat-radar-dot { fill: var(--state); }
-  .threat-radar-ring { fill: none; stroke: var(--state); stroke-width: 1.25; opacity: 0.55; }
+  .threat-radar-sweep::after {
+    position: absolute;
+    top: 0;
+    left: calc(50% - 0.75px);
+    width: 1.5px;
+    height: 50%;
+    border-radius: 9999px;
+    background: #22d3ee;
+    content: '';
+    transform: rotate(30deg);
+    transform-origin: 50% 100%;
+  }
+
+  .threat-radar-blip {
+    position: absolute;
+    width: 5.5%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  .threat-radar-dot,
+  .threat-radar-ring {
+    position: absolute;
+    border-radius: 9999px;
+    opacity: 0;
+  }
+
+  .threat-radar-dot {
+    inset: 29%;
+  }
+
+  .threat-radar-ring {
+    inset: 0;
+    border: 1.25px solid;
+  }
+
+  .threat-radar-dot--detected { background: var(--detected); }
+  .threat-radar-dot--review { background: var(--review); }
+  .threat-radar-dot--contained { background: var(--contained); }
+  .threat-radar-ring--review { border-color: var(--review); }
+  .threat-radar-ring--contained { border-color: var(--contained); }
+
+  /* Static state (reduced motion): each blip shows its own stage. */
+  .is-detected .threat-radar-dot--detected,
+  .is-review .threat-radar-dot--review,
+  .is-contained .threat-radar-dot--contained { opacity: 1; }
+  .is-review .threat-radar-ring--review,
+  .is-contained .threat-radar-ring--contained { opacity: 0.55; }
+
   .is-detected { --state: var(--detected); }
   .is-review { --state: var(--review); }
   .is-contained { --state: var(--contained); }
 
   @media (prefers-reduced-motion: no-preference) {
-    .threat-radar-dot {
-      opacity: 0;
-      animation: radar-blip var(--sweep) linear infinite;
+    .threat-radar-sweep {
+      animation: radar-sweep var(--sweep) linear infinite;
     }
 
-    .threat-radar-ring {
+    .threat-radar-blip .threat-radar-dot,
+    .threat-radar-blip .threat-radar-ring {
       opacity: 0;
-      animation: radar-ring var(--sweep) linear infinite;
+      animation: var(--sweep) linear var(--delay) infinite both;
+      will-change: opacity, transform;
     }
+
+    .threat-radar-blip .threat-radar-dot--detected { animation-name: radar-detected; }
+    .threat-radar-blip .threat-radar-dot--review { animation-name: radar-review; }
+    .threat-radar-blip .threat-radar-dot--contained { animation-name: radar-contained; }
+    .threat-radar-blip .threat-radar-ring--review { animation-name: radar-ring-review; }
+    .threat-radar-blip .threat-radar-ring--contained { animation-name: radar-ring-contained; }
   }
 
   @keyframes radar-sweep {
@@ -165,22 +225,36 @@ const blips = [
   }
 
   /* One sweep: detected on contact, held for analyst review, then contained. */
-  @keyframes radar-blip {
-    0% { opacity: 0; fill: var(--detected); }
-    2%, 22% { opacity: 1; fill: var(--detected); }
-    26%, 50% { opacity: 1; fill: var(--review); }
-    54%, 84% { opacity: 1; fill: var(--contained); }
-    96%, 100% { opacity: 0; fill: var(--contained); }
+  @keyframes radar-detected {
+    0% { opacity: 0; }
+    2%, 22% { opacity: 1; }
+    26%, 100% { opacity: 0; }
   }
 
-  @keyframes radar-ring {
-    0%, 24% { opacity: 0; stroke: var(--review); transform: scale(0.6); }
-    30% { opacity: 0.8; stroke: var(--review); transform: scale(1); }
-    38% { opacity: 0.2; stroke: var(--review); transform: scale(1.5); }
-    44% { opacity: 0.8; stroke: var(--review); transform: scale(1); }
-    52% { opacity: 0.6; stroke: var(--contained); transform: scale(1); }
-    84% { opacity: 0.6; stroke: var(--contained); transform: scale(1); }
-    96%, 100% { opacity: 0; stroke: var(--contained); transform: scale(1); }
+  @keyframes radar-review {
+    0%, 22% { opacity: 0; }
+    26%, 50% { opacity: 1; }
+    54%, 100% { opacity: 0; }
+  }
+
+  @keyframes radar-contained {
+    0%, 50% { opacity: 0; }
+    54%, 84% { opacity: 1; }
+    96%, 100% { opacity: 0; }
+  }
+
+  @keyframes radar-ring-review {
+    0%, 24% { opacity: 0; transform: scale(0.6); }
+    30% { opacity: 0.8; transform: scale(1); }
+    38% { opacity: 0.2; transform: scale(1.5); }
+    44% { opacity: 0.8; transform: scale(1); }
+    52%, 100% { opacity: 0; transform: scale(1); }
+  }
+
+  @keyframes radar-ring-contained {
+    0%, 50% { opacity: 0; }
+    52%, 84% { opacity: 0.6; }
+    96%, 100% { opacity: 0; }
   }
 
   .threat-radar[data-motion-paused] * {

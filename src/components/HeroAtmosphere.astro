@@ -27,9 +27,9 @@ const rings = [16, 26, 36, 46, 58, 72];
 
 <div class:list={['hero-atmosphere', `hero-atmosphere--${variant}`]} aria-hidden="true" data-motion>
   <div class="hero-atmosphere-glow"></div>
-  <svg class="hero-atmosphere-rings" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" focusable="false">
-    {rings.map((r, index) => <circle cx="100" cy="100" r={r} style={`--ring-index: ${index}`} vector-effect="non-scaling-stroke" />)}
-  </svg>
+  <div class="hero-atmosphere-rings">
+    {rings.map((r, index) => <span style={`--ring-size: ${r}%; --ring-index: ${index}`}></span>)}
+  </div>
   <div class="hero-atmosphere-particles">
     {particles.map((p) => (
       <span style={`left: ${p.x}%; top: ${p.y}%; width: ${p.size}px; height: ${p.size}px; animation-delay: ${p.delay}s; animation-duration: ${p.duration}s`}></span>
@@ -51,8 +51,8 @@ const rings = [16, 26, 36, 46, 58, 72];
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(42rem 34rem at 74% 48%, var(--glow-blue), transparent 70%),
-      radial-gradient(30rem 24rem at 82% 30%, var(--glow-cyan), transparent 70%),
+      radial-gradient(42rem 34rem at var(--globe-x, 74%) var(--globe-y, 48%), var(--glow-blue), transparent 70%),
+      radial-gradient(30rem 24rem at calc(var(--globe-x, 74%) + 6rem) calc(var(--globe-y, 48%) - 8rem), var(--glow-cyan), transparent 70%),
       radial-gradient(36rem 30rem at 8% 100%, rgba(47, 107, 255, 0.14), transparent 70%),
       linear-gradient(180deg, #050b16 0%, #071430 55%, #050b16 100%);
   }
@@ -64,23 +64,35 @@ const rings = [16, 26, 36, 46, 58, 72];
       var(--surface-0);
   }
 
+  /* Rings are separate HTML layers, so each breathes on the compositor
+     instead of repainting one large SVG every frame. Centred on the globe
+     (--globe-x/--globe-y from hero-globe.ts) when there is one. */
   .hero-atmosphere-rings {
     position: absolute;
-    top: 50%;
-    left: 74%;
+    top: var(--globe-y, 50%);
+    left: var(--globe-x, 74%);
     width: min(70rem, 120vw);
     height: min(70rem, 120vw);
+    color: rgba(143, 211, 242, 0.09);
     transform: translate(-50%, -50%);
-    fill: none;
-    stroke: rgba(143, 211, 242, 0.09);
-    stroke-width: 1;
+  }
+
+  .hero-atmosphere-rings span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--ring-size);
+    height: var(--ring-size);
+    border: 1px solid currentColor;
+    border-radius: 9999px;
+    transform: translate(-50%, -50%);
   }
 
   .hero-atmosphere--soft .hero-atmosphere-rings {
     left: 92%;
     width: min(56rem, 110vw);
     height: min(56rem, 110vw);
-    stroke: rgba(143, 211, 242, 0.06);
+    color: rgba(143, 211, 242, 0.06);
   }
 
   .hero-atmosphere-particles span {
@@ -92,13 +104,14 @@ const rings = [16, 26, 36, 46, 58, 72];
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .hero-atmosphere-rings circle {
-      transform-origin: 100px 100px;
+    .hero-atmosphere-rings span {
       animation: ring-breathe 7s ease-in-out infinite;
       animation-delay: calc(var(--ring-index) * -1.1s);
+      will-change: transform, opacity;
     }
 
     .hero-atmosphere-particles span {
+      will-change: transform, opacity;
       animation-name: particle-drift;
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
@@ -106,8 +119,8 @@ const rings = [16, 26, 36, 46, 58, 72];
   }
 
   @keyframes ring-breathe {
-    0%, 100% { opacity: 0.55; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.025); }
+    0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.025); }
   }
 
   @keyframes particle-drift {

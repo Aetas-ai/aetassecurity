@@ -6,11 +6,13 @@
   --color-brand-bg: #050b16;
   --color-surface-dark: #08111f;
   --color-surface-dark-raised: #0d1a2e;
-  --color-surface-light: #f5f5f6;
-  --color-surface-light-muted: #ececee;
-  --color-ink: #0f1011;
-  --color-ink-muted: #55585e;
-  --color-line-light: #dcdde0;
+  /* Cool light surfaces with navy ink (after Arctic Wolf and Heimdal): ink 16.7:1,
+     muted ink 6.4:1 or better, accent ink 4.8:1 or better. Never cyan text here. */
+  --color-surface-light: #f2f6fb;
+  --color-surface-light-muted: #e6eef8;
+  --color-ink: #0a1628;
+  --color-ink-muted: #44566c;
+  --color-line-light: #d3deec;
 
   /* Navy surfaces plus ONE cyan accent for UI. The logo's cyan-to-blue
      gradient (--brand-gradient) is reserved for signature moments: the hero
@@ -663,12 +665,13 @@
 }
 
 /* Section system. Dark-first: .section-dark-raised and .agi-band carry most
-   pages; .section-light* is reserved for forms, legal, and editorial bands. */
+   pages; .section-light* gives the homepage its light/dark rhythm and is
+   otherwise reserved for forms, legal, and editorial bands. */
 .section-light,
 .section-light-muted,
 .section-dark-raised {
   --section-background: var(--color-surface-light);
-  --section-border: #d9e2eb;
+  --section-border: var(--color-line-light);
   position: relative;
   isolation: isolate;
   background: transparent;
@@ -677,7 +680,7 @@
 
 .section-light-muted {
   --section-background: var(--color-surface-light-muted);
-  --section-border: #d3dde7;
+  --section-border: var(--color-line-light);
 }
 
 .section-dark-raised {
@@ -707,6 +710,27 @@
 .page-hero + .section-light::before,
 .page-hero + .section-light-muted::before {
   border-top-width: 0;
+}
+
+/* Inside light bands, chamfered panels turn white with a cool hairline and
+   links and counters switch to accent ink (cyan fails contrast on light). */
+.section-light .agi-card--dark,
+.section-light-muted .agi-card--dark {
+  --panel-fill: #ffffff;
+  --panel-line: var(--color-line-light);
+}
+
+.section-light .agi-card--dark.agi-card--interactive:hover,
+.section-light-muted .agi-card--dark.agi-card--interactive:hover {
+  --panel-fill: #ffffff;
+  --panel-line: var(--color-accent-ink);
+}
+
+.section-light .agi-card-link,
+.section-light-muted .agi-card-link,
+.section-light .value-card::after,
+.section-light-muted .value-card::after {
+  color: var(--color-accent-ink);
 }
 
 

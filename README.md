@@ -15,7 +15,7 @@ Read [HANDOFF.md](./HANDOFF.md) before changing positioning, services, partners,
 
 - A homepage structured after Arctic Wolf, Huntress, and CrowdStrike: shield hero with a breach link and a strip linking the four service pages, partner strip, practice metrics, "Why it matters", numbered value cards, services grouped by outcome, Expert in the Loop with AI-governance points, customer proof, certifications, engagement steps, FAQ, latest resources, and a closing CTA
 - A utility row above the header ("Experienced a breach?", phone, email) and an optional announcement bar
-- Proof sections (metrics, threat statistics, logos, testimonials, case studies, recognitions) that show labelled placeholder slots in development and staging, and nothing on the live site until real content is approved
+- Proof sections (metrics, threat statistics, logos, testimonials, case studies, recognitions) that render nothing until real content is approved; set `PUBLIC_SHOW_PLACEHOLDERS=true` to see labelled placeholder slots
 - One code-rendered, clearly simulated MXDR console (React island) on `/services/mxdr`
 - A services hub and a dedicated page per service (MXDR, Incident Response, Network Security Testing, Application Security Testing), built from one template with Service and FAQ structured data
 - A Resources hub (security advisories, blog, guides) from Markdown content collections, with `Article` structured data
@@ -66,6 +66,7 @@ Aetas Security's own "command center" identity; see HANDOFF.md "Design System" f
 - Sentence-case labels only where they name content; numbering only for real sequences.
 - One main motion moment per page: the particle globe with the shield on the homepage (detections go Detected → Analyst approval → Contained; tilts toward the pointer), the diagram signal on service pages, and the threat radar on About. Typed hero taglines, hero atmospheres, the partner marquee, and the MXDR demo are the other motion, plus light scroll entrances below the fold. All infinite motion pauses off-screen, and everything respects `prefers-reduced-motion`.
 - Brighter royal-blue and cyan glow in heroes and bands (after the Heimdal reference), a faint network-map background in inner page heroes (`NetworkBackdrop.astro`), a static tile on section bands, plain navy behind long text.
+- A homepage rhythm after Arctic Wolf and Heimdal: cool light sections with navy ink and white cards, vivid royal-blue bands for the services platform diagram (`PlatformDiagram.astro`) and the closing CTA, navy everywhere else.
 - Code-built visuals only. No stock or AI-generated imagery; at most one "Simulated" demo window per page, never in the hero.
 
 ## Routes

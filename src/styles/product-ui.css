@@ -532,6 +532,19 @@
     background: var(--surface-0);
   }
 
+  /* Vivid royal-blue band (after Arctic Wolf and Heimdal) for the platform
+     diagram and the closing call to action. Text roles switch to white and a
+     pale blue: at least 5.6:1 on every stop of the gradient. */
+  .agi-band--vivid,
+  .agi-band--vivid:nth-of-type(even) {
+    --surface-text: #ffffff;
+    --surface-text-muted: #c9d8f5;
+    border-block-color: rgba(143, 211, 242, 0.2);
+    background:
+      radial-gradient(60rem 28rem at 50% 0%, rgba(34, 211, 238, 0.16), transparent 70%),
+      linear-gradient(160deg, #0b1f4d 0%, #123a9c 52%, #0b1f4d 100%);
+  }
+
   /* Restrained accent light from the top edge of a section. */
   .agi-glow {
     background-image: radial-gradient(60% 42rem at 50% -12rem, color-mix(in srgb, var(--accent, var(--color-ai)) 13%, transparent), transparent 70%);

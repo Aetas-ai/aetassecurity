@@ -7,6 +7,7 @@ import {
   quadraticPoint,
   rotate,
   seededRandom,
+  shadeBucket,
 } from '../src/scripts/hero-globe-math.ts';
 
 const close = (actual, expected, message) => assert.ok(Math.abs(actual - expected) < 1e-9, `${message}: ${actual} ≠ ${expected}`);
@@ -58,4 +59,17 @@ test('the approval arc starts and ends on its endpoints', () => {
   const to = { x: 100, y: 0 };
   assert.deepEqual(quadraticPoint(from, control, to, 0), from);
   assert.deepEqual(quadraticPoint(from, control, to, 1), to);
+});
+
+test('shade buckets stay in range and never decrease as shade rises', () => {
+  assert.equal(shadeBucket(0, 12), 0);
+  assert.equal(shadeBucket(1, 12), 11);
+  assert.equal(shadeBucket(-0.5, 12), 0);
+  assert.equal(shadeBucket(1.5, 12), 11);
+  let previous = 0;
+  for (let shade = 0; shade <= 1; shade += 0.01) {
+    const bucket = shadeBucket(shade, 12);
+    assert.ok(bucket >= previous && bucket <= 11);
+    previous = bucket;
+  }
 });
